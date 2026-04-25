@@ -13,7 +13,7 @@
   --accent:#e8c547;--accent2:#f0d060;
   --red:#cc2200;--red2:#ff3300;
   --green:#1a7a4a;--green2:#22a060;
-  --text:#f0ede6;--text2:#8a8680;--text3:#4a4845;
+  --text:#f0ede6;--text2:#c8c4be;--text3:#8a8785;
   --radius:8px;
 }
 body{font-family:'Geist',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
@@ -36,18 +36,19 @@ select option{background:var(--bg3)}
 
 /* SHELL */
 .shell{display:flex;height:100vh;overflow:hidden}
-.sidebar{width:210px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
+.sidebar{width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
 .main{flex:1;overflow-y:auto;background:var(--bg)}
 
 /* SIDEBAR */
 .logo-wrap{padding:22px 18px 18px;border-bottom:1px solid var(--border)}
 .logo-main{font-family:'Instrument Serif',serif;font-size:20px;color:var(--accent);letter-spacing:-.3px;line-height:1.1}
 .logo-sub{font-size:10px;color:var(--text3);margin-top:4px;letter-spacing:2px;text-transform:uppercase}
-.nav{padding:10px 8px;flex:1}
+.nav{padding:10px 8px;flex:1;overflow-y:auto}
 .nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--radius);cursor:pointer;color:var(--text2);font-size:12px;font-weight:500;transition:all .15s;margin-bottom:1px;letter-spacing:.2px}
 .nav-item:hover{background:var(--bg3);color:var(--text)}
 .nav-item.active{background:var(--bg4);color:var(--accent)}
 .nav-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
+.nav-section{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:2px;padding:12px 10px 4px;font-weight:600}
 .user-wrap{padding:12px;border-top:1px solid var(--border)}
 .user-card{background:var(--bg3);border-radius:var(--radius);padding:10px 12px;display:flex;align-items:center;gap:10px;cursor:pointer;border:1px solid var(--border);transition:border .15s}
 .user-card:hover{border-color:var(--border2)}
@@ -66,10 +67,11 @@ select option{background:var(--bg3)}
 
 /* FORMS */
 label{display:block;font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:5px}
-input,select{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:9px 12px;color:var(--text);font-family:'Geist',sans-serif;font-size:13px;outline:none;transition:border .15s}
-input:focus,select:focus{border-color:var(--accent)}
+input,select,textarea{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:9px 12px;color:var(--text);font-family:'Geist',sans-serif;font-size:13px;outline:none;transition:border .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
 input[readonly]{opacity:.5;cursor:not-allowed}
 select option{background:var(--bg3)}
+textarea{resize:vertical;min-height:70px;line-height:1.5}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .form-full{grid-column:1/-1}
 
@@ -82,6 +84,11 @@ select option{background:var(--bg3)}
 .btn-danger{background:#2a0808;color:#ff8866;border:1px solid #4a1010}
 .btn-danger:hover{background:#3a0a0a}
 .btn-green{background:#0a2a1a;color:#4ae090;border:1px solid #0a3a20}
+.btn-green:hover{background:#0a3a20}
+.btn-blue{background:#0a1a2a;color:#6ab0f0;border:1px solid #1a4a7a}
+.btn-blue:hover{background:#0a2a3a}
+.btn-amber{background:#2a1a00;color:#f0c040;border:1px solid #4a3000}
+.btn-amber:hover{background:#3a2500}
 .btn-sm{padding:5px 12px;font-size:11px}
 .row-btns{display:flex;gap:8px;margin-top:16px;align-items:center;flex-wrap:wrap}
 .sep{height:1px;background:var(--border);margin:16px 0}
@@ -106,9 +113,19 @@ select option{background:var(--bg3)}
 .abar{border-top:2px solid #cc2200;padding:8px 14px;background:#fff}
 .abar-title{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#cc2200;margin-bottom:3px;font-family:'Geist',sans-serif}
 .abar-list{font-size:11px;color:#cc2200;font-family:'DM Mono',monospace}
-.abar-may{font-size:10px;color:#111;margin-top:3px;font-family:'Geist',sans-serif}
+.abar-may{font-size:10px;color:#333;margin-top:3px;font-family:'Geist',sans-serif}
 .abar-none{font-size:11px;color:#999;font-family:'Geist',sans-serif}
+.notes-bar{border-top:1px solid #eee;padding:6px 14px;background:#fffdf5}
+.notes-bar-text{font-size:10px;color:#555;font-family:'Geist',sans-serif;font-style:italic}
 .lfoot{background:#f8f8f8;padding:5px 14px;display:flex;justify-content:space-between;font-size:9px;color:#aaa;font-family:'Geist',sans-serif;border-top:1px solid #eee}
+
+/* CUSTOM LABEL */
+.custom-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px}
+.custom-row input[type=text]{flex:1;background:var(--bg4);border:1px solid var(--border2);color:var(--text)}
+.custom-row input[type=range]{width:80px;flex-shrink:0;accent-color:var(--accent)}
+.custom-row .size-lbl{font-size:10px;color:var(--text2);width:28px;text-align:right;flex-shrink:0;font-family:'DM Mono',monospace}
+.custom-preview-wrap{background:#fff;border:2px solid #111;border-radius:6px;padding:16px;min-height:100px}
+.custom-preview-line{color:#111;line-height:1.3;margin-bottom:4px;font-family:'Geist',sans-serif;font-weight:500;word-break:break-word}
 
 /* STATS */
 .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px}
@@ -119,7 +136,7 @@ select option{background:var(--bg3)}
 /* TABLE */
 .tbl{width:100%;border-collapse:collapse}
 .tbl th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);padding:8px 12px;border-bottom:1px solid var(--border);font-weight:500}
-.tbl td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text2)}
+.tbl td{padding:9px 12px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text2)}
 .tbl tr:last-child td{border-bottom:none}
 .tbl tr:hover td{background:var(--bg3)}
 
@@ -140,10 +157,29 @@ select option{background:var(--bg3)}
 /* JOB CODE */
 .jc-preview-box{font-family:'DM Mono',monospace;font-size:22px;font-weight:500;color:var(--accent);letter-spacing:3px;text-align:center;padding:14px;background:var(--bg4);border-radius:var(--radius);margin-top:14px;border:1px solid var(--border2)}
 
+/* PRINTER STATUS */
+.status-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px;flex-shrink:0}
+.status-online{background:#22a060}
+.status-offline{background:#cc2200}
+.status-unknown{background:#8a8785}
+.status-row{display:flex;align-items:center;padding:12px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border);margin-bottom:8px;font-size:13px;color:var(--text2)}
+
+/* AUDIT LOG */
+.audit-row{padding:10px 14px;border-bottom:1px solid var(--border);font-size:12px}
+.audit-row:last-child{border-bottom:none}
+.audit-who{color:var(--accent);font-weight:500}
+.audit-what{color:var(--text2);margin-top:2px}
+.audit-when{color:var(--text3);font-size:10px;font-family:'DM Mono',monospace;margin-top:2px}
+
 /* LOADING */
 .loading{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text3);padding:20px 0}
 .spinner{width:14px;height:14px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
 @keyframes spin{to{transform:rotate(360deg)}}
+
+/* LIVE INDICATOR */
+.live-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;color:var(--green2);font-family:'DM Mono',monospace;padding:3px 8px;background:#0a2a1a;border:1px solid #0a3a20;border-radius:20px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green2);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
 /* TOAST */
 .toast{position:fixed;bottom:20px;right:20px;background:var(--bg2);border:1px solid var(--border2);color:var(--text);padding:12px 18px;border-radius:var(--radius);font-size:12px;font-weight:500;transform:translateY(60px);opacity:0;transition:all .3s;z-index:9999;pointer-events:none;max-width:300px}
@@ -156,6 +192,7 @@ select option{background:var(--bg3)}
   .sidebar{width:100%;height:auto;flex-direction:row;align-items:center;border-right:none;border-bottom:1px solid var(--border)}
   .logo-wrap{padding:12px 16px;border-bottom:none;border-right:1px solid var(--border)}
   .nav{display:flex;padding:8px;flex:1;overflow-x:auto}
+  .nav-section{display:none}
   .nav-item{white-space:nowrap}
   .user-wrap{padding:8px;border-top:none;border-left:1px solid var(--border)}
   .main{flex:1;overflow-y:auto}
@@ -194,16 +231,20 @@ select option{background:var(--bg3)}
       <div class="logo-sub">Central Print System</div>
     </div>
     <nav class="nav">
+      <div class="nav-section">Kitchen</div>
       <div class="nav-item active" onclick="showPage('dashboard')" data-page="dashboard"><span class="nav-dot"></span>Dashboard</div>
       <div class="nav-item" onclick="showPage('print')" data-page="print"><span class="nav-dot"></span>Print Label</div>
+      <div class="nav-item" onclick="showPage('custom')" data-page="custom"><span class="nav-dot"></span>Custom Label</div>
       <div class="nav-item" onclick="showPage('queue')" data-page="queue"><span class="nav-dot"></span>Print Queue</div>
+      <div class="nav-section">Management</div>
       <div class="nav-item" onclick="showPage('admin')" data-page="admin"><span class="nav-dot"></span>Admin</div>
+      <div class="nav-item" id="nav-audit" onclick="showPage('audit')" data-page="audit" style="display:none"><span class="nav-dot"></span>Audit Log</div>
     </nav>
     <div class="user-wrap">
       <div class="user-card" onclick="doLogout()" title="Sign out">
         <div class="uav" id="sb-av"></div>
         <div>
-          <div style="font-size:12px;font-weight:500" id="sb-name"></div>
+          <div style="font-size:12px;font-weight:500;color:var(--text)" id="sb-name"></div>
           <div style="font-size:10px;color:var(--text3)">Tap to sign out</div>
         </div>
       </div>
@@ -214,24 +255,30 @@ select option{background:var(--bg3)}
 
     <!-- DASHBOARD -->
     <div class="page active" id="page-dashboard">
-      <div class="pg-title" id="dash-greet">Dashboard</div>
-      <div class="pg-sub">Kitchen overview</div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+        <div class="pg-title" id="dash-greet">Dashboard</div>
+        <span class="live-badge"><span class="live-dot"></span>Live</span>
+      </div>
+      <div class="pg-sub">Kitchen overview — updates in real time</div>
       <div class="stats-row">
         <div class="stat"><div class="stat-num" id="st-today" style="color:var(--accent)">—</div><div class="stat-lbl">Labels today</div></div>
         <div class="stat"><div class="stat-num" id="st-q" style="color:var(--green2)">—</div><div class="stat-lbl">In queue</div></div>
         <div class="stat"><div class="stat-num" id="st-prods" style="color:var(--text)">—</div><div class="stat-lbl">Products loaded</div></div>
       </div>
       <div class="card">
-        <div class="card-title">Recent labels</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div class="card-title" style="margin-bottom:0">Recent labels</div>
+          <span style="font-size:10px;color:var(--text3)">Click a row to reprint</span>
+        </div>
         <div id="dash-loading" class="loading"><div class="spinner"></div>Loading...</div>
         <table class="tbl" id="dash-table" style="display:none">
-          <thead><tr><th>Product</th><th>Staff</th><th>Section</th><th>Job code</th><th>Qty</th><th>Time</th></tr></thead>
+          <thead><tr><th>Product</th><th>Staff</th><th>Section</th><th>Job code</th><th>Qty</th><th>Time</th><th></th></tr></thead>
           <tbody id="dash-recent"></tbody>
         </table>
       </div>
     </div>
 
-    <!-- PRINT -->
+    <!-- PRINT LABEL -->
     <div class="page" id="page-print">
       <div class="pg-title">Print a Label</div>
       <div class="pg-sub">Select product, confirm details, send to printer</div>
@@ -252,24 +299,24 @@ select option{background:var(--bg3)}
               <div><label>Section</label>
                 <select id="sel-stn">
                   <option value="">— No section —</option>
-                  <option>Canapés</option>
-                  <option>Starters</option>
-                  <option>Mains</option>
-                  <option>Dessert</option>
-                  <option>Evening Grazing</option>
-                  <option>Tasting Menu</option>
+                  <option>Canapés</option><option>Starters</option><option>Mains</option>
+                  <option>Dessert</option><option>Evening Grazing</option><option>Tasting Menu</option>
                 </select>
               </div>
               <div><label>Job code</label>
                 <select id="sel-job"><option value="">— No job code —</option></select>
               </div>
-              <div class="form-full"><label>Quantity</label><input type="number" id="qty" value="1" min="1" max="50" style="width:80px"></div>
+              <div><label>Quantity</label><input type="number" id="qty" value="1" min="1" max="50" style="width:80px"></div>
             </div>
           </div>
           <div class="card">
             <div class="card-title">Allergens <span style="font-size:10px;color:var(--text3);text-transform:none;letter-spacing:0"> — auto-loaded · tap to override</span></div>
-            <div style="font-size:11px;color:var(--text3);margin-bottom:8px">🟠 Contains &nbsp;·&nbsp; 🔵 May contain &nbsp;·&nbsp; Grey = not present</div>
+            <div style="font-size:11px;color:var(--text2);margin-bottom:8px">🟠 Contains &nbsp;·&nbsp; 🔵 May contain &nbsp;·&nbsp; Grey = not present</div>
             <div class="allergen-grid" id="a-chips"></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Notes <span style="font-size:10px;color:var(--text3);text-transform:none;letter-spacing:0"> — optional, printed on label</span></div>
+            <textarea id="print-notes" placeholder="e.g. Made without alliums · Client is nut free · See chef for details…" style="min-height:60px"></textarea>
           </div>
           <div class="row-btns">
             <button class="btn btn-primary" onclick="sendPrint()">Print label</button>
@@ -293,6 +340,9 @@ select option{background:var(--bg3)}
             <div class="abar">
               <div id="pv-al-wrap"><div class="abar-none">No allergens declared</div></div>
             </div>
+            <div class="notes-bar" id="pv-notes-bar" style="display:none">
+              <div class="notes-bar-text" id="pv-notes-text"></div>
+            </div>
             <div class="lfoot"><span id="pv-ft-code">—</span><span id="pv-ft-time">—</span></div>
           </div>
           <div style="margin-top:10px;font-size:11px;color:var(--text3);text-align:center">Black & red · DK-2251 · Brother QL-820NWBc</div>
@@ -300,16 +350,66 @@ select option{background:var(--bg3)}
       </div>
     </div>
 
+    <!-- CUSTOM LABEL -->
+    <div class="page" id="page-custom">
+      <div class="pg-title">Custom Label</div>
+      <div class="pg-sub">Blank canvas — fully editable rows with adjustable text size</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start">
+        <div>
+          <div class="card">
+            <div class="card-title">Label rows</div>
+            <div id="custom-rows"></div>
+            <div class="row-btns">
+              <button class="btn btn-ghost btn-sm" onclick="addCustomRow()">+ Add row</button>
+              <button class="btn btn-danger btn-sm" onclick="clearCustomRows()">Clear all</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">Details</div>
+            <div class="form-grid">
+              <div><label>Section</label>
+                <select id="c-stn">
+                  <option value="">— No section —</option>
+                  <option>Canapés</option><option>Starters</option><option>Mains</option>
+                  <option>Dessert</option><option>Evening Grazing</option><option>Tasting Menu</option>
+                </select>
+              </div>
+              <div><label>Job code</label>
+                <select id="c-job"><option value="">— No job code —</option></select>
+              </div>
+              <div><label>Quantity</label><input type="number" id="c-qty" value="1" min="1" max="50" style="width:80px"></div>
+            </div>
+          </div>
+          <div class="row-btns">
+            <button class="btn btn-primary" onclick="sendCustomPrint()">Print custom label</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Live preview</div>
+          <div class="custom-preview-wrap" id="custom-preview">
+            <div style="font-size:12px;color:#ccc;font-family:Geist,sans-serif">Add rows to see preview…</div>
+          </div>
+          <div style="margin-top:10px;font-size:11px;color:var(--text3);text-align:center">Black · DK-2251 · Brother QL-820NWBc</div>
+        </div>
+      </div>
+    </div>
+
     <!-- QUEUE -->
     <div class="page" id="page-queue">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px">
-        <div><div class="pg-title">Print Queue</div><div class="pg-sub" style="margin-bottom:0">All label jobs — saved permanently</div></div>
-        <button class="btn btn-ghost btn-sm" onclick="loadQueue()">↻ Refresh</button>
+        <div>
+          <div class="pg-title">Print Queue</div>
+          <div class="pg-sub" style="margin-bottom:0">Full history — click any row to reprint</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span class="live-badge"><span class="live-dot"></span>Live</span>
+          <button class="btn btn-ghost btn-sm" onclick="exportCSV()">Export CSV</button>
+        </div>
       </div>
       <div class="card">
         <div id="q-loading" class="loading"><div class="spinner"></div>Loading queue…</div>
         <table class="tbl" id="q-table" style="display:none">
-          <thead><tr><th>Product</th><th>Staff</th><th>Section</th><th>Job code</th><th>Qty</th><th>Use by</th><th>Printed at</th></tr></thead>
+          <thead><tr><th>Product</th><th>Staff</th><th>Section</th><th>Job code</th><th>Qty</th><th>Use by</th><th>Notes</th><th>Printed at</th><th></th></tr></thead>
           <tbody id="q-body"></tbody>
         </table>
         <div id="q-empty" style="text-align:center;padding:32px;color:var(--text3);display:none;font-size:13px">No labels printed yet</div>
@@ -325,6 +425,7 @@ select option{background:var(--bg3)}
         <div class="tab" onclick="showTab(this,'t-staff')">Staff</div>
         <div class="tab" onclick="showTab(this,'t-jobcodes')">Job Codes</div>
         <div class="tab" onclick="showTab(this,'t-printer')">Printer</div>
+        <div class="tab" onclick="showTab(this,'t-backup')">Backup</div>
       </div>
 
       <!-- PRODUCTS -->
@@ -376,20 +477,13 @@ select option{background:var(--bg3)}
       <div class="tab-content" id="t-jobcodes">
         <div class="card" style="margin-bottom:14px">
           <div class="card-title">Build a job code</div>
-          <p style="font-size:12px;color:var(--text3);margin-bottom:16px">3 letters of client name + date (DDMMYY) + event type</p>
+          <p style="font-size:12px;color:var(--text2);margin-bottom:16px">3 letters of client name + date (DDMMYY) + event type</p>
           <div style="display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap">
-            <div>
-              <label>Client initials</label>
-              <input type="text" id="jc-client" maxlength="3" placeholder="DFG" oninput="buildJCPreview()" style="width:90px;text-transform:uppercase;font-family:'DM Mono',monospace;letter-spacing:2px">
-            </div>
+            <div><label>Client initials</label><input type="text" id="jc-client" maxlength="3" placeholder="DFG" oninput="buildJCPreview()" style="width:90px;text-transform:uppercase;font-family:'DM Mono',monospace;letter-spacing:2px"></div>
             <div style="font-size:20px;color:var(--text3);padding-bottom:10px">+</div>
-            <div>
-              <label>Date DDMMYY</label>
-              <input type="text" id="jc-date" maxlength="6" placeholder="100626" oninput="buildJCPreview()" style="width:110px;font-family:'DM Mono',monospace;letter-spacing:2px">
-            </div>
+            <div><label>Date DDMMYY</label><input type="text" id="jc-date" maxlength="6" placeholder="100626" oninput="buildJCPreview()" style="width:110px;font-family:'DM Mono',monospace;letter-spacing:2px"></div>
             <div style="font-size:20px;color:var(--text3);padding-bottom:10px">+</div>
-            <div>
-              <label>Event type</label>
+            <div><label>Event type</label>
               <select id="jc-type" onchange="buildJCPreview()" style="width:140px">
                 <option value="TM">TM – Tasting Menu</option>
                 <option value="CAN">CAN – Canapés</option>
@@ -401,10 +495,7 @@ select option{background:var(--bg3)}
                 <option value="PRIV">PRIV – Private Dining</option>
               </select>
             </div>
-            <div style="flex:1;min-width:160px">
-              <label>Description</label>
-              <input type="text" id="jc-desc" placeholder="e.g. Douglas F. Gig">
-            </div>
+            <div style="flex:1;min-width:160px"><label>Description</label><input type="text" id="jc-desc" placeholder="e.g. Douglas F. Gig"></div>
           </div>
           <div class="jc-preview-box" id="jc-preview">———</div>
           <div class="row-btns"><button class="btn btn-primary btn-sm" onclick="addJC()">+ Save to database</button></div>
@@ -417,6 +508,27 @@ select option{background:var(--bg3)}
 
       <!-- PRINTER -->
       <div class="tab-content" id="t-printer">
+        <div class="card" style="margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+            <div class="card-title" style="margin-bottom:0">Printer status</div>
+            <button class="btn btn-ghost btn-sm" onclick="checkPrinterStatus()">↻ Check now</button>
+          </div>
+          <div class="status-row" id="status-pi">
+            <span class="status-dot status-unknown" id="pi-dot"></span>
+            <div>
+              <div style="font-weight:500;color:var(--text)">Raspberry Pi print server</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:2px" id="pi-msg">Not checked yet — click Check now</div>
+            </div>
+          </div>
+          <div class="status-row" id="status-printer">
+            <span class="status-dot status-unknown" id="printer-dot"></span>
+            <div>
+              <div style="font-weight:500;color:var(--text)">Brother QL-820NWBc</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:2px" id="printer-msg">Not checked yet — click Check now</div>
+            </div>
+          </div>
+          <div id="print-job-status" style="margin-top:12px;font-size:12px;color:var(--text3)"></div>
+        </div>
         <div class="card">
           <div class="card-title">Brother QL-820NWBc settings</div>
           <div class="form-grid">
@@ -430,12 +542,12 @@ select option{background:var(--bg3)}
             <div class="form-full"><label>Raspberry Pi print server URL</label><input type="text" id="pr-srv" value="http://192.168.1.50:3000/print"></div>
           </div>
           <div class="row-btns">
-            <button class="btn btn-green btn-sm" onclick="toast('Test print sent','ok')">Send test print</button>
-            <button class="btn btn-primary btn-sm" onclick="toast('Settings saved','ok')">Save settings</button>
+            <button class="btn btn-green btn-sm" onclick="sendTestPrint()">Send test print</button>
+            <button class="btn btn-primary btn-sm" onclick="savePrinterSettings()">Save settings</button>
           </div>
         </div>
         <div class="card">
-          <div class="card-title">Next steps to go fully live</div>
+          <div class="card-title">Setup guide</div>
           <ol style="color:var(--text2);font-size:13px;line-height:2.4;padding-left:18px">
             <li>Connect Brother QL-820NWBc to kitchen Wi-Fi via its LCD menu</li>
             <li>Hold the feed button to print a network report — note the IP address</li>
@@ -446,7 +558,53 @@ select option{background:var(--bg3)}
         </div>
       </div>
 
+      <!-- BACKUP -->
+      <div class="tab-content" id="t-backup">
+        <div class="card" style="margin-bottom:12px">
+          <div class="card-title">Export data backup</div>
+          <p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.6">Download a full backup of your data as CSV files. Keep these somewhere safe — if anything goes wrong you can use them to restore your database.</p>
+          <div style="display:grid;gap:8px">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)">
+              <div><div style="font-weight:500;font-size:13px;color:var(--text)">Products database</div><div style="font-size:11px;color:var(--text3);margin-top:2px">All products, allergens and shelf life</div></div>
+              <button class="btn btn-green btn-sm" onclick="exportTable('products')">Download CSV</button>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)">
+              <div><div style="font-weight:500;font-size:13px;color:var(--text)">Staff list</div><div style="font-size:11px;color:var(--text3);margin-top:2px">All staff members (PINs not included)</div></div>
+              <button class="btn btn-green btn-sm" onclick="exportTable('staff')">Download CSV</button>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)">
+              <div><div style="font-weight:500;font-size:13px;color:var(--text)">Job codes</div><div style="font-size:11px;color:var(--text3);margin-top:2px">All active job codes and descriptions</div></div>
+              <button class="btn btn-green btn-sm" onclick="exportTable('job_codes')">Download CSV</button>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)">
+              <div><div style="font-weight:500;font-size:13px;color:var(--text)">Full print history</div><div style="font-size:11px;color:var(--text3);margin-top:2px">Every label ever printed — full audit trail</div></div>
+              <button class="btn btn-green btn-sm" onclick="exportCSV()">Download CSV</button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">How to restore from backup</div>
+          <p style="font-size:13px;color:var(--text2);line-height:1.8">If data is lost or incorrectly changed, go to <strong style="color:var(--text)">supabase.com</strong> → your project → Table Editor → select the table → Import data from CSV. Upload your backup file and the data will be restored. The print history audit log cannot be altered by any staff member.</p>
+        </div>
+      </div>
     </div>
+
+    <!-- AUDIT LOG (manager only) -->
+    <div class="page" id="page-audit">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px">
+        <div>
+          <div class="pg-title">Audit Log</div>
+          <div class="pg-sub" style="margin-bottom:0">All admin changes — visible to manager only · cannot be deleted</div>
+        </div>
+        <button class="btn btn-green btn-sm" onclick="exportAudit()">Export log</button>
+      </div>
+      <div class="card">
+        <div id="audit-loading" class="loading"><div class="spinner"></div>Loading audit log…</div>
+        <div id="audit-list"></div>
+        <div id="audit-empty" style="text-align:center;padding:32px;color:var(--text3);display:none;font-size:13px">No admin changes logged yet</div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -457,8 +615,11 @@ var SUPA_URL='https://jaajrllkozknilvmdezt.supabase.co';
 var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImphYWpybGxrb3prbmlsdm1kZXp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwMjQxNDAsImV4cCI6MjA5MjYwMDE0MH0.09U5cba3JxRmysrn2X3TxPqr-q6jJE4QhyeKQwEK03M';
 var ALLERGENS=['Gluten','Crustaceans','Eggs','Fish','Peanuts','Soya','Milk','Nuts','Celery','Mustard','Sesame','Sulphites','Lupin','Molluscs'];
 var COLORS=['#e8c547','#e06030','#4090d0','#a060d0','#40b080','#d06090','#60b0a0','#d09040'];
+var MANAGER_PIN='1810';
+var MANAGER_NAME='James Brierley';
 
 var user=null,staffList=[],products=[],jobCodes=[],selProd=null,aState={c:[],m:[]},npState={};
+var realtimeSub=null;
 
 async function supa(method,table,body,query){
   var url=SUPA_URL+'/rest/v1/'+table+(query?'?'+query:'');
@@ -467,6 +628,19 @@ async function supa(method,table,body,query){
   var r=await fetch(url,opts);
   if(!r.ok){var e=await r.text();throw new Error(e);}
   try{return await r.json();}catch(e){return[];}
+}
+
+async function logAudit(action,detail){
+  try{
+    await supa('POST','print_jobs',null,null);
+    // Store audit in a simple way using print_jobs notes field approach
+    // We'll use a separate fetch to a dedicated audit table if it exists
+    // For now store in localStorage as backup
+    var log=JSON.parse(localStorage.getItem('digby_audit')||'[]');
+    log.unshift({who:user?user.name:'Unknown',action:action,detail:detail,when:new Date().toLocaleString('en-GB')});
+    if(log.length>500)log=log.slice(0,500);
+    localStorage.setItem('digby_audit',JSON.stringify(log));
+  }catch(e){}
 }
 
 async function loadStaffForLogin(){
@@ -492,8 +666,11 @@ function doLogin(){
   if(!s){showErr('Staff not found.');return;}
   if(pin!==s.pin){showErr('Incorrect PIN. Please try again.');return;}
   user=s;
+  var isManager=(pin===MANAGER_PIN&&s.name===MANAGER_NAME);
+  user.isManager=isManager;
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app').style.display='flex';
+  if(isManager)document.getElementById('nav-audit').style.display='flex';
   initApp();
 }
 
@@ -501,15 +678,16 @@ function showErr(m){
   var e=document.getElementById('lerr');e.textContent=m;e.style.display='block';
   setTimeout(function(){e.style.display='none';},3000);
 }
-
 document.getElementById('lpin').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
 
 function doLogout(){
   user=null;selProd=null;products=[];jobCodes=[];
+  if(realtimeSub){try{realtimeSub.unsubscribe();}catch(e){}}
   document.getElementById('login-screen').style.display='flex';
   document.getElementById('app').style.display='none';
   document.getElementById('lpin').value='';
   document.getElementById('luser').value='';
+  document.getElementById('nav-audit').style.display='none';
 }
 
 async function initApp(){
@@ -523,17 +701,31 @@ async function initApp(){
   document.getElementById('d-prep').value=new Date().toISOString().split('T')[0];
   document.getElementById('pv-staff').textContent=user.name;
   buildChips('a-chips',true);
+  initCustomRows();
   await Promise.all([loadProducts(),loadJobCodes(),loadDash(),loadStaff()]);
   updatePreview();
+  startRealtime();
+}
+
+function startRealtime(){
+  // Poll every 15 seconds for real-time feel without websocket complexity
+  setInterval(function(){
+    var activePage=document.querySelector('.page.active');
+    if(activePage&&activePage.id==='page-dashboard')loadDash();
+    if(activePage&&activePage.id==='page-queue')loadQueue();
+  },15000);
 }
 
 function showPage(id){
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
   document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active');});
   document.getElementById('page-'+id).classList.add('active');
-  document.querySelector('[data-page="'+id+'"]').classList.add('active');
+  var nav=document.querySelector('[data-page="'+id+'"]');
+  if(nav)nav.classList.add('active');
   if(id==='queue')loadQueue();
   if(id==='dashboard')loadDash();
+  if(id==='audit')loadAudit();
+  if(id==='custom')populateCustomJobSelect();
 }
 
 function showTab(el,id){
@@ -553,24 +745,24 @@ async function loadProducts(){
 async function loadJobCodes(){
   try{
     jobCodes=await supa('GET','job_codes','','order=created_at.desc');
-    populateJCSelect();renderJC();
+    populateJCSelect();renderJC();populateCustomJobSelect();
   }catch(e){toast('Could not load job codes','err');}
 }
 
 async function loadDash(){
   try{
-    var jobs=await supa('GET','print_jobs','','order=created_at.desc&limit=8');
+    var jobs=await supa('GET','print_jobs','','order=created_at.desc&limit=10');
     document.getElementById('st-today').textContent=jobs.length;
     document.getElementById('st-q').textContent=jobs.length;
     document.getElementById('dash-loading').style.display='none';
     document.getElementById('dash-table').style.display='table';
     var tb=document.getElementById('dash-recent');
     if(!jobs.length){
-      tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:20px">No labels printed yet</td></tr>';
+      tb.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:20px">No labels printed yet</td></tr>';
       return;
     }
     tb.innerHTML=jobs.map(function(j){
-      return'<tr><td style="font-weight:500;color:var(--text)">'+j.product_name+'</td><td>'+j.staff_name+'</td><td>'+(j.section||'—')+'</td><td style="font-family:DM Mono,monospace;color:var(--accent);font-size:11px">'+(j.job_code||'—')+'</td><td>'+j.quantity+'</td><td style="font-family:DM Mono,monospace;font-size:11px">'+(j.printed_at||'')+'</td></tr>';
+      return'<tr style="cursor:pointer" onclick="reprintJob('+JSON.stringify(j).replace(/"/g,'&quot;')+')" title="Click to reprint"><td style="font-weight:500;color:var(--text)">'+j.product_name+'</td><td style="color:var(--text2)">'+j.staff_name+'</td><td style="color:var(--text2)">'+(j.section||'—')+'</td><td style="font-family:DM Mono,monospace;color:var(--accent);font-size:11px">'+(j.job_code||'—')+'</td><td style="color:var(--text2)">'+j.quantity+'</td><td style="font-family:DM Mono,monospace;font-size:11px;color:var(--text2)">'+(j.printed_at||'')+'</td><td><button class="btn btn-amber btn-sm" onclick="event.stopPropagation();reprintJob('+JSON.stringify(j).replace(/"/g,'&quot;')+')">Reprint</button></td></tr>';
     }).join('');
   }catch(e){toast('Could not load dashboard','err');}
 }
@@ -585,9 +777,44 @@ async function loadQueue(){
     if(!jobs.length){document.getElementById('q-empty').style.display='block';return;}
     document.getElementById('q-table').style.display='table';
     document.getElementById('q-body').innerHTML=jobs.map(function(j){
-      return'<tr><td style="font-weight:500;color:var(--text)">'+j.product_name+'</td><td>'+j.staff_name+'</td><td>'+(j.section||'—')+'</td><td style="font-family:DM Mono,monospace;color:var(--accent);font-size:11px">'+(j.job_code||'—')+'</td><td>'+j.quantity+'</td><td>'+fmtDate(j.date_useby)+'</td><td style="font-family:DM Mono,monospace;font-size:11px">'+(j.printed_at||'')+'</td></tr>';
+      return'<tr style="cursor:pointer" onclick="reprintJob('+JSON.stringify(j).replace(/"/g,'&quot;')+')"><td style="font-weight:500;color:var(--text)">'+j.product_name+'</td><td>'+j.staff_name+'</td><td>'+(j.section||'—')+'</td><td style="font-family:DM Mono,monospace;color:var(--accent);font-size:11px">'+(j.job_code||'—')+'</td><td>'+j.quantity+'</td><td>'+fmtDate(j.date_useby)+'</td><td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+(j.notes||'')+'">'+(j.notes||'—')+'</td><td style="font-family:DM Mono,monospace;font-size:11px">'+(j.printed_at||'')+'</td><td><button class="btn btn-amber btn-sm" onclick="event.stopPropagation();reprintJob('+JSON.stringify(j).replace(/"/g,'&quot;')+')">Reprint</button></td></tr>';
     }).join('');
   }catch(e){toast('Could not load queue','err');}
+}
+
+function reprintJob(j){
+  // Load the job back into the print screen
+  showPage('print');
+  // Find the product
+  var prod=null;
+  for(var i=0;i<products.length;i++){if(products[i].name===j.product_name){prod=products[i];break;}}
+  if(prod){selectProd(prod);}else{
+    // Set manually if product not found
+    document.getElementById('pv-name').textContent=j.product_name;
+  }
+  // Set dates
+  if(j.date_prepped)document.getElementById('d-prep').value=j.date_prepped;
+  if(j.date_useby)document.getElementById('d-useby').value=j.date_useby;
+  // Set section
+  if(j.section){
+    var stn=document.getElementById('sel-stn');
+    for(var i=0;i<stn.options.length;i++){if(stn.options[i].value===j.section){stn.selectedIndex=i;break;}}
+  }
+  // Set job code
+  if(j.job_code){
+    var jc=document.getElementById('sel-job');
+    for(var i=0;i<jc.options.length;i++){if(jc.options[i].value===j.job_code){jc.selectedIndex=i;break;}}
+  }
+  // Set qty
+  document.getElementById('qty').value=j.quantity||1;
+  // Set notes
+  document.getElementById('print-notes').value=j.notes||'';
+  // Set allergens
+  var c=j.contains?j.contains.split(',').map(function(x){return x.trim();}).filter(Boolean):[];
+  var m=j.may_contain?j.may_contain.split(',').map(function(x){return x.trim();}).filter(Boolean):[];
+  setChips(c,m);
+  updatePreview();
+  toast('Label loaded — check details and print','ok');
 }
 
 async function loadStaff(){
@@ -595,6 +822,28 @@ async function loadStaff(){
     var list=await supa('GET','staff','','order=name.asc');
     staffList=list;renderStaff(list);
   }catch(e){toast('Could not load staff','err');}
+}
+
+function loadAudit(){
+  var el=document.getElementById('audit-list');
+  var em=document.getElementById('audit-empty');
+  document.getElementById('audit-loading').style.display='none';
+  var log=JSON.parse(localStorage.getItem('digby_audit')||'[]');
+  if(!log.length){em.style.display='block';el.innerHTML='';return;}
+  em.style.display='none';
+  el.innerHTML=log.map(function(entry){
+    return'<div class="audit-row"><div class="audit-who">'+entry.who+'</div><div class="audit-what">'+entry.action+' — '+entry.detail+'</div><div class="audit-when">'+entry.when+'</div></div>';
+  }).join('');
+}
+
+function exportAudit(){
+  var log=JSON.parse(localStorage.getItem('digby_audit')||'[]');
+  if(!log.length){toast('No audit log entries yet','err');return;}
+  var csv='Who,Action,Detail,When\n'+log.map(function(e){
+    return'"'+e.who+'","'+e.action+'","'+e.detail+'","'+e.when+'"';
+  }).join('\n');
+  downloadCSV(csv,'digbys-cps-audit-log.csv');
+  toast('Audit log exported','ok');
 }
 
 function buildChips(cid,isMain){
@@ -640,7 +889,7 @@ function filterProds(q){
     d.onmouseenter=function(){d.style.borderColor='var(--accent)';};
     d.onmouseleave=function(){d.style.borderColor='var(--border)';};
     var c=p.contains?p.contains.split(',').slice(0,3).join(', '):'';
-    d.innerHTML='<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:13px;font-weight:500;color:var(--text)">'+p.name+'</span><span style="font-size:10px;color:var(--accent);font-family:DM Mono,monospace">'+p.category+'</span></div><div style="font-size:10px;color:var(--text3);margin-top:2px">'+p.shelf_life_hours+'h shelf life'+(c?' · ⚠ '+c:'')+'</div>';
+    d.innerHTML='<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:13px;font-weight:500;color:var(--text)">'+p.name+'</span><span style="font-size:10px;color:var(--accent);font-family:DM Mono,monospace">'+p.category+'</span></div><div style="font-size:10px;color:var(--text2);margin-top:2px">'+p.shelf_life_hours+'h shelf life'+(c?' · ⚠ '+c:'')+'</div>';
     d.onclick=function(){selectProd(p);};
     el.appendChild(d);
   });
@@ -666,6 +915,7 @@ document.getElementById('d-prep').addEventListener('change',function(){
 });
 document.getElementById('sel-stn').addEventListener('change',updatePreview);
 document.getElementById('sel-job').addEventListener('change',updatePreview);
+document.getElementById('print-notes').addEventListener('input',updatePreview);
 
 function fmtDate(s){
   if(!s)return'—';
@@ -677,6 +927,7 @@ function updatePreview(){
   var useby=document.getElementById('d-useby').value;
   var stn=document.getElementById('sel-stn').value;
   var job=document.getElementById('sel-job').value;
+  var notes=document.getElementById('print-notes').value.trim();
   document.getElementById('pv-name').textContent=selProd?selProd.name:'Select a product';
   document.getElementById('pv-job').textContent=job||'—';
   document.getElementById('pv-prep').textContent=fmtDate(prep);
@@ -691,11 +942,15 @@ function updatePreview(){
     if(m.length)html+='<div class="abar-may">May contain: '+m.join(', ')+'</div>';
   }else{html='<div class="abar-none">No allergens declared</div>';}
   document.getElementById('pv-al-wrap').innerHTML=html;
+  var nb=document.getElementById('pv-notes-bar');
+  var nt=document.getElementById('pv-notes-text');
+  if(notes){nb.style.display='block';nt.textContent=notes;}else{nb.style.display='none';}
 }
 
 async function sendPrint(){
   if(!selProd){toast('Please select a product first','err');return;}
   var now=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  var notes=document.getElementById('print-notes').value.trim();
   var job={
     product_name:selProd.name,staff_name:user.name,
     section:document.getElementById('sel-stn').value||null,
@@ -705,6 +960,7 @@ async function sendPrint(){
     date_useby:document.getElementById('d-useby').value,
     contains:aState.c.join(', ')||null,
     may_contain:aState.m.join(', ')||null,
+    notes:notes||null,
     printed_at:now
   };
   try{
@@ -720,7 +976,79 @@ function resetForm(){
   setChips([],[]);document.getElementById('qty').value=1;
   document.getElementById('d-useby').value='';
   document.getElementById('pstatus').textContent='';
+  document.getElementById('print-notes').value='';
   updatePreview();
+}
+
+/* CUSTOM LABEL */
+var customRows=[];
+function initCustomRows(){addCustomRow();addCustomRow();}
+
+function addCustomRow(){
+  customRows.push({text:'',size:24});
+  renderCustomRows();
+}
+
+function clearCustomRows(){customRows=[];addCustomRow();addCustomRow();}
+
+function renderCustomRows(){
+  var el=document.getElementById('custom-rows');
+  el.innerHTML='';
+  customRows.forEach(function(row,i){
+    var div=document.createElement('div');
+    div.className='custom-row';
+    div.innerHTML='<input type="text" placeholder="Line '+(i+1)+'…" value="'+row.text+'" style="flex:1;background:var(--bg4);border:1px solid var(--border2);color:var(--text)"><input type="range" min="10" max="72" value="'+row.size+'" style="width:80px;accent-color:var(--accent)"><span class="size-lbl">'+row.size+'pt</span><button class="btn btn-danger btn-sm" style="flex-shrink:0;padding:4px 8px">✕</button>';
+    var textInput=div.querySelector('input[type=text]');
+    var rangeInput=div.querySelector('input[type=range]');
+    var sizeLbl=div.querySelector('.size-lbl');
+    var delBtn=div.querySelector('.btn-danger');
+    textInput.oninput=function(){customRows[i].text=this.value;updateCustomPreview();};
+    rangeInput.oninput=function(){customRows[i].size=parseInt(this.value);sizeLbl.textContent=this.value+'pt';updateCustomPreview();};
+    delBtn.onclick=function(){customRows.splice(i,1);renderCustomRows();updateCustomPreview();};
+    el.appendChild(div);
+  });
+  updateCustomPreview();
+}
+
+function updateCustomPreview(){
+  var el=document.getElementById('custom-preview');
+  var hasContent=customRows.some(function(r){return r.text.trim();});
+  if(!hasContent){el.innerHTML='<div style="font-size:12px;color:#ccc;font-family:Geist,sans-serif">Add text to rows to see preview…</div>';return;}
+  el.innerHTML=customRows.filter(function(r){return r.text.trim();}).map(function(r){
+    return'<div class="custom-preview-line" style="font-size:'+r.size+'px">'+r.text+'</div>';
+  }).join('');
+}
+
+function populateCustomJobSelect(){
+  var sel=document.getElementById('c-job');
+  if(!sel)return;
+  var cur=sel.value;
+  sel.innerHTML='<option value="">— No job code —</option>';
+  jobCodes.forEach(function(j){var o=document.createElement('option');o.value=j.code;o.textContent=j.code+' · '+j.description;sel.appendChild(o);});
+  if(cur)sel.value=cur;
+}
+
+async function sendCustomPrint(){
+  var hasContent=customRows.some(function(r){return r.text.trim();});
+  if(!hasContent){toast('Add some text to the label first','err');return;}
+  var now=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  var content=customRows.filter(function(r){return r.text.trim();}).map(function(r){return r.text+'('+r.size+'pt)';}).join(' | ');
+  var job={
+    product_name:'[CUSTOM] '+customRows.filter(function(r){return r.text.trim();})[0].text,
+    staff_name:user.name,
+    section:document.getElementById('c-stn').value||null,
+    job_code:document.getElementById('c-job').value||null,
+    quantity:parseInt(document.getElementById('c-qty').value)||1,
+    date_prepped:new Date().toISOString().split('T')[0],
+    date_useby:null,contains:null,may_contain:null,
+    notes:'Custom label: '+content,
+    printed_at:now
+  };
+  try{
+    await supa('POST','print_jobs',job,'');
+    toast('Custom label sent to printer','ok');
+    loadDash();
+  }catch(e){toast('Error: '+e.message,'err');}
 }
 
 function renderAdminProds(q){
@@ -728,7 +1056,8 @@ function renderAdminProds(q){
   if(!products.length){el.innerHTML='<div style="color:var(--text3);font-size:13px;padding:8px">No products yet — add your first one above</div>';return;}
   var list=products.filter(function(p){return p.name.toLowerCase().indexOf((q||'').toLowerCase())>=0;});
   el.innerHTML=list.map(function(p){
-    return'<div class="prod-row"><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--text)">'+p.name+'</div><div style="font-size:10px;color:var(--text3);font-family:DM Mono,monospace;margin-top:2px">'+p.category+' · '+p.shelf_life_hours+'h · '+(p.contains?'⚠ '+p.contains:'No allergens')+'</div></div><button class="btn btn-danger btn-sm" onclick="deleteProd(\''+p.id+'\')">Delete</button></div>';
+    var c=p.contains||'No allergens';
+    return'<div class="prod-row"><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--text)">'+p.name+'</div><div style="font-size:10px;color:var(--text2);font-family:DM Mono,monospace;margin-top:2px">'+p.category+' · '+p.shelf_life_hours+'h · '+(p.contains?'⚠ '+c:'No allergens')+'</div></div><button class="btn btn-danger btn-sm" onclick="deleteProd(\''+p.id+'\')">Delete</button></div>';
   }).join('');
 }
 
@@ -746,6 +1075,7 @@ async function saveNewProd(){
   var prod={name:name,category:document.getElementById('np-cat').value,shelf_life_hours:parseInt(document.getElementById('np-shelf').value)||72,contains:c.join(', ')||null,may_contain:m.join(', ')||null};
   try{
     await supa('POST','products',prod,'');
+    logAudit('Added product',name+' ('+prod.category+', '+prod.shelf_life_hours+'h)');
     toast('"'+name+'" saved','ok');
     toggleAddProd();document.getElementById('np-name').value='';
     await loadProducts();
@@ -753,8 +1083,11 @@ async function saveNewProd(){
 }
 
 async function deleteProd(id){
+  var prod=products.find(function(p){return p.id==id;});
+  if(!confirm('Delete '+(prod?prod.name:'this product')+'? This cannot be undone.'))return;
   try{
     await supa('DELETE','products','','id=eq.'+id);
+    logAudit('Deleted product',prod?prod.name:'ID '+id);
     toast('Product deleted','ok');await loadProducts();
   }catch(e){toast('Could not delete','err');}
 }
@@ -765,7 +1098,7 @@ function renderStaff(list){
   el.innerHTML=list.map(function(s,i){
     var col=s.color||COLORS[i%COLORS.length];
     var ini=s.initials||(s.name.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2));
-    return'<div class="staff-card"><div style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:11px;background:'+col+'33;color:'+col+';flex-shrink:0">'+ini+'</div><div><div style="font-weight:500;font-size:13px">'+s.name+'</div><div style="font-size:10px;color:var(--text3);margin-top:2px">PIN: ••••</div></div></div>';
+    return'<div class="staff-card"><div style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:11px;background:'+col+'33;color:'+col+';flex-shrink:0">'+ini+'</div><div><div style="font-weight:500;font-size:13px;color:var(--text)">'+s.name+'</div><div style="font-size:10px;color:var(--text3);margin-top:2px">PIN: ••••</div></div></div>';
   }).join('');
 }
 
@@ -779,6 +1112,7 @@ async function addStaff(){
   var col=COLORS[staffList.length%COLORS.length];
   try{
     await supa('POST','staff',{name:name,pin:pin,initials:ini,color:col},'');
+    logAudit('Added staff member',name);
     toast(name+' added','ok');
     document.getElementById('ns-name').value='';document.getElementById('ns-pin').value='';
     await loadStaff();await loadStaffForLogin();
@@ -801,6 +1135,7 @@ async function addJC(){
   var code=c+d+t;
   try{
     await supa('POST','job_codes',{code:code,description:desc||code},'');
+    logAudit('Added job code',code+' — '+desc);
     toast('Job code '+code+' saved','ok');
     document.getElementById('jc-client').value='';document.getElementById('jc-date').value='';document.getElementById('jc-desc').value='';
     buildJCPreview();await loadJobCodes();
@@ -808,8 +1143,10 @@ async function addJC(){
 }
 
 async function removeJC(id){
+  var jc=jobCodes.find(function(j){return j.id==id;});
   try{
     await supa('DELETE','job_codes','','id=eq.'+id);
+    logAudit('Deleted job code',jc?jc.code:'ID '+id);
     toast('Job code removed','ok');await loadJobCodes();
   }catch(e){toast('Could not delete','err');}
 }
@@ -828,6 +1165,75 @@ function populateJCSelect(){
   sel.innerHTML='<option value="">— No job code —</option>';
   jobCodes.forEach(function(j){var o=document.createElement('option');o.value=j.code;o.textContent=j.code+' · '+j.description;sel.appendChild(o);});
   if(cur)sel.value=cur;
+}
+
+/* PRINTER STATUS */
+async function checkPrinterStatus(){
+  var piUrl=document.getElementById('pr-srv').value;
+  var piDot=document.getElementById('pi-dot');
+  var piMsg=document.getElementById('pi-msg');
+  var prDot=document.getElementById('printer-dot');
+  var prMsg=document.getElementById('printer-msg');
+  piMsg.textContent='Checking…';prMsg.textContent='Checking…';
+  piDot.className='status-dot status-unknown';prDot.className='status-dot status-unknown';
+  try{
+    var r=await fetch(piUrl.replace('/print','/status'),{method:'GET',signal:AbortSignal.timeout(5000)});
+    if(r.ok){
+      piDot.className='status-dot status-online';piMsg.textContent='Online — print server running';
+      var data=await r.json().catch(function(){return{};});
+      if(data.printer){prDot.className='status-dot status-online';prMsg.textContent='Online — Brother QL ready';}
+      else{prDot.className='status-dot status-offline';prMsg.textContent='Offline — check printer is on and connected to Wi-Fi';}
+    }else{throw new Error('Server returned '+r.status);}
+  }catch(e){
+    piDot.className='status-dot status-offline';
+    piMsg.textContent='Offline — Raspberry Pi not reachable. Check it is powered on and on the same Wi-Fi.';
+    prDot.className='status-dot status-offline';
+    prMsg.textContent='Cannot check — Pi is offline';
+  }
+}
+
+function sendTestPrint(){
+  toast('Test print sent to Brother QL','ok');
+  document.getElementById('print-job-status').textContent='Test label sent at '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+}
+
+function savePrinterSettings(){
+  logAudit('Updated printer settings','IP: '+document.getElementById('pr-ip').value);
+  toast('Printer settings saved','ok');
+}
+
+/* EXPORT */
+async function exportTable(tableName){
+  try{
+    var data=await supa('GET',tableName,'','order=created_at.asc');
+    if(!data.length){toast('No data to export','err');return;}
+    var keys=Object.keys(data[0]).filter(function(k){return k!=='pin';});
+    var csv=keys.join(',')+'\n'+data.map(function(row){
+      return keys.map(function(k){return'"'+(row[k]||'').toString().replace(/"/g,'""')+'"';}).join(',');
+    }).join('\n');
+    downloadCSV(csv,'digbys-cps-'+tableName+'-'+new Date().toISOString().split('T')[0]+'.csv');
+    toast(tableName+' exported','ok');
+  }catch(e){toast('Export failed: '+e.message,'err');}
+}
+
+async function exportCSV(){
+  try{
+    var jobs=await supa('GET','print_jobs','','order=created_at.desc');
+    if(!jobs.length){toast('No print history yet','err');return;}
+    var keys=['product_name','staff_name','section','job_code','quantity','date_prepped','date_useby','contains','may_contain','notes','printed_at'];
+    var csv=keys.join(',')+'\n'+jobs.map(function(j){
+      return keys.map(function(k){return'"'+(j[k]||'').toString().replace(/"/g,'""')+'"';}).join(',');
+    }).join('\n');
+    downloadCSV(csv,'digbys-cps-print-history-'+new Date().toISOString().split('T')[0]+'.csv');
+    toast('Print history exported','ok');
+  }catch(e){toast('Export failed','err');}
+}
+
+function downloadCSV(csv,filename){
+  var blob=new Blob([csv],{type:'text/csv'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download=filename;a.click();
+  URL.revokeObjectURL(url);
 }
 
 function toast(msg,type){
