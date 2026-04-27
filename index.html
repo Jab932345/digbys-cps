@@ -70,13 +70,20 @@ textarea{resize:vertical;min-height:60px;line-height:1.5}
 .btn-danger:hover{background:#3a0a0a}
 .btn-green{background:#0a2a1a;color:#4ae090;border:1px solid #0a3a20}
 .btn-amber{background:#2a1a00;color:#f0c040;border:1px solid #4a3000}
+.btn-blue{background:#0a1a2a;color:#6ab0f0;border:1px solid #1a4a7a}
+.btn-blue:hover{background:#0a2a3a}
 .btn-sm{padding:5px 12px;font-size:11px}
 .row-btns{display:flex;gap:8px;margin-top:16px;align-items:center;flex-wrap:wrap}
 .sep{height:1px;background:var(--border);margin:16px 0}
+/* ALLERGEN CHIPS */
 .allergen-grid{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
 .chip{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:500;border:1px solid var(--border2);color:var(--text3);background:var(--bg3);cursor:pointer;transition:all .15s;font-family:'DM Mono',monospace;user-select:none}
+.chip:hover:not(.locked){border-color:var(--border2);opacity:.8}
 .chip.contains{background:#2a0a00;border-color:var(--red);color:#ff8866}
 .chip.may{background:#0a1a2a;border-color:#1a4a7a;color:#6ab0f0}
+.chip.na-chip{background:#1a2a1a;border-color:var(--green2);color:#4ae090}
+.chip.na-chip.active-na{background:#0a3a1a;border-color:#22a060;color:#4ae090;font-weight:700}
+.chip.locked{opacity:.4;cursor:not-allowed}
 /* LABEL PREVIEW */
 .label-wrap{background:#fff;border-radius:6px;overflow:hidden;border:2px solid #111}
 .lh{background:#111;color:#fff;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:8px}
@@ -93,8 +100,8 @@ textarea{resize:vertical;min-height:60px;line-height:1.5}
 .abar-list{font-size:11px;color:#cc2200;font-family:'DM Mono',monospace}
 .abar-may{font-size:10px;color:#333;margin-top:3px;font-family:'Geist',sans-serif}
 .abar-none{font-size:11px;color:#999;font-family:'Geist',sans-serif}
-.notes-bar{border-top:1px solid #eee;padding:6px 14px;background:#fffdf5}
-.notes-text{font-size:10px;color:#555;font-style:italic}
+.notes-bar{border-top:1px solid #eee;padding:7px 14px;background:#fffdf5}
+.notes-text{font-size:11px;color:#444;font-style:italic;font-family:'Geist',sans-serif}
 .lfoot{background:#f8f8f8;padding:5px 14px;display:flex;justify-content:space-between;font-size:9px;color:#aaa;border-top:1px solid #eee}
 /* CUSTOM LABEL */
 .custom-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px}
@@ -125,9 +132,7 @@ textarea{resize:vertical;min-height:60px;line-height:1.5}
 .staff-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:14px;display:flex;align-items:center;gap:12px}
 .jc-preview-box{font-family:'DM Mono',monospace;font-size:22px;font-weight:500;color:var(--accent);letter-spacing:3px;text-align:center;padding:14px;background:var(--bg4);border-radius:var(--radius);margin-top:14px;border:1px solid var(--border2)}
 .status-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:8px;flex-shrink:0}
-.status-online{background:#22a060}
-.status-offline{background:#cc2200}
-.status-unknown{background:#8a8785}
+.status-online{background:#22a060}.status-offline{background:#cc2200}.status-unknown{background:#8a8785}
 .status-row{display:flex;align-items:center;padding:14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border);margin-bottom:8px}
 .audit-row{padding:12px 14px;border-bottom:1px solid var(--border)}
 .audit-row:last-child{border-bottom:none}
@@ -145,11 +150,13 @@ textarea{resize:vertical;min-height:60px;line-height:1.5}
 .toast.ok{border-color:var(--green2);color:#4ae090}
 .toast.err{border-color:var(--red2);color:#ff8866}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
-/* MENU CAT BADGE */
 .menu-badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:500;background:var(--bg4);border:1px solid var(--border2);color:var(--accent);font-family:'DM Mono',monospace;margin-left:6px}
-/* QUEUE STATUS */
 .badge-pending{background:#1e3a5f;color:#93c5fd;padding:2px 8px;border-radius:20px;font-size:10px;font-family:'DM Mono',monospace}
-.badge-printed{background:#064e3b;color:#6ee7b7;padding:2px 8px;border-radius:20px;font-size:10px;font-family:'DM Mono',monospace}
+/* EDIT MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:24px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto}
+.modal-title{font-family:'Instrument Serif',serif;font-size:22px;color:var(--text);margin-bottom:20px}
 /* MOBILE PORTRAIT */
 @media(max-width:600px) and (orientation:portrait){
   .shell{flex-direction:column-reverse}
@@ -180,6 +187,7 @@ textarea{resize:vertical;min-height:60px;line-height:1.5}
   .chip{padding:5px 12px;font-size:11px}
   .custom-row{flex-wrap:wrap}
   .custom-row input[type=range]{width:100%}
+  .modal{padding:16px}
 }
 </style>
 </head>
@@ -195,6 +203,30 @@ textarea{resize:vertical;min-height:60px;line-height:1.5}
     <div class="lf"><label>Your name</label><select id="luser"><option value="">— Select staff member —</option></select></div>
     <div class="lf"><label>PIN</label><input type="password" id="lpin" placeholder="••••" maxlength="4" style="letter-spacing:8px;font-size:20px;text-align:center"></div>
     <button class="login-btn" onclick="doLogin()">Sign in</button>
+  </div>
+</div>
+
+<!-- EDIT PRODUCT MODAL -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <div class="modal-title">Edit Product</div>
+    <input type="hidden" id="edit-prod-id">
+    <div class="form-grid" style="margin-bottom:14px">
+      <div class="form-full"><label>Product name</label><input type="text" id="edit-name" placeholder="Product name"></div>
+      <div><label>Food category</label>
+        <select id="edit-cat"><option>Canapés</option><option>Starters</option><option>Mains</option><option>Desserts</option><option>Evening Grazing</option><option>Tasting Menu</option><option>Sauces & Dressings</option><option>Stocks & Soups</option><option>Pastry</option><option>Other</option></select>
+      </div>
+      <div><label>Menu type</label><select id="edit-menutype"><option value="">— No menu type —</option></select></div>
+      <div><label>Shelf life (hours)</label><input type="number" id="edit-shelf" value="72" min="1"></div>
+    </div>
+    <div class="sep"></div>
+    <div class="card-title">Allergens</div>
+    <div style="font-size:11px;color:var(--text2);margin-bottom:8px">Tap = Contains → May contain → Clear &nbsp;·&nbsp; N/A = no allergens</div>
+    <div class="allergen-grid" id="edit-chips"></div>
+    <div class="row-btns">
+      <button class="btn btn-primary btn-sm" onclick="saveEditProd()">Save changes</button>
+      <button class="btn btn-ghost btn-sm" onclick="closeEditModal()">Cancel</button>
+    </div>
   </div>
 </div>
 
@@ -279,7 +311,7 @@ textarea{resize:vertical;min-height:60px;line-height:1.5}
           </div>
           <div class="card">
             <div class="card-title">Allergens <span style="font-size:10px;color:var(--text3);text-transform:none;letter-spacing:0"> — auto-loaded · tap to override</span></div>
-            <div style="font-size:11px;color:var(--text2);margin-bottom:8px">🟠 Contains &nbsp;·&nbsp; 🔵 May contain &nbsp;·&nbsp; Grey = not present</div>
+            <div style="font-size:11px;color:var(--text2);margin-bottom:8px">🟠 Contains &nbsp;·&nbsp; 🔵 May contain &nbsp;·&nbsp; 🟢 N/A = no allergens &nbsp;·&nbsp; Grey = not present</div>
             <div class="allergen-grid" id="a-chips"></div>
           </div>
           <div class="card">
@@ -357,19 +389,19 @@ textarea{resize:vertical;min-height:60px;line-height:1.5}
     <!-- QUEUE -->
     <div class="page" id="page-queue">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px">
-        <div><div class="pg-title">Print Queue</div><div class="pg-sub" style="margin-bottom:0">Pending jobs · disappear when printed · tap to reprint</div></div>
+        <div><div class="pg-title">Print Queue</div><div class="pg-sub" style="margin-bottom:0">Pending jobs · tap row to reprint · cancel to remove</div></div>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
           <span class="live-badge"><span class="live-dot"></span>Live</span>
           <button class="btn btn-ghost btn-sm" onclick="exportCSV()">Export history</button>
         </div>
       </div>
       <div class="card">
-        <div id="q-loading" class="loading"><div class="spinner"></div>Loading…</div>
+        <div id="q-loading" class="loading" style="display:none"><div class="spinner"></div>Loading…</div>
         <div class="tbl-wrap"><table class="tbl" id="q-table" style="display:none">
           <thead><tr><th>Product</th><th>Staff</th><th>Section</th><th>Job</th><th>Qty</th><th>Use by</th><th>Notes</th><th>Time</th><th>Status</th><th></th></tr></thead>
           <tbody id="q-body"></tbody>
         </table></div>
-        <div id="q-empty" style="text-align:center;padding:32px;color:var(--text3);display:none">Queue is empty — labels appear here when sent and disappear when printed</div>
+        <div id="q-empty" style="text-align:center;padding:32px;color:var(--text3)">Queue is empty — labels appear here when sent</div>
       </div>
     </div>
 
@@ -386,7 +418,6 @@ textarea{resize:vertical;min-height:60px;line-height:1.5}
         <div class="tab" onclick="showTab(this,'t-backup')">Backup</div>
       </div>
 
-      <!-- PRODUCTS -->
       <div class="tab-content active" id="t-products">
         <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
           <input type="text" placeholder="Search products…" oninput="renderAdminProds(this.value)" style="max-width:240px">
@@ -405,7 +436,7 @@ textarea{resize:vertical;min-height:60px;line-height:1.5}
               <div><label>Shelf life (hours)</label><input type="number" id="np-shelf" value="72" min="1"></div>
             </div>
             <div class="sep"></div>
-            <div class="card-title">Allergens <span style="font-size:10px;color:var(--text3);text-transform:none;letter-spacing:0">Tap = Contains → May contain → Clear</span></div>
+            <div class="card-title">Allergens <span style="font-size:10px;color:var(--text3);text-transform:none;letter-spacing:0">Tap = Contains → May contain → Clear · N/A = none</span></div>
             <div class="allergen-grid" id="np-chips"></div>
             <div class="row-btns">
               <button class="btn btn-primary btn-sm" onclick="saveNewProd()">Save to database</button>
@@ -415,7 +446,6 @@ textarea{resize:vertical;min-height:60px;line-height:1.5}
         </div>
       </div>
 
-      <!-- STAFF -->
       <div class="tab-content" id="t-staff">
         <div class="staff-grid" id="staff-grid"><div class="loading"><div class="spinner"></div>Loading…</div></div>
         <div style="margin-top:16px" class="card">
@@ -428,7 +458,6 @@ textarea{resize:vertical;min-height:60px;line-height:1.5}
         </div>
       </div>
 
-      <!-- JOB CODES -->
       <div class="tab-content" id="t-jobcodes">
         <div class="card" style="margin-bottom:14px">
           <div class="card-title">Build a job code</div>
@@ -451,11 +480,10 @@ textarea{resize:vertical;min-height:60px;line-height:1.5}
         <div class="card"><div class="card-title">Active job codes</div><div id="jc-list"><div class="loading"><div class="spinner"></div>Loading…</div></div></div>
       </div>
 
-      <!-- MENU TYPES -->
       <div class="tab-content" id="t-menucats">
         <div class="card">
           <div class="card-title">Menu types</div>
-          <p style="font-size:12px;color:var(--text2);margin-bottom:16px;line-height:1.6">These appear on products to help categorise your menu. They show in search results but never print on labels.</p>
+          <p style="font-size:12px;color:var(--text2);margin-bottom:16px;line-height:1.6">Appear on products to help with categorisation. Show in search but never print on labels.</p>
           <div id="menucat-list" style="display:grid;gap:6px;margin-bottom:14px"></div>
           <div class="sep"></div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -465,7 +493,6 @@ textarea{resize:vertical;min-height:60px;line-height:1.5}
         </div>
       </div>
 
-      <!-- PRINTER -->
       <div class="tab-content" id="t-printer">
         <div class="card" style="margin-bottom:12px">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
@@ -494,12 +521,10 @@ textarea{resize:vertical;min-height:60px;line-height:1.5}
             <div style="padding:10px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Printer</div><div style="font-size:13px;color:var(--text);font-family:'DM Mono',monospace">Brother QL-820NWBc · 192.168.1.127</div></div>
             <div style="padding:10px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Print server</div><div style="font-size:13px;color:var(--text);font-family:'DM Mono',monospace">Raspberry Pi · 192.168.1.175:3000</div></div>
             <div style="padding:10px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Tunnel</div><div style="font-size:13px;color:var(--text);font-family:'DM Mono',monospace">palatable-shack-scallion.ngrok-free.dev</div></div>
-            <div style="padding:10px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Label roll</div><div style="font-size:13px;color:var(--text)">DK-2251 — black & red</div></div>
           </div>
         </div>
       </div>
 
-      <!-- BACKUP -->
       <div class="tab-content" id="t-backup">
         <div class="card" style="margin-bottom:12px">
           <div class="card-title">Export data backup</div>
@@ -525,7 +550,6 @@ textarea{resize:vertical;min-height:60px;line-height:1.5}
         <div id="audit-empty" style="text-align:center;padding:32px;color:var(--text3);display:none">No admin changes logged yet</div>
       </div>
     </div>
-
   </div>
 </div>
 <div class="toast" id="toast-el"></div>
@@ -540,9 +564,14 @@ var COLORS=['#e8c547','#e06030','#4090d0','#a060d0','#40b080','#d06090','#60b0a0
 var MANAGER_NAME='James Brierley';
 var MANAGER_PIN='1810';
 var DEFAULT_MENU_CATS=['Weddings','Tasting Menu','Bespoke','Wakes','Private Dining'];
-var user=null,staffList=[],products=[],jobCodes=[],menuCats=[],selProd=null,aState={c:[],m:[]},npState={},customRows=[];
+var user=null,staffList=[],products=[],jobCodes=[],menuCats=[],selProd=null;
+var aState={c:[],m:[],na:false};
+var npState={};
+var editState={};
+var customRows=[];
 var printQueue=[];
 
+/* ── AUDIT ── */
 function logAudit(action,detail){
   try{
     var log=JSON.parse(localStorage.getItem('digby_audit_v2')||'[]');
@@ -552,15 +581,17 @@ function logAudit(action,detail){
   }catch(e){}
 }
 
+/* ── MENU CATS ── */
 function loadMenuCats(){
   var saved=localStorage.getItem('digby_menu_cats');
   menuCats=saved?JSON.parse(saved):DEFAULT_MENU_CATS.slice();
-  renderMenuCatSelect();
+  renderMenuCatSelect('np-menutype');
+  renderMenuCatSelect('edit-menutype');
   renderMenuCatAdmin();
 }
 function saveMenuCats(){localStorage.setItem('digby_menu_cats',JSON.stringify(menuCats));}
-function renderMenuCatSelect(){
-  var sel=document.getElementById('np-menutype');if(!sel)return;
+function renderMenuCatSelect(selId){
+  var sel=document.getElementById(selId);if(!sel)return;
   var cur=sel.value;
   sel.innerHTML='<option value="">— No menu type —</option>';
   menuCats.forEach(function(c){var o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o);});
@@ -576,18 +607,15 @@ function renderMenuCatAdmin(){
 function addMenuCat(){
   var name=document.getElementById('mc-name').value.trim();
   if(!name){toast('Enter a menu type name','err');return;}
-  menuCats.push(name);saveMenuCats();renderMenuCatSelect();renderMenuCatAdmin();
-  logAudit('Added menu type',name);
-  document.getElementById('mc-name').value='';
-  toast(name+' added','ok');
+  menuCats.push(name);saveMenuCats();renderMenuCatSelect('np-menutype');renderMenuCatSelect('edit-menutype');renderMenuCatAdmin();
+  logAudit('Added menu type',name);document.getElementById('mc-name').value='';toast(name+' added','ok');
 }
 function removeMenuCat(i){
-  var name=menuCats[i];
-  menuCats.splice(i,1);saveMenuCats();renderMenuCatSelect();renderMenuCatAdmin();
-  logAudit('Removed menu type',name);
-  toast('Removed','ok');
+  var name=menuCats[i];menuCats.splice(i,1);saveMenuCats();renderMenuCatSelect('np-menutype');renderMenuCatSelect('edit-menutype');renderMenuCatAdmin();
+  logAudit('Removed menu type',name);toast('Removed','ok');
 }
 
+/* ── SUPABASE ── */
 async function supa(method,table,body,query){
   var url=SUPA_URL+'/rest/v1/'+table+(query?'?'+query:'');
   var opts={method:method,headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=representation'}};
@@ -597,15 +625,17 @@ async function supa(method,table,body,query){
   try{return await r.json();}catch(e){return[];}
 }
 
+/* ── PRINTER ── */
 async function sendToPrinter(job){
   try{
     var r=await fetch(PRINT_SERVER,{method:'POST',headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'true'},body:JSON.stringify(job),signal:AbortSignal.timeout(15000)});
     var d=await r.json();
-    if(d.success){document.getElementById('last-print-status').textContent='Last print: '+job.quantity+' label(s) at '+job.printed_at;return true;}
+    if(d.success){document.getElementById('last-print-status').textContent='Last print: '+job.quantity+' label(s) at '+(job.printed_at||'');return true;}
     toast('Printer error: '+(d.error||'Unknown'),'err');return false;
-  }catch(e){toast('Cannot reach print server — is the Pi on and connected?','err');return false;}
+  }catch(e){toast('Cannot reach print server — is the Pi on?','err');return false;}
 }
 
+/* ── LOGIN ── */
 async function loadStaffForLogin(){
   try{
     staffList=await supa('GET','staff','','order=name.asc');
@@ -614,7 +644,6 @@ async function loadStaffForLogin(){
     staffList.forEach(function(s,i){var o=document.createElement('option');o.value=i;o.textContent=s.name;sel.appendChild(o);});
   }catch(e){var err=document.getElementById('lerr');err.textContent='Could not connect: '+e.message;err.style.display='block';}
 }
-
 function doLogin(){
   var ui=document.getElementById('luser').value;
   var pin=document.getElementById('lpin').value;
@@ -622,8 +651,7 @@ function doLogin(){
   var s=staffList[parseInt(ui)];
   if(!s){showErr('Staff not found.');return;}
   if(pin!==s.pin){showErr('Incorrect PIN.');return;}
-  user=s;
-  user.isManager=(s.name===MANAGER_NAME&&pin===MANAGER_PIN);
+  user=s;user.isManager=(s.name===MANAGER_NAME&&pin===MANAGER_PIN);
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app').style.display='flex';
   if(user.isManager)document.getElementById('nav-audit').style.display='flex';
@@ -631,16 +659,15 @@ function doLogin(){
 }
 function showErr(m){var e=document.getElementById('lerr');e.textContent=m;e.style.display='block';setTimeout(function(){e.style.display='none';},3000);}
 document.getElementById('lpin').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
-
 function doLogout(){
   user=null;selProd=null;products=[];jobCodes=[];customRows=[];printQueue=[];
   document.getElementById('login-screen').style.display='flex';
   document.getElementById('app').style.display='none';
-  document.getElementById('lpin').value='';
-  document.getElementById('luser').value='';
+  document.getElementById('lpin').value='';document.getElementById('luser').value='';
   document.getElementById('nav-audit').style.display='none';
 }
 
+/* ── INIT ── */
 async function initApp(){
   var col=user.color||COLORS[0];
   var ini=user.initials||(user.name.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2));
@@ -653,25 +680,25 @@ async function initApp(){
   document.getElementById('d-prep').value=new Date().toISOString().split('T')[0];
   document.getElementById('pv-staff').textContent=user.name;
   loadMenuCats();
-  buildChips('a-chips',true);
+  buildChips('a-chips','main');
+  buildChips('np-chips','np');
   initCustomRows();
   await Promise.all([loadProducts(),loadJobCodes(),loadDash(),loadStaff()]);
   updatePreview();
+  renderQueue();
   setInterval(function(){
     var ap=document.querySelector('.page.active');
-    if(ap){
-      if(ap.id==='page-dashboard')loadDash();
-      if(ap.id==='page-queue')loadQueue();
-    }
+    if(ap){if(ap.id==='page-dashboard')loadDash();}
   },15000);
 }
 
+/* ── NAV ── */
 function showPage(id){
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
   document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active');});
   document.getElementById('page-'+id).classList.add('active');
   var nav=document.querySelector('[data-page="'+id+'"]');if(nav)nav.classList.add('active');
-  if(id==='queue')loadQueue();
+  if(id==='queue')renderQueue();
   if(id==='dashboard')loadDash();
   if(id==='audit')loadAudit();
   if(id==='custom')populateCustomJobSelect();
@@ -682,24 +709,18 @@ function showTab(el,id){
   document.getElementById(id).classList.add('active');el.classList.add('active');
 }
 
+/* ── DATA ── */
 async function loadProducts(){
-  try{
-    products=await supa('GET','products','','order=name.asc');
-    document.getElementById('st-prods').textContent=products.length;
-    filterProds('');renderAdminProds('');
-  }catch(e){toast('Could not load products','err');}
+  try{products=await supa('GET','products','','order=name.asc');document.getElementById('st-prods').textContent=products.length;filterProds('');renderAdminProds('');}
+  catch(e){toast('Could not load products','err');}
 }
 async function loadJobCodes(){
   try{jobCodes=await supa('GET','job_codes','','order=created_at.desc');populateJCSelect();renderJC();populateCustomJobSelect();}catch(e){}
 }
-
 async function loadDash(){
   try{
     var jobs=await supa('GET','print_jobs','','order=created_at.desc&limit=10');
     document.getElementById('st-today').textContent=jobs.length;
-    // Count pending in queue
-    var pending=printQueue.filter(function(j){return j.status==='pending';}).length;
-    document.getElementById('st-q').textContent=pending;
     document.getElementById('dash-loading').style.display='none';
     document.getElementById('dash-table').style.display='table';
     var tb=document.getElementById('dash-recent');
@@ -710,38 +731,31 @@ async function loadDash(){
     }).join('');
   }catch(e){}
 }
-
-async function loadQueue(){
-  document.getElementById('q-loading').style.display='flex';
-  document.getElementById('q-table').style.display='none';
-  document.getElementById('q-empty').style.display='none';
-  // Show only pending jobs from local queue
-  var pending=printQueue.filter(function(j){return j.status==='pending';});
-  document.getElementById('q-loading').style.display='none';
-  document.getElementById('st-q').textContent=pending.length;
-  if(!pending.length){document.getElementById('q-empty').style.display='block';return;}
-  document.getElementById('q-table').style.display='table';
-  document.getElementById('q-body').innerHTML=pending.map(function(j){
-    var enc=encodeURIComponent(JSON.stringify(j));
-    return'<tr><td style="font-weight:500;color:var(--text)">'+j.product_name+'</td><td>'+j.staff_name+'</td><td>'+(j.section||'—')+'</td><td style="font-family:DM Mono,monospace;color:var(--accent);font-size:11px">'+(j.job_code||'—')+'</td><td>'+j.quantity+'</td><td>'+fmtDate(j.date_useby)+'</td><td style="max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(j.notes||'—')+'</td><td style="font-family:DM Mono,monospace;font-size:11px">'+j.printed_at+'</td><td><span class="badge-pending">Pending</span></td><td style="display:flex;gap:4px"><button class="btn btn-amber btn-sm" onclick="reprintJob(\''+enc+'\')">Reprint</button><button class="btn btn-danger btn-sm" onclick="cancelJob(\''+j.localId+'\')">Cancel</button></td></tr>';
-  }).join('');
-}
-
-function cancelJob(localId){
-  if(!confirm('Cancel this print job? This will delete it from the queue.'))return;
-  printQueue=printQueue.filter(function(j){return j.localId!==localId;});
-  document.getElementById('st-q').textContent=printQueue.filter(function(j){return j.status==='pending';}).length;
-  loadQueue();
-  toast('Print job cancelled','ok');
-}
-
 async function loadStaff(){
   try{var list=await supa('GET','staff','','order=name.asc');staffList=list;renderStaff(list);}catch(e){}
 }
 
+/* ── QUEUE ── */
+function renderQueue(){
+  var pending=printQueue.filter(function(j){return j.status==='pending';});
+  document.getElementById('st-q').textContent=pending.length;
+  var table=document.getElementById('q-table');
+  var empty=document.getElementById('q-empty');
+  if(!pending.length){table.style.display='none';empty.style.display='block';return;}
+  empty.style.display='none';table.style.display='table';
+  document.getElementById('q-body').innerHTML=pending.map(function(j){
+    var enc=encodeURIComponent(JSON.stringify(j));
+    return'<tr><td style="font-weight:500;color:var(--text)">'+j.product_name+'</td><td>'+j.staff_name+'</td><td>'+(j.section||'—')+'</td><td style="font-family:DM Mono,monospace;color:var(--accent);font-size:11px">'+(j.job_code||'—')+'</td><td>'+j.quantity+'</td><td>'+fmtDate(j.date_useby)+'</td><td style="max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(j.notes||'—')+'</td><td style="font-family:DM Mono,monospace;font-size:11px">'+j.printed_at+'</td><td><span class="badge-pending">Pending</span></td><td style="display:flex;gap:4px;flex-wrap:wrap"><button class="btn btn-amber btn-sm" onclick="reprintJob(\''+enc+'\')">Reprint</button><button class="btn btn-danger btn-sm" onclick="cancelJob(\''+j.localId+'\')">Cancel</button></td></tr>';
+  }).join('');
+}
+function cancelJob(localId){
+  if(!confirm('Cancel this print job and remove it from the queue?'))return;
+  printQueue=printQueue.filter(function(j){return j.localId!==localId;});
+  renderQueue();toast('Print job cancelled','ok');
+}
+
 function loadAudit(){
-  var el=document.getElementById('audit-list');
-  var em=document.getElementById('audit-empty');
+  var el=document.getElementById('audit-list');var em=document.getElementById('audit-empty');
   var log=JSON.parse(localStorage.getItem('digby_audit_v2')||'[]');
   if(!log.length){em.style.display='block';el.innerHTML='';return;}
   em.style.display='none';
@@ -767,45 +781,94 @@ function reprintJob(enc){
   document.getElementById('print-notes').value=j.notes||'';
   var c=j.contains?j.contains.split(',').map(function(x){return x.trim();}).filter(Boolean):[];
   var m=j.may_contain?j.may_contain.split(',').map(function(x){return x.trim();}).filter(Boolean):[];
-  setChips(c,m);updatePreview();
+  setChips('a-chips',c,m,false,aState);updatePreview();
   toast('Label loaded — check and print','ok');
 }
 
-function buildChips(cid,isMain){
-  var c=document.getElementById(cid);c.innerHTML='';
+/* ── ALLERGEN CHIPS ── */
+function buildChips(cid, mode){
+  var c=document.getElementById(cid);if(!c)return;c.innerHTML='';
+  var state=mode==='main'?aState:mode==='np'?npState:editState;
+  // N/A chip first
+  var na=document.createElement('div');
+  na.className='chip na-chip';na.textContent='N/A — No allergens';na.dataset.na='1';
+  na.onclick=function(){
+    if(mode==='main'){
+      aState.na=!aState.na;
+      if(aState.na){
+        // Clear all and lock
+        aState.c=[];aState.m=[];
+        c.querySelectorAll('.chip:not(.na-chip)').forEach(function(ch){ch.dataset.state='none';ch.classList.remove('contains','may');ch.classList.add('locked');});
+        na.classList.add('active-na');
+      }else{
+        c.querySelectorAll('.chip:not(.na-chip)').forEach(function(ch){ch.classList.remove('locked');});
+        na.classList.remove('active-na');
+      }
+      updatePreview();
+    } else {
+      var st=state;
+      st.na=!st.na;
+      if(st.na){
+        ALLERGENS.forEach(function(a){st[a]='none';});
+        c.querySelectorAll('.chip:not(.na-chip)').forEach(function(ch){ch.dataset.state='none';ch.classList.remove('contains','may');ch.classList.add('locked');});
+        na.classList.add('active-na');
+      }else{
+        c.querySelectorAll('.chip:not(.na-chip)').forEach(function(ch){ch.classList.remove('locked');});
+        na.classList.remove('active-na');
+      }
+    }
+  };
+  c.appendChild(na);
   ALLERGENS.forEach(function(a){
     var ch=document.createElement('div');ch.className='chip';ch.textContent=a;ch.dataset.name=a;ch.dataset.state='none';
     ch.onclick=function(){
+      if(ch.classList.contains('locked'))return;
       var s=ch.dataset.state;
       if(s==='none'){ch.dataset.state='contains';ch.classList.add('contains');ch.classList.remove('may');}
       else if(s==='contains'){ch.dataset.state='may';ch.classList.remove('contains');ch.classList.add('may');}
       else{ch.dataset.state='none';ch.classList.remove('contains','may');}
-      if(isMain){syncA();updatePreview();}else{npState[a]=ch.dataset.state;}
+      if(mode==='main'){syncA();updatePreview();}
+      else if(mode==='np'){npState[a]=ch.dataset.state;}
+      else if(mode==='edit'){editState[a]=ch.dataset.state;}
     };
     c.appendChild(ch);
   });
 }
-function setChips(c,m){
-  document.querySelectorAll('#a-chips .chip').forEach(function(ch){
-    var n=ch.dataset.name;ch.classList.remove('contains','may');ch.dataset.state='none';
-    if(c&&c.indexOf(n)>=0){ch.dataset.state='contains';ch.classList.add('contains');}
-    else if(m&&m.indexOf(n)>=0){ch.dataset.state='may';ch.classList.add('may');}
-  });syncA();
+
+function setChips(cid,contains,may,naActive,stateObj){
+  var c=document.getElementById(cid);if(!c)return;
+  var naChip=c.querySelector('.na-chip');
+  if(naActive){
+    if(naChip){naChip.classList.add('active-na');}
+    c.querySelectorAll('.chip:not(.na-chip)').forEach(function(ch){ch.dataset.state='none';ch.classList.remove('contains','may');ch.classList.add('locked');});
+    if(stateObj)stateObj.na=true;
+    return;
+  }
+  if(naChip)naChip.classList.remove('active-na');
+  c.querySelectorAll('.chip:not(.na-chip)').forEach(function(ch){
+    var n=ch.dataset.name;ch.classList.remove('contains','may','locked');ch.dataset.state='none';
+    if(contains&&contains.indexOf(n)>=0){ch.dataset.state='contains';ch.classList.add('contains');}
+    else if(may&&may.indexOf(n)>=0){ch.dataset.state='may';ch.classList.add('may');}
+  });
+  if(stateObj){stateObj.na=false;}
+  syncA();
 }
+
 function syncA(){
-  aState={c:[],m:[]};
-  document.querySelectorAll('#a-chips .chip').forEach(function(ch){
+  aState.c=[];aState.m=[];
+  document.querySelectorAll('#a-chips .chip:not(.na-chip)').forEach(function(ch){
     if(ch.dataset.state==='contains')aState.c.push(ch.dataset.name);
     if(ch.dataset.state==='may')aState.m.push(ch.dataset.name);
   });
 }
 
+/* ── PRODUCT SEARCH ── */
 function filterProds(q){
   var el=document.getElementById('prod-results');
   if(!products.length){el.innerHTML='<div style="color:var(--text3);font-size:12px;padding:8px">No products yet</div>';return;}
   var list=products.filter(function(p){
-    var search=(q||'').toLowerCase();
-    return p.name.toLowerCase().indexOf(search)>=0||p.category.toLowerCase().indexOf(search)>=0||(p.menu_type&&p.menu_type.toLowerCase().indexOf(search)>=0);
+    var s=(q||'').toLowerCase();
+    return p.name.toLowerCase().indexOf(s)>=0||p.category.toLowerCase().indexOf(s)>=0||(p.menu_type&&p.menu_type.toLowerCase().indexOf(s)>=0);
   });
   el.innerHTML='';
   list.forEach(function(p){
@@ -825,7 +888,8 @@ function selectProd(p){
   if(prep){var d=new Date(prep+'T00:00:00');d.setHours(d.getHours()+parseInt(p.shelf_life_hours));document.getElementById('d-useby').value=d.toISOString().split('T')[0];}
   var c=p.contains?p.contains.split(',').map(function(x){return x.trim();}).filter(Boolean):[];
   var m=p.may_contain?p.may_contain.split(',').map(function(x){return x.trim();}).filter(Boolean):[];
-  setChips(c,m);updatePreview();toast(p.name+' selected','ok');
+  aState.na=false;
+  setChips('a-chips',c,m,false,aState);syncA();updatePreview();toast(p.name+' selected','ok');
 }
 
 document.getElementById('d-prep').addEventListener('change',function(){
@@ -851,9 +915,13 @@ function updatePreview(){
   document.getElementById('pv-stn').textContent=stn||'—';
   document.getElementById('pv-ft-code').textContent=job||'—';
   document.getElementById('pv-ft-time').textContent=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-  var c=aState.c,m=aState.m,html='';
-  if(c.length||m.length){if(c.length)html+='<div class="abar-title">Contains:</div><div class="abar-list">'+c.join(' · ')+'</div>';if(m.length)html+='<div class="abar-may">May contain: '+m.join(', ')+'</div>';}
-  else{html='<div class="abar-none">No allergens declared</div>';}
+  var html='';
+  if(aState.na){html='<div class="abar-none">No allergens — N/A</div>';}
+  else{
+    var c=aState.c,m=aState.m;
+    if(c.length||m.length){if(c.length)html+='<div class="abar-title">Contains:</div><div class="abar-list">'+c.join(' · ')+'</div>';if(m.length)html+='<div class="abar-may">May contain: '+m.join(', ')+'</div>';}
+    else{html='<div class="abar-none">No allergens declared</div>';}
+  }
   document.getElementById('pv-al-wrap').innerHTML=html;
   var nb=document.getElementById('pv-notes-bar');var nt=document.getElementById('pv-notes-text');
   if(notes){nb.style.display='block';nt.textContent=notes;}else{nb.style.display='none';}
@@ -863,55 +931,47 @@ async function sendPrint(){
   if(!selProd){toast('Please select a product first','err');return;}
   var now=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
   var notes=document.getElementById('print-notes').value.trim();
+  var containsVal=aState.na?null:(aState.c.join(', ')||null);
+  var mayVal=aState.na?null:(aState.m.join(', ')||null);
   var job={
-    localId:Date.now().toString(),
-    status:'pending',
+    localId:Date.now().toString(),status:'pending',
     product_name:selProd.name,staff_name:user.name,
     section:document.getElementById('sel-stn').value||null,
     job_code:document.getElementById('sel-job').value||null,
     quantity:parseInt(document.getElementById('qty').value)||1,
     date_prepped:document.getElementById('d-prep').value,
     date_useby:document.getElementById('d-useby').value,
-    contains:aState.c.join(', ')||null,
-    may_contain:aState.m.join(', ')||null,
-    notes:notes||null,
-    printed_at:now
+    contains:containsVal,may_contain:mayVal,
+    no_allergens:aState.na,
+    notes:notes||null,printed_at:now
   };
-  // Add to queue immediately
   printQueue.unshift(job);
   document.getElementById('st-q').textContent=printQueue.filter(function(j){return j.status==='pending';}).length;
   toast('Sending to printer…');
   try{
-    // Save to Supabase
-    var saved=await supa('POST','print_jobs',{product_name:job.product_name,staff_name:job.staff_name,section:job.section,job_code:job.job_code,quantity:job.quantity,date_prepped:job.date_prepped,date_useby:job.date_useby,contains:job.contains,may_contain:job.may_contain,notes:job.notes,printed_at:job.printed_at},'');
-    // Send to printer
+    await supa('POST','print_jobs',{product_name:job.product_name,staff_name:job.staff_name,section:job.section,job_code:job.job_code,quantity:job.quantity,date_prepped:job.date_prepped,date_useby:job.date_useby,contains:job.contains,may_contain:job.may_contain,notes:job.notes,printed_at:job.printed_at},'');
     var ok=await sendToPrinter(job);
-    if(ok){
-      // Mark as printed — remove from pending queue
-      job.status='printed';
-      document.getElementById('st-q').textContent=printQueue.filter(function(j){return j.status==='pending';}).length;
-      toast(job.quantity+' label'+(job.quantity>1?'s':'')+' printed ✓','ok');
-    }else{
-      job.status='failed';
-      document.getElementById('st-q').textContent=printQueue.filter(function(j){return j.status==='pending';}).length;
-    }
+    if(ok){job.status='printed';toast(job.quantity+' label'+(job.quantity>1?'s':'')+' printed ✓','ok');}
+    else{job.status='failed';}
+    document.getElementById('st-q').textContent=printQueue.filter(function(j){return j.status==='pending';}).length;
     document.getElementById('pstatus').textContent='Sent at '+now;
-    loadDash();
+    loadDash();renderQueue();
   }catch(e){job.status='failed';toast('Error: '+e.message,'err');}
 }
 
 function resetForm(){
-  selProd=null;document.getElementById('psearch').value='';filterProds('');setChips([],[]);
+  selProd=null;document.getElementById('psearch').value='';filterProds('');
+  aState={c:[],m:[],na:false};
+  setChips('a-chips',[],[],false,aState);
   document.getElementById('qty').value=1;document.getElementById('d-useby').value='';
   document.getElementById('pstatus').textContent='';document.getElementById('print-notes').value='';
   updatePreview();
 }
 
-/* CUSTOM LABEL */
+/* ── CUSTOM LABEL ── */
 function initCustomRows(){customRows=[];addCustomRow();addCustomRow();}
 function addCustomRow(){customRows.push({text:'',size:28});renderCustomRows();}
 function clearCustomRows(){customRows=[];addCustomRow();addCustomRow();}
-
 function renderCustomRows(){
   var el=document.getElementById('custom-rows');el.innerHTML='';
   customRows.forEach(function(row,i){
@@ -924,67 +984,59 @@ function renderCustomRows(){
     el.appendChild(div);
   });updateCustomPreview();
 }
-
 function updateCustomPreview(){
   var el=document.getElementById('custom-preview');if(!el)return;
   var has=customRows.some(function(r){return r.text.trim();});
   if(!has){el.innerHTML='<div style="font-size:12px;color:#ccc">Add text to preview…</div>';return;}
   el.innerHTML=customRows.filter(function(r){return r.text.trim();}).map(function(r){return'<div class="custom-preview-line" style="font-size:'+r.size+'px">'+r.text+'</div>';}).join('');
 }
-
 function populateCustomJobSelect(){
   var sel=document.getElementById('c-job');if(!sel)return;
   var cur=sel.value;sel.innerHTML='<option value="">— No job code —</option>';
   jobCodes.forEach(function(j){var o=document.createElement('option');o.value=j.code;o.textContent=j.code+' · '+j.description;sel.appendChild(o);});
   if(cur)sel.value=cur;
 }
-
 async function sendCustomPrint(){
   var has=customRows.some(function(r){return r.text.trim();});
   if(!has){toast('Add some text first','err');return;}
   var now=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
   var lines=customRows.filter(function(r){return r.text.trim();});
-  // Build a custom job — send raw lines to printer
-  var customJob={
-    custom:true,
-    lines:lines,
-    staff_name:user.name,
-    section:document.getElementById('c-stn').value||null,
-    job_code:document.getElementById('c-job').value||null,
-    quantity:parseInt(document.getElementById('c-qty').value)||1,
-    printed_at:now
-  };
+  var customJob={custom:true,lines:lines,staff_name:user.name,section:document.getElementById('c-stn').value||null,job_code:document.getElementById('c-job').value||null,quantity:parseInt(document.getElementById('c-qty').value)||1,printed_at:now};
   toast('Sending custom label…');
   var ok=await sendToPrinter(customJob);
   if(ok){
     toast('Custom label printed ✓','ok');
-    // Save to history
     await supa('POST','print_jobs',{product_name:'[Custom] '+lines[0].text,staff_name:user.name,section:customJob.section,job_code:customJob.job_code,quantity:customJob.quantity,date_prepped:new Date().toISOString().split('T')[0],date_useby:null,contains:null,may_contain:null,notes:'Custom label',printed_at:now},'');
     loadDash();
   }
 }
 
-/* ADMIN */
+/* ── ADMIN PRODUCTS ── */
 function renderAdminProds(q){
   var el=document.getElementById('adm-prod-list');
   if(!products.length){el.innerHTML='<div style="color:var(--text3);font-size:13px;padding:8px">No products yet</div>';return;}
   var list=products.filter(function(p){return p.name.toLowerCase().indexOf((q||'').toLowerCase())>=0;});
   el.innerHTML=list.map(function(p){
     var menuTag=p.menu_type?'<span class="menu-badge">'+p.menu_type+'</span>':'';
-    return'<div class="prod-row"><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--text)">'+p.name+menuTag+'</div><div style="font-size:10px;color:var(--text2);font-family:DM Mono,monospace;margin-top:2px">'+p.category+' · '+p.shelf_life_hours+'h · '+(p.contains?'⚠ '+p.contains:'No allergens')+'</div></div><button class="btn btn-danger btn-sm" onclick="deleteProd(\''+p.id+'\')">Delete</button></div>';
+    return'<div class="prod-row"><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--text)">'+p.name+menuTag+'</div><div style="font-size:10px;color:var(--text2);font-family:DM Mono,monospace;margin-top:2px">'+p.category+' · '+p.shelf_life_hours+'h · '+(p.contains?'⚠ '+p.contains:'No allergens')+'</div></div><div style="display:flex;gap:6px"><button class="btn btn-blue btn-sm" onclick="openEditModal(\''+p.id+'\')">Edit</button><button class="btn btn-danger btn-sm" onclick="deleteProd(\''+p.id+'\')">Delete</button></div></div>';
   }).join('');
 }
 
 function toggleAddProd(){
   var w=document.getElementById('add-prod-wrap'),showing=w.style.display==='block';
   w.style.display=showing?'none':'block';
-  if(!showing){buildChips('np-chips',false);ALLERGENS.forEach(function(a){npState[a]='none';});renderMenuCatSelect();}
+  if(!showing){
+    npState={na:false};ALLERGENS.forEach(function(a){npState[a]='none';});
+    buildChips('np-chips','np');
+    renderMenuCatSelect('np-menutype');
+  }
 }
 
 async function saveNewProd(){
   var name=document.getElementById('np-name').value.trim();
   if(!name){toast('Enter a product name','err');return;}
-  var c=[],m=[];ALLERGENS.forEach(function(a){if(npState[a]==='contains')c.push(a);else if(npState[a]==='may')m.push(a);});
+  var c=[],m=[];
+  ALLERGENS.forEach(function(a){if(npState[a]==='contains')c.push(a);else if(npState[a]==='may')m.push(a);});
   var cat=document.getElementById('np-cat').value;
   var menuType=document.getElementById('np-menutype').value||null;
   var shelf=parseInt(document.getElementById('np-shelf').value)||72;
@@ -1007,6 +1059,62 @@ async function deleteProd(id){
   }catch(e){toast('Could not delete','err');}
 }
 
+/* ── EDIT MODAL ── */
+function openEditModal(id){
+  var p=products.find(function(x){return String(x.id)===String(id);});
+  if(!p)return;
+  document.getElementById('edit-prod-id').value=p.id;
+  document.getElementById('edit-name').value=p.name;
+  document.getElementById('edit-shelf').value=p.shelf_life_hours;
+  // Set category
+  var catSel=document.getElementById('edit-cat');
+  for(var i=0;i<catSel.options.length;i++){if(catSel.options[i].value===p.category){catSel.selectedIndex=i;break;}}
+  // Set menu type
+  renderMenuCatSelect('edit-menutype');
+  var mtSel=document.getElementById('edit-menutype');
+  for(var i=0;i<mtSel.options.length;i++){if(mtSel.options[i].value===(p.menu_type||'')){mtSel.selectedIndex=i;break;}}
+  // Build edit chips
+  editState={na:false};ALLERGENS.forEach(function(a){editState[a]='none';});
+  buildChips('edit-chips','edit');
+  var c=p.contains?p.contains.split(',').map(function(x){return x.trim();}).filter(Boolean):[];
+  var m=p.may_contain?p.may_contain.split(',').map(function(x){return x.trim();}).filter(Boolean):[];
+  setChipsEdit(c,m);
+  document.getElementById('edit-modal').classList.add('open');
+}
+
+function setChipsEdit(contains,may){
+  var el=document.getElementById('edit-chips');if(!el)return;
+  el.querySelectorAll('.chip:not(.na-chip)').forEach(function(ch){
+    var n=ch.dataset.name;ch.classList.remove('contains','may','locked');ch.dataset.state='none';
+    if(contains.indexOf(n)>=0){ch.dataset.state='contains';ch.classList.add('contains');editState[n]='contains';}
+    else if(may.indexOf(n)>=0){ch.dataset.state='may';ch.classList.add('may');editState[n]='may';}
+    else{editState[n]='none';}
+  });
+}
+
+function closeEditModal(){document.getElementById('edit-modal').classList.remove('open');}
+
+async function saveEditProd(){
+  var id=document.getElementById('edit-prod-id').value;
+  var name=document.getElementById('edit-name').value.trim();
+  if(!name){toast('Enter a product name','err');return;}
+  var c=[],m=[];
+  ALLERGENS.forEach(function(a){if(editState[a]==='contains')c.push(a);else if(editState[a]==='may')m.push(a);});
+  var cat=document.getElementById('edit-cat').value;
+  var menuType=document.getElementById('edit-menutype').value||null;
+  var shelf=parseInt(document.getElementById('edit-shelf').value)||72;
+  var upd={name:name,category:cat,menu_type:menuType,shelf_life_hours:shelf,contains:c.join(', ')||null,may_contain:m.join(', ')||null};
+  try{
+    await supa('PATCH','products',upd,'id=eq.'+id);
+    logAudit('Edited product',name+' — '+cat+(menuType?' ('+menuType+')':'')+', '+shelf+'h');
+    toast('"'+name+'" updated','ok');closeEditModal();await loadProducts();
+  }catch(e){toast('Could not save: '+e.message,'err');}
+}
+
+// Close modal on overlay click
+document.getElementById('edit-modal').addEventListener('click',function(e){if(e.target===this)closeEditModal();});
+
+/* ── STAFF ── */
 function renderStaff(list){
   var el=document.getElementById('staff-grid');
   if(!list||!list.length){el.innerHTML='<div style="color:var(--text3);font-size:13px">No staff yet</div>';return;}
@@ -1016,7 +1124,6 @@ function renderStaff(list){
     return'<div class="staff-card"><div style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:11px;background:'+col+'33;color:'+col+';flex-shrink:0">'+ini+'</div><div><div style="font-weight:500;font-size:13px;color:var(--text)">'+s.name+(s.name===MANAGER_NAME?' ★':'')+'</div><div style="font-size:10px;color:var(--text3);margin-top:2px">PIN: ••••</div></div></div>';
   }).join('');
 }
-
 async function addStaff(){
   var name=document.getElementById('ns-name').value.trim(),pin=document.getElementById('ns-pin').value.trim();
   if(!name||!pin){toast('Enter name and PIN','err');return;}
@@ -1032,13 +1139,13 @@ async function addStaff(){
   }catch(e){toast('Could not save: '+e.message,'err');}
 }
 
+/* ── JOB CODES ── */
 function buildJCPreview(){
   var c=(document.getElementById('jc-client').value||'').toUpperCase().replace(/[^A-Z]/g,'').slice(0,3);
   var d=(document.getElementById('jc-date').value||'').replace(/[^0-9]/g,'').slice(0,6);
   var t=document.getElementById('jc-type').value;
   document.getElementById('jc-preview').textContent=(c||'XXX')+(d||'DDMMYY')+t;
 }
-
 async function addJC(){
   var c=(document.getElementById('jc-client').value||'').toUpperCase().replace(/[^A-Z]/g,'').slice(0,3);
   var d=(document.getElementById('jc-date').value||'').replace(/[^0-9]/g,'').slice(0,6);
@@ -1054,7 +1161,6 @@ async function addJC(){
     buildJCPreview();await loadJobCodes();
   }catch(e){toast('Could not save: '+e.message,'err');}
 }
-
 async function removeJC(id){
   var jc=jobCodes.find(function(j){return String(j.id)===String(id);});
   try{
@@ -1063,13 +1169,11 @@ async function removeJC(id){
     toast('Removed','ok');await loadJobCodes();
   }catch(e){toast('Could not delete','err');}
 }
-
 function renderJC(){
   var el=document.getElementById('jc-list');
   if(!jobCodes.length){el.innerHTML='<div style="color:var(--text3);font-size:13px;padding:8px">No job codes yet</div>';return;}
   el.innerHTML=jobCodes.map(function(j){return'<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border);margin-bottom:5px"><span style="font-family:DM Mono,monospace;font-size:12px;color:var(--accent);min-width:130px">'+j.code+'</span><span style="font-size:12px;color:var(--text2);flex:1">'+j.description+'</span><button class="btn btn-danger btn-sm" onclick="removeJC(\''+j.id+'\')">✕</button></div>';}).join('');
 }
-
 function populateJCSelect(){
   var sel=document.getElementById('sel-job');var cur=sel.value;
   sel.innerHTML='<option value="">— No job code —</option>';
@@ -1077,6 +1181,7 @@ function populateJCSelect(){
   if(cur)sel.value=cur;
 }
 
+/* ── PRINTER ── */
 async function checkPrinterStatus(){
   var piDot=document.getElementById('pi-dot'),piMsg=document.getElementById('pi-msg');
   var prDot=document.getElementById('printer-dot'),prMsg=document.getElementById('printer-msg');
@@ -1095,21 +1200,18 @@ async function checkPrinterStatus(){
     prDot.className='status-dot status-offline';prMsg.textContent='Cannot check — Pi is offline';
   }
 }
-
 async function sendTestPrint(){
   toast('Sending test print…');
   var job={product_name:'TEST LABEL',staff_name:user.name,section:'Test',job_code:'TEST',quantity:1,date_prepped:new Date().toISOString().split('T')[0],date_useby:new Date().toISOString().split('T')[0],contains:null,may_contain:null,notes:'Test print from Digbys CPS',printed_at:new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})};
-  var ok=await sendToPrinter(job);
-  if(ok)toast('Test label printed ✓','ok');
+  var ok=await sendToPrinter(job);if(ok)toast('Test label printed ✓','ok');
 }
-
 function savePrinterSettings(){
   PRINT_SERVER=document.getElementById('pr-srv').value;
   PRINT_STATUS_URL=PRINT_SERVER.replace('/print','/status');
-  logAudit('Updated printer settings','Server: '+PRINT_SERVER);
-  toast('Settings saved','ok');
+  logAudit('Updated printer settings','Server: '+PRINT_SERVER);toast('Settings saved','ok');
 }
 
+/* ── EXPORT ── */
 async function exportTable(t){
   try{
     var data=await supa('GET',t,'','order=created_at.asc');
@@ -1119,7 +1221,6 @@ async function exportTable(t){
     downloadCSV(csv,'digbys-cps-'+t+'-'+new Date().toISOString().split('T')[0]+'.csv');toast(t+' exported','ok');
   }catch(e){toast('Export failed','err');}
 }
-
 async function exportCSV(){
   try{
     var jobs=await supa('GET','print_jobs','','order=created_at.desc');
@@ -1129,7 +1230,6 @@ async function exportCSV(){
     downloadCSV(csv,'digbys-cps-history-'+new Date().toISOString().split('T')[0]+'.csv');toast('Exported','ok');
   }catch(e){toast('Export failed','err');}
 }
-
 function downloadCSV(csv,filename){var blob=new Blob([csv],{type:'text/csv'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download=filename;a.click();URL.revokeObjectURL(url);}
 
 function toast(msg,type){var t=document.getElementById('toast-el');t.textContent=msg;t.className='toast'+(type?' '+type:'');t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show');},3000);}
