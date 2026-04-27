@@ -58,7 +58,7 @@ input,select,textarea{width:100%;background:var(--bg3);border:1px solid var(--bo
 input:focus,select:focus,textarea:focus{border-color:var(--accent)}
 input[readonly]{opacity:.5;cursor:not-allowed}
 select option{background:var(--bg3)}
-textarea{resize:vertical;min-height:70px;line-height:1.5}
+textarea{resize:vertical;min-height:60px;line-height:1.5}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .form-full{grid-column:1/-1}
 .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius);font-size:12px;font-weight:500;cursor:pointer;border:none;transition:all .15s;font-family:'Geist',sans-serif}
@@ -67,6 +67,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
 .btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border2)}
 .btn-ghost:hover{background:var(--bg3);color:var(--text)}
 .btn-danger{background:#2a0808;color:#ff8866;border:1px solid #4a1010}
+.btn-danger:hover{background:#3a0a0a}
 .btn-green{background:#0a2a1a;color:#4ae090;border:1px solid #0a3a20}
 .btn-amber{background:#2a1a00;color:#f0c040;border:1px solid #4a3000}
 .btn-sm{padding:5px 12px;font-size:11px}
@@ -76,6 +77,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
 .chip{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:500;border:1px solid var(--border2);color:var(--text3);background:var(--bg3);cursor:pointer;transition:all .15s;font-family:'DM Mono',monospace;user-select:none}
 .chip.contains{background:#2a0a00;border-color:var(--red);color:#ff8866}
 .chip.may{background:#0a1a2a;border-color:#1a4a7a;color:#6ab0f0}
+/* LABEL PREVIEW */
 .label-wrap{background:#fff;border-radius:6px;overflow:hidden;border:2px solid #111}
 .lh{background:#111;color:#fff;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:8px}
 .lh-name{font-family:'Geist',sans-serif;font-weight:600;font-size:14px;color:#fff;flex:1}
@@ -94,22 +96,26 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
 .notes-bar{border-top:1px solid #eee;padding:6px 14px;background:#fffdf5}
 .notes-text{font-size:10px;color:#555;font-style:italic}
 .lfoot{background:#f8f8f8;padding:5px 14px;display:flex;justify-content:space-between;font-size:9px;color:#aaa;border-top:1px solid #eee}
+/* CUSTOM LABEL */
 .custom-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px}
 .custom-row input[type=text]{flex:1;background:var(--bg4);border:1px solid var(--border2);color:var(--text)}
 .custom-row input[type=range]{width:80px;flex-shrink:0;accent-color:var(--accent)}
 .size-lbl{font-size:10px;color:var(--text2);width:28px;text-align:right;flex-shrink:0;font-family:'DM Mono',monospace}
 .custom-preview-wrap{background:#fff;border:2px solid #111;border-radius:6px;padding:16px;min-height:100px}
-.custom-preview-line{color:#111;line-height:1.3;margin-bottom:4px;font-family:'Geist',sans-serif;font-weight:500;word-break:break-word}
+.custom-preview-line{color:#111;line-height:1.3;margin-bottom:6px;font-family:'Geist',sans-serif;font-weight:500;word-break:break-word}
+/* STATS */
 .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px}
 .stat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px}
 .stat-num{font-family:'Instrument Serif',serif;font-size:36px;line-height:1}
 .stat-lbl{font-size:10px;color:var(--text3);margin-top:6px;text-transform:uppercase;letter-spacing:1.5px}
+/* TABLE */
 .tbl{width:100%;border-collapse:collapse}
 .tbl th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);padding:8px 12px;border-bottom:1px solid var(--border);font-weight:500}
 .tbl td{padding:9px 12px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text2)}
 .tbl tr:last-child td{border-bottom:none}
 .tbl tr:hover td{background:var(--bg3)}
 .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+/* TABS */
 .tabs{display:flex;gap:2px;margin-bottom:20px;background:var(--bg2);padding:3px;border-radius:var(--radius);border:1px solid var(--border);flex-wrap:wrap}
 .tab{padding:6px 14px;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;color:var(--text3);transition:all .15s}
 .tab.active{background:var(--bg4);color:var(--text)}
@@ -139,8 +145,12 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
 .toast.ok{border-color:var(--green2);color:#4ae090}
 .toast.err{border-color:var(--red2);color:#ff8866}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
-
-/* ── MOBILE PORTRAIT ONLY ── */
+/* MENU CAT BADGE */
+.menu-badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:500;background:var(--bg4);border:1px solid var(--border2);color:var(--accent);font-family:'DM Mono',monospace;margin-left:6px}
+/* QUEUE STATUS */
+.badge-pending{background:#1e3a5f;color:#93c5fd;padding:2px 8px;border-radius:20px;font-size:10px;font-family:'DM Mono',monospace}
+.badge-printed{background:#064e3b;color:#6ee7b7;padding:2px 8px;border-radius:20px;font-size:10px;font-family:'DM Mono',monospace}
+/* MOBILE PORTRAIT */
 @media(max-width:600px) and (orientation:portrait){
   .shell{flex-direction:column-reverse}
   .sidebar{width:100%;height:auto;flex-direction:row;border-right:none;border-top:1px solid var(--border);flex-shrink:0}
@@ -221,7 +231,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
         <div class="pg-title" id="dash-greet">Dashboard</div>
         <span class="live-badge"><span class="live-dot"></span>Live</span>
       </div>
-      <div class="pg-sub">Updates every 15 seconds</div>
+      <div class="pg-sub">Last 10 labels · updates every 15 seconds</div>
       <div class="stats-row">
         <div class="stat"><div class="stat-num" id="st-today" style="color:var(--accent)">—</div><div class="stat-lbl">Labels today</div></div>
         <div class="stat"><div class="stat-num" id="st-q" style="color:var(--green2)">—</div><div class="stat-lbl">In queue</div></div>
@@ -230,7 +240,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
           <div class="card-title" style="margin-bottom:0">Recent labels</div>
-          <span style="font-size:10px;color:var(--text3)">Tap a row to reprint</span>
+          <span style="font-size:10px;color:var(--text3)">Tap to reprint</span>
         </div>
         <div id="dash-loading" class="loading"><div class="spinner"></div>Loading...</div>
         <div class="tbl-wrap"><table class="tbl" id="dash-table" style="display:none">
@@ -248,7 +258,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
         <div>
           <div class="card">
             <div class="card-title">Product</div>
-            <div style="margin-bottom:10px"><label>Search</label><input type="text" id="psearch" placeholder="Search by name or category…" oninput="filterProds(this.value)"></div>
+            <div style="margin-bottom:10px"><label>Search</label><input type="text" id="psearch" placeholder="Search by name, category or menu type…" oninput="filterProds(this.value)"></div>
             <div id="prod-results" style="max-height:220px;overflow-y:auto;display:grid;gap:4px"><div class="loading"><div class="spinner"></div>Loading…</div></div>
           </div>
           <div class="card">
@@ -306,11 +316,12 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
     <!-- CUSTOM LABEL -->
     <div class="page" id="page-custom">
       <div class="pg-title">Custom Label</div>
-      <div class="pg-sub">Blank canvas — add rows with adjustable text size</div>
+      <div class="pg-sub">Blank canvas — type anything, adjust size per line</div>
       <div class="two-col">
         <div>
           <div class="card">
-            <div class="card-title">Label rows</div>
+            <div class="card-title">Label content</div>
+            <div style="font-size:11px;color:var(--text2);margin-bottom:12px">Each row prints exactly as typed. Drag the slider to change text size.</div>
             <div id="custom-rows"></div>
             <div class="row-btns">
               <button class="btn btn-ghost btn-sm" onclick="addCustomRow()">+ Add row</button>
@@ -337,7 +348,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
           <div class="card">
             <div class="card-title">Live preview</div>
             <div class="custom-preview-wrap" id="custom-preview"><div style="font-size:12px;color:#ccc">Add rows to preview…</div></div>
-            <div style="margin-top:10px;font-size:11px;color:var(--text3);text-align:center">Black · DK-2251 · Brother QL-820NWBc</div>
+            <div style="margin-top:10px;font-size:11px;color:var(--text3);text-align:center">Prints exactly as shown · DK-2251</div>
           </div>
         </div>
       </div>
@@ -346,19 +357,19 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
     <!-- QUEUE -->
     <div class="page" id="page-queue">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px">
-        <div><div class="pg-title">Print Queue</div><div class="pg-sub" style="margin-bottom:0">Full history — tap any row to reprint</div></div>
+        <div><div class="pg-title">Print Queue</div><div class="pg-sub" style="margin-bottom:0">Pending jobs · disappear when printed · tap to reprint</div></div>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
           <span class="live-badge"><span class="live-dot"></span>Live</span>
-          <button class="btn btn-ghost btn-sm" onclick="exportCSV()">Export CSV</button>
+          <button class="btn btn-ghost btn-sm" onclick="exportCSV()">Export history</button>
         </div>
       </div>
       <div class="card">
         <div id="q-loading" class="loading"><div class="spinner"></div>Loading…</div>
         <div class="tbl-wrap"><table class="tbl" id="q-table" style="display:none">
-          <thead><tr><th>Product</th><th>Staff</th><th>Section</th><th>Job</th><th>Qty</th><th>Use by</th><th>Notes</th><th>Time</th><th></th></tr></thead>
+          <thead><tr><th>Product</th><th>Staff</th><th>Section</th><th>Job</th><th>Qty</th><th>Use by</th><th>Notes</th><th>Time</th><th>Status</th><th></th></tr></thead>
           <tbody id="q-body"></tbody>
         </table></div>
-        <div id="q-empty" style="text-align:center;padding:32px;color:var(--text3);display:none">No labels printed yet</div>
+        <div id="q-empty" style="text-align:center;padding:32px;color:var(--text3);display:none">Queue is empty — labels appear here when sent and disappear when printed</div>
       </div>
     </div>
 
@@ -370,10 +381,12 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
         <div class="tab active" onclick="showTab(this,'t-products')">Products</div>
         <div class="tab" onclick="showTab(this,'t-staff')">Staff</div>
         <div class="tab" onclick="showTab(this,'t-jobcodes')">Job Codes</div>
+        <div class="tab" onclick="showTab(this,'t-menucats')">Menu Types</div>
         <div class="tab" onclick="showTab(this,'t-printer')">Printer</div>
         <div class="tab" onclick="showTab(this,'t-backup')">Backup</div>
       </div>
 
+      <!-- PRODUCTS -->
       <div class="tab-content active" id="t-products">
         <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
           <input type="text" placeholder="Search products…" oninput="renderAdminProds(this.value)" style="max-width:240px">
@@ -385,9 +398,10 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
             <div class="card-title">New product</div>
             <div class="form-grid">
               <div class="form-full"><label>Product name</label><input type="text" id="np-name" placeholder="e.g. Beef Wellington"></div>
-              <div><label>Category</label>
+              <div><label>Food category</label>
                 <select id="np-cat"><option>Canapés</option><option>Starters</option><option>Mains</option><option>Desserts</option><option>Evening Grazing</option><option>Tasting Menu</option><option>Sauces & Dressings</option><option>Stocks & Soups</option><option>Pastry</option><option>Other</option></select>
               </div>
+              <div><label>Menu type</label><select id="np-menutype"><option value="">— No menu type —</option></select></div>
               <div><label>Shelf life (hours)</label><input type="number" id="np-shelf" value="72" min="1"></div>
             </div>
             <div class="sep"></div>
@@ -401,6 +415,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
         </div>
       </div>
 
+      <!-- STAFF -->
       <div class="tab-content" id="t-staff">
         <div class="staff-grid" id="staff-grid"><div class="loading"><div class="spinner"></div>Loading…</div></div>
         <div style="margin-top:16px" class="card">
@@ -413,6 +428,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
         </div>
       </div>
 
+      <!-- JOB CODES -->
       <div class="tab-content" id="t-jobcodes">
         <div class="card" style="margin-bottom:14px">
           <div class="card-title">Build a job code</div>
@@ -435,34 +451,37 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
         <div class="card"><div class="card-title">Active job codes</div><div id="jc-list"><div class="loading"><div class="spinner"></div>Loading…</div></div></div>
       </div>
 
+      <!-- MENU TYPES -->
+      <div class="tab-content" id="t-menucats">
+        <div class="card">
+          <div class="card-title">Menu types</div>
+          <p style="font-size:12px;color:var(--text2);margin-bottom:16px;line-height:1.6">These appear on products to help categorise your menu. They show in search results but never print on labels.</p>
+          <div id="menucat-list" style="display:grid;gap:6px;margin-bottom:14px"></div>
+          <div class="sep"></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <input type="text" id="mc-name" placeholder="e.g. Corporate" style="flex:1;min-width:160px">
+            <button class="btn btn-primary btn-sm" onclick="addMenuCat()">+ Add</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRINTER -->
       <div class="tab-content" id="t-printer">
         <div class="card" style="margin-bottom:12px">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
             <div class="card-title" style="margin-bottom:0">System status</div>
             <button class="btn btn-ghost btn-sm" onclick="checkPrinterStatus()">↻ Check now</button>
           </div>
-          <div class="status-row">
-            <span class="status-dot status-unknown" id="pi-dot"></span>
-            <div style="flex:1">
-              <div style="font-weight:500;color:var(--text);font-size:13px">Raspberry Pi print server</div>
-              <div style="font-size:11px;color:var(--text3);margin-top:2px" id="pi-msg">192.168.1.175:3000 — click Check now</div>
-            </div>
-          </div>
-          <div class="status-row">
-            <span class="status-dot status-unknown" id="printer-dot"></span>
-            <div style="flex:1">
-              <div style="font-weight:500;color:var(--text);font-size:13px">Brother QL-820NWBc</div>
-              <div style="font-size:11px;color:var(--text3);margin-top:2px" id="printer-msg">192.168.1.127 — click Check now</div>
-            </div>
-          </div>
+          <div class="status-row"><span class="status-dot status-unknown" id="pi-dot"></span><div style="flex:1"><div style="font-weight:500;color:var(--text);font-size:13px">Raspberry Pi print server</div><div style="font-size:11px;color:var(--text3);margin-top:2px" id="pi-msg">Click Check now</div></div></div>
+          <div class="status-row"><span class="status-dot status-unknown" id="printer-dot"></span><div style="flex:1"><div style="font-weight:500;color:var(--text);font-size:13px">Brother QL-820NWBc</div><div style="font-size:11px;color:var(--text3);margin-top:2px" id="printer-msg">Click Check now</div></div></div>
           <div id="last-print-status" style="margin-top:10px;font-size:11px;color:var(--text3)"></div>
         </div>
         <div class="card" style="margin-bottom:12px">
           <div class="card-title">Connection settings</div>
           <div class="form-grid">
             <div><label>Printer IP</label><input type="text" id="pr-ip" value="192.168.1.127"></div>
-            <div><label>Label roll</label><select id="pr-roll"><option value="dk2251">DK-2251 — black & red (recommended)</option><option value="dk2205">DK-2205 — black only</option></select></div>
-            <div class="form-full"><label>Raspberry Pi print server URL</label><input type="text" id="pr-srv" value="http://192.168.1.175:3000/print"></div>
+            <div><label>Label roll</label><select><option>DK-2251 — black & red</option><option>DK-2205 — black only</option></select></div>
+            <div class="form-full"><label>Print server URL (ngrok)</label><input type="text" id="pr-srv" value="https://palatable-shack-scallion.ngrok-free.dev/print"></div>
           </div>
           <div class="row-btns">
             <button class="btn btn-green btn-sm" onclick="sendTestPrint()">Send test print</button>
@@ -474,36 +493,36 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
           <div style="display:grid;gap:8px">
             <div style="padding:10px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Printer</div><div style="font-size:13px;color:var(--text);font-family:'DM Mono',monospace">Brother QL-820NWBc · 192.168.1.127</div></div>
             <div style="padding:10px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Print server</div><div style="font-size:13px;color:var(--text);font-family:'DM Mono',monospace">Raspberry Pi · 192.168.1.175:3000</div></div>
+            <div style="padding:10px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Tunnel</div><div style="font-size:13px;color:var(--text);font-family:'DM Mono',monospace">palatable-shack-scallion.ngrok-free.dev</div></div>
             <div style="padding:10px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Label roll</div><div style="font-size:13px;color:var(--text)">DK-2251 — black & red</div></div>
           </div>
         </div>
       </div>
 
+      <!-- BACKUP -->
       <div class="tab-content" id="t-backup">
         <div class="card" style="margin-bottom:12px">
           <div class="card-title">Export data backup</div>
-          <p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.6">Download your data as CSV files. Keep these somewhere safe — restore from them in Supabase if anything goes wrong.</p>
           <div style="display:grid;gap:8px">
             <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)"><div><div style="font-weight:500;font-size:13px;color:var(--text)">Products database</div><div style="font-size:11px;color:var(--text3);margin-top:2px">All products, allergens and shelf life</div></div><button class="btn btn-green btn-sm" onclick="exportTable('products')">Download</button></div>
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)"><div><div style="font-weight:500;font-size:13px;color:var(--text)">Staff list</div><div style="font-size:11px;color:var(--text3);margin-top:2px">All staff members (PINs excluded)</div></div><button class="btn btn-green btn-sm" onclick="exportTable('staff')">Download</button></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)"><div><div style="font-weight:500;font-size:13px;color:var(--text)">Staff list</div><div style="font-size:11px;color:var(--text3);margin-top:2px">All staff (PINs excluded)</div></div><button class="btn btn-green btn-sm" onclick="exportTable('staff')">Download</button></div>
             <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)"><div><div style="font-weight:500;font-size:13px;color:var(--text)">Job codes</div><div style="font-size:11px;color:var(--text3);margin-top:2px">All active job codes</div></div><button class="btn btn-green btn-sm" onclick="exportTable('job_codes')">Download</button></div>
             <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)"><div><div style="font-weight:500;font-size:13px;color:var(--text)">Full print history</div><div style="font-size:11px;color:var(--text3);margin-top:2px">Every label ever printed</div></div><button class="btn btn-green btn-sm" onclick="exportCSV()">Download</button></div>
           </div>
         </div>
-        <div class="card"><div class="card-title">How to restore</div><p style="font-size:13px;color:var(--text2);line-height:1.8">Go to <strong style="color:var(--text)">supabase.com</strong> → Digby's CPS project → Table Editor → select table → Import data from CSV.</p></div>
+        <div class="card"><div class="card-title">How to restore</div><p style="font-size:13px;color:var(--text2);line-height:1.8">Go to <strong style="color:var(--text)">supabase.com</strong> → Digby's CPS → Table Editor → select table → Import data from CSV.</p></div>
       </div>
     </div>
 
     <!-- AUDIT LOG -->
     <div class="page" id="page-audit">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px">
-        <div><div class="pg-title">Audit Log</div><div class="pg-sub" style="margin-bottom:0">All admin changes — manager view only · cannot be deleted</div></div>
+        <div><div class="pg-title">Audit Log</div><div class="pg-sub" style="margin-bottom:0">All admin changes — manager view only</div></div>
         <button class="btn btn-green btn-sm" onclick="exportAudit()">Export log</button>
       </div>
       <div class="card">
-        <div id="audit-loading" class="loading" style="display:none"><div class="spinner"></div>Loading…</div>
         <div id="audit-list"></div>
-        <div id="audit-empty" style="text-align:center;padding:32px;color:var(--text3);display:none">No admin changes logged yet — changes will appear here as you use the system</div>
+        <div id="audit-empty" style="text-align:center;padding:32px;color:var(--text3);display:none">No admin changes logged yet</div>
       </div>
     </div>
 
@@ -520,7 +539,9 @@ var ALLERGENS=['Gluten','Crustaceans','Eggs','Fish','Peanuts','Soya','Milk','Nut
 var COLORS=['#e8c547','#e06030','#4090d0','#a060d0','#40b080','#d06090','#60b0a0','#d09040'];
 var MANAGER_NAME='James Brierley';
 var MANAGER_PIN='1810';
-var user=null,staffList=[],products=[],jobCodes=[],selProd=null,aState={c:[],m:[]},npState={},customRows=[];
+var DEFAULT_MENU_CATS=['Weddings','Tasting Menu','Bespoke','Wakes','Private Dining'];
+var user=null,staffList=[],products=[],jobCodes=[],menuCats=[],selProd=null,aState={c:[],m:[]},npState={},customRows=[];
+var printQueue=[];
 
 function logAudit(action,detail){
   try{
@@ -529,6 +550,42 @@ function logAudit(action,detail){
     if(log.length>1000)log=log.slice(0,1000);
     localStorage.setItem('digby_audit_v2',JSON.stringify(log));
   }catch(e){}
+}
+
+function loadMenuCats(){
+  var saved=localStorage.getItem('digby_menu_cats');
+  menuCats=saved?JSON.parse(saved):DEFAULT_MENU_CATS.slice();
+  renderMenuCatSelect();
+  renderMenuCatAdmin();
+}
+function saveMenuCats(){localStorage.setItem('digby_menu_cats',JSON.stringify(menuCats));}
+function renderMenuCatSelect(){
+  var sel=document.getElementById('np-menutype');if(!sel)return;
+  var cur=sel.value;
+  sel.innerHTML='<option value="">— No menu type —</option>';
+  menuCats.forEach(function(c){var o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o);});
+  if(cur)sel.value=cur;
+}
+function renderMenuCatAdmin(){
+  var el=document.getElementById('menucat-list');if(!el)return;
+  if(!menuCats.length){el.innerHTML='<div style="color:var(--text3);font-size:13px">No menu types yet</div>';return;}
+  el.innerHTML=menuCats.map(function(c,i){
+    return'<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)"><span style="font-size:13px;color:var(--text);flex:1">'+c+'</span><button class="btn btn-danger btn-sm" onclick="removeMenuCat('+i+')">✕</button></div>';
+  }).join('');
+}
+function addMenuCat(){
+  var name=document.getElementById('mc-name').value.trim();
+  if(!name){toast('Enter a menu type name','err');return;}
+  menuCats.push(name);saveMenuCats();renderMenuCatSelect();renderMenuCatAdmin();
+  logAudit('Added menu type',name);
+  document.getElementById('mc-name').value='';
+  toast(name+' added','ok');
+}
+function removeMenuCat(i){
+  var name=menuCats[i];
+  menuCats.splice(i,1);saveMenuCats();renderMenuCatSelect();renderMenuCatAdmin();
+  logAudit('Removed menu type',name);
+  toast('Removed','ok');
 }
 
 async function supa(method,table,body,query){
@@ -542,11 +599,11 @@ async function supa(method,table,body,query){
 
 async function sendToPrinter(job){
   try{
-    var r=await fetch(PRINT_SERVER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(job),signal:AbortSignal.timeout(10000)});
+    var r=await fetch(PRINT_SERVER,{method:'POST',headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'true'},body:JSON.stringify(job),signal:AbortSignal.timeout(15000)});
     var d=await r.json();
     if(d.success){document.getElementById('last-print-status').textContent='Last print: '+job.quantity+' label(s) at '+job.printed_at;return true;}
     toast('Printer error: '+(d.error||'Unknown'),'err');return false;
-  }catch(e){toast('Cannot reach print server — is the Pi on?','err');return false;}
+  }catch(e){toast('Cannot reach print server — is the Pi on and connected?','err');return false;}
 }
 
 async function loadStaffForLogin(){
@@ -576,7 +633,7 @@ function showErr(m){var e=document.getElementById('lerr');e.textContent=m;e.styl
 document.getElementById('lpin').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
 
 function doLogout(){
-  user=null;selProd=null;products=[];jobCodes=[];customRows=[];
+  user=null;selProd=null;products=[];jobCodes=[];customRows=[];printQueue=[];
   document.getElementById('login-screen').style.display='flex';
   document.getElementById('app').style.display='none';
   document.getElementById('lpin').value='';
@@ -595,11 +652,18 @@ async function initApp(){
   document.getElementById('dash-greet').textContent=(h<12?'Good morning':h<17?'Good afternoon':'Good evening')+', '+user.name.split(' ')[0];
   document.getElementById('d-prep').value=new Date().toISOString().split('T')[0];
   document.getElementById('pv-staff').textContent=user.name;
+  loadMenuCats();
   buildChips('a-chips',true);
   initCustomRows();
   await Promise.all([loadProducts(),loadJobCodes(),loadDash(),loadStaff()]);
   updatePreview();
-  setInterval(function(){var ap=document.querySelector('.page.active');if(ap){if(ap.id==='page-dashboard')loadDash();if(ap.id==='page-queue')loadQueue();}},15000);
+  setInterval(function(){
+    var ap=document.querySelector('.page.active');
+    if(ap){
+      if(ap.id==='page-dashboard')loadDash();
+      if(ap.id==='page-queue')loadQueue();
+    }
+  },15000);
 }
 
 function showPage(id){
@@ -612,7 +676,6 @@ function showPage(id){
   if(id==='audit')loadAudit();
   if(id==='custom')populateCustomJobSelect();
 }
-
 function showTab(el,id){
   document.querySelectorAll('.tab-content').forEach(function(t){t.classList.remove('active');});
   document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
@@ -620,10 +683,12 @@ function showTab(el,id){
 }
 
 async function loadProducts(){
-  try{products=await supa('GET','products','','order=name.asc');document.getElementById('st-prods').textContent=products.length;filterProds('');renderAdminProds('');}
-  catch(e){toast('Could not load products','err');}
+  try{
+    products=await supa('GET','products','','order=name.asc');
+    document.getElementById('st-prods').textContent=products.length;
+    filterProds('');renderAdminProds('');
+  }catch(e){toast('Could not load products','err');}
 }
-
 async function loadJobCodes(){
   try{jobCodes=await supa('GET','job_codes','','order=created_at.desc');populateJCSelect();renderJC();populateCustomJobSelect();}catch(e){}
 }
@@ -632,7 +697,9 @@ async function loadDash(){
   try{
     var jobs=await supa('GET','print_jobs','','order=created_at.desc&limit=10');
     document.getElementById('st-today').textContent=jobs.length;
-    document.getElementById('st-q').textContent=jobs.length;
+    // Count pending in queue
+    var pending=printQueue.filter(function(j){return j.status==='pending';}).length;
+    document.getElementById('st-q').textContent=pending;
     document.getElementById('dash-loading').style.display='none';
     document.getElementById('dash-table').style.display='table';
     var tb=document.getElementById('dash-recent');
@@ -648,16 +715,43 @@ async function loadQueue(){
   document.getElementById('q-loading').style.display='flex';
   document.getElementById('q-table').style.display='none';
   document.getElementById('q-empty').style.display='none';
-  try{
-    var jobs=await supa('GET','print_jobs','','order=created_at.desc');
-    document.getElementById('q-loading').style.display='none';
-    if(!jobs.length){document.getElementById('q-empty').style.display='block';return;}
-    document.getElementById('q-table').style.display='table';
-    document.getElementById('q-body').innerHTML=jobs.map(function(j){
-      var enc=encodeURIComponent(JSON.stringify(j));
-      return'<tr style="cursor:pointer" onclick="reprintJob(\''+enc+'\')"><td style="font-weight:500;color:var(--text)">'+j.product_name+'</td><td>'+j.staff_name+'</td><td>'+(j.section||'—')+'</td><td style="font-family:DM Mono,monospace;color:var(--accent);font-size:11px">'+(j.job_code||'—')+'</td><td>'+j.quantity+'</td><td>'+fmtDate(j.date_useby)+'</td><td style="max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(j.notes||'—')+'</td><td style="font-family:DM Mono,monospace;font-size:11px">'+(j.printed_at||'')+'</td><td><button class="btn btn-amber btn-sm" onclick="event.stopPropagation();reprintJob(\''+enc+'\')">Reprint</button></td></tr>';
-    }).join('');
-  }catch(e){toast('Could not load queue','err');}
+  // Show only pending jobs from local queue
+  var pending=printQueue.filter(function(j){return j.status==='pending';});
+  document.getElementById('q-loading').style.display='none';
+  document.getElementById('st-q').textContent=pending.length;
+  if(!pending.length){document.getElementById('q-empty').style.display='block';return;}
+  document.getElementById('q-table').style.display='table';
+  document.getElementById('q-body').innerHTML=pending.map(function(j){
+    var enc=encodeURIComponent(JSON.stringify(j));
+    return'<tr><td style="font-weight:500;color:var(--text)">'+j.product_name+'</td><td>'+j.staff_name+'</td><td>'+(j.section||'—')+'</td><td style="font-family:DM Mono,monospace;color:var(--accent);font-size:11px">'+(j.job_code||'—')+'</td><td>'+j.quantity+'</td><td>'+fmtDate(j.date_useby)+'</td><td style="max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(j.notes||'—')+'</td><td style="font-family:DM Mono,monospace;font-size:11px">'+j.printed_at+'</td><td><span class="badge-pending">Pending</span></td><td style="display:flex;gap:4px"><button class="btn btn-amber btn-sm" onclick="reprintJob(\''+enc+'\')">Reprint</button><button class="btn btn-danger btn-sm" onclick="cancelJob(\''+j.localId+'\')">Cancel</button></td></tr>';
+  }).join('');
+}
+
+function cancelJob(localId){
+  if(!confirm('Cancel this print job? This will delete it from the queue.'))return;
+  printQueue=printQueue.filter(function(j){return j.localId!==localId;});
+  document.getElementById('st-q').textContent=printQueue.filter(function(j){return j.status==='pending';}).length;
+  loadQueue();
+  toast('Print job cancelled','ok');
+}
+
+async function loadStaff(){
+  try{var list=await supa('GET','staff','','order=name.asc');staffList=list;renderStaff(list);}catch(e){}
+}
+
+function loadAudit(){
+  var el=document.getElementById('audit-list');
+  var em=document.getElementById('audit-empty');
+  var log=JSON.parse(localStorage.getItem('digby_audit_v2')||'[]');
+  if(!log.length){em.style.display='block';el.innerHTML='';return;}
+  em.style.display='none';
+  el.innerHTML=log.map(function(e){return'<div class="audit-row"><div class="audit-who">'+e.who+'</div><div class="audit-what">'+e.action+' — '+e.detail+'</div><div class="audit-when">'+e.when+'</div></div>';}).join('');
+}
+function exportAudit(){
+  var log=JSON.parse(localStorage.getItem('digby_audit_v2')||'[]');
+  if(!log.length){toast('No audit entries yet','err');return;}
+  var csv='Who,Action,Detail,When\n'+log.map(function(e){return'"'+e.who+'","'+e.action+'","'+e.detail+'","'+e.when+'"';}).join('\n');
+  downloadCSV(csv,'digbys-cps-audit-'+new Date().toISOString().split('T')[0]+'.csv');toast('Exported','ok');
 }
 
 function reprintJob(enc){
@@ -675,29 +769,6 @@ function reprintJob(enc){
   var m=j.may_contain?j.may_contain.split(',').map(function(x){return x.trim();}).filter(Boolean):[];
   setChips(c,m);updatePreview();
   toast('Label loaded — check and print','ok');
-}
-
-async function loadStaff(){
-  try{var list=await supa('GET','staff','','order=name.asc');staffList=list;renderStaff(list);}catch(e){}
-}
-
-function loadAudit(){
-  var el=document.getElementById('audit-list');
-  var em=document.getElementById('audit-empty');
-  var log=JSON.parse(localStorage.getItem('digby_audit_v2')||'[]');
-  if(!log.length){em.style.display='block';el.innerHTML='';return;}
-  em.style.display='none';
-  el.innerHTML=log.map(function(e){
-    return'<div class="audit-row"><div class="audit-who">'+e.who+'</div><div class="audit-what">'+e.action+' — '+e.detail+'</div><div class="audit-when">'+e.when+'</div></div>';
-  }).join('');
-}
-
-function exportAudit(){
-  var log=JSON.parse(localStorage.getItem('digby_audit_v2')||'[]');
-  if(!log.length){toast('No audit entries yet','err');return;}
-  var csv='Who,Action,Detail,When\n'+log.map(function(e){return'"'+e.who+'","'+e.action+'","'+e.detail+'","'+e.when+'"';}).join('\n');
-  downloadCSV(csv,'digbys-cps-audit-'+new Date().toISOString().split('T')[0]+'.csv');
-  toast('Audit log exported','ok');
 }
 
 function buildChips(cid,isMain){
@@ -732,14 +803,18 @@ function syncA(){
 function filterProds(q){
   var el=document.getElementById('prod-results');
   if(!products.length){el.innerHTML='<div style="color:var(--text3);font-size:12px;padding:8px">No products yet</div>';return;}
-  var list=products.filter(function(p){return p.name.toLowerCase().indexOf((q||'').toLowerCase())>=0||p.category.toLowerCase().indexOf((q||'').toLowerCase())>=0;});
+  var list=products.filter(function(p){
+    var search=(q||'').toLowerCase();
+    return p.name.toLowerCase().indexOf(search)>=0||p.category.toLowerCase().indexOf(search)>=0||(p.menu_type&&p.menu_type.toLowerCase().indexOf(search)>=0);
+  });
   el.innerHTML='';
   list.forEach(function(p){
     var d=document.createElement('div');
     d.style.cssText='background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:9px 12px;cursor:pointer;margin-bottom:3px;transition:border-color .15s';
     d.onmouseenter=function(){d.style.borderColor='var(--accent)';};d.onmouseleave=function(){d.style.borderColor='var(--border)';};
     var c=p.contains?p.contains.split(',').slice(0,3).join(', '):'';
-    d.innerHTML='<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:13px;font-weight:500;color:var(--text)">'+p.name+'</span><span style="font-size:10px;color:var(--accent);font-family:DM Mono,monospace">'+p.category+'</span></div><div style="font-size:10px;color:var(--text2);margin-top:2px">'+p.shelf_life_hours+'h'+(c?' · ⚠ '+c:'')+'</div>';
+    var menuTag=p.menu_type?'<span class="menu-badge">'+p.menu_type+'</span>':'';
+    d.innerHTML='<div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:4px"><span style="font-size:13px;font-weight:500;color:var(--text)">'+p.name+'</span><div style="display:flex;gap:4px;align-items:center"><span style="font-size:10px;color:var(--accent);font-family:DM Mono,monospace">'+p.category+'</span>'+menuTag+'</div></div><div style="font-size:10px;color:var(--text2);margin-top:2px">'+p.shelf_life_hours+'h'+(c?' · ⚠ '+c:'')+'</div>';
     d.onclick=function(){selectProd(p);};el.appendChild(d);
   });
 }
@@ -788,15 +863,41 @@ async function sendPrint(){
   if(!selProd){toast('Please select a product first','err');return;}
   var now=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
   var notes=document.getElementById('print-notes').value.trim();
-  var job={product_name:selProd.name,staff_name:user.name,section:document.getElementById('sel-stn').value||null,job_code:document.getElementById('sel-job').value||null,quantity:parseInt(document.getElementById('qty').value)||1,date_prepped:document.getElementById('d-prep').value,date_useby:document.getElementById('d-useby').value,contains:aState.c.join(', ')||null,may_contain:aState.m.join(', ')||null,notes:notes||null,printed_at:now};
+  var job={
+    localId:Date.now().toString(),
+    status:'pending',
+    product_name:selProd.name,staff_name:user.name,
+    section:document.getElementById('sel-stn').value||null,
+    job_code:document.getElementById('sel-job').value||null,
+    quantity:parseInt(document.getElementById('qty').value)||1,
+    date_prepped:document.getElementById('d-prep').value,
+    date_useby:document.getElementById('d-useby').value,
+    contains:aState.c.join(', ')||null,
+    may_contain:aState.m.join(', ')||null,
+    notes:notes||null,
+    printed_at:now
+  };
+  // Add to queue immediately
+  printQueue.unshift(job);
+  document.getElementById('st-q').textContent=printQueue.filter(function(j){return j.status==='pending';}).length;
+  toast('Sending to printer…');
   try{
-    await supa('POST','print_jobs',job,'');
+    // Save to Supabase
+    var saved=await supa('POST','print_jobs',{product_name:job.product_name,staff_name:job.staff_name,section:job.section,job_code:job.job_code,quantity:job.quantity,date_prepped:job.date_prepped,date_useby:job.date_useby,contains:job.contains,may_contain:job.may_contain,notes:job.notes,printed_at:job.printed_at},'');
+    // Send to printer
     var ok=await sendToPrinter(job);
-    if(ok){toast(job.quantity+' label'+(job.quantity>1?'s':'')+' printed ✓','ok');}
-    else{toast('Saved to queue — check printer connection','err');}
+    if(ok){
+      // Mark as printed — remove from pending queue
+      job.status='printed';
+      document.getElementById('st-q').textContent=printQueue.filter(function(j){return j.status==='pending';}).length;
+      toast(job.quantity+' label'+(job.quantity>1?'s':'')+' printed ✓','ok');
+    }else{
+      job.status='failed';
+      document.getElementById('st-q').textContent=printQueue.filter(function(j){return j.status==='pending';}).length;
+    }
     document.getElementById('pstatus').textContent='Sent at '+now;
     loadDash();
-  }catch(e){toast('Error: '+e.message,'err');}
+  }catch(e){job.status='failed';toast('Error: '+e.message,'err');}
 }
 
 function resetForm(){
@@ -806,15 +907,16 @@ function resetForm(){
   updatePreview();
 }
 
+/* CUSTOM LABEL */
 function initCustomRows(){customRows=[];addCustomRow();addCustomRow();}
-function addCustomRow(){customRows.push({text:'',size:24});renderCustomRows();}
+function addCustomRow(){customRows.push({text:'',size:28});renderCustomRows();}
 function clearCustomRows(){customRows=[];addCustomRow();addCustomRow();}
 
 function renderCustomRows(){
   var el=document.getElementById('custom-rows');el.innerHTML='';
   customRows.forEach(function(row,i){
     var div=document.createElement('div');div.className='custom-row';
-    div.innerHTML='<input type="text" placeholder="Line '+(i+1)+'…" value="'+row.text.replace(/"/g,'&quot;')+'" style="flex:1;min-width:0"><input type="range" min="10" max="72" value="'+row.size+'"><span class="size-lbl">'+row.size+'pt</span><button class="btn btn-danger btn-sm" style="flex-shrink:0;padding:4px 10px">✕</button>';
+    div.innerHTML='<input type="text" placeholder="Type line '+(i+1)+'…" value="'+row.text.replace(/"/g,'&quot;')+'" style="flex:1;min-width:0"><input type="range" min="12" max="72" value="'+row.size+'"><span class="size-lbl">'+row.size+'pt</span><button class="btn btn-danger btn-sm" style="flex-shrink:0;padding:4px 10px">✕</button>';
     var ti=div.querySelector('input[type=text]'),ri=div.querySelector('input[type=range]'),sl=div.querySelector('.size-lbl'),db=div.querySelector('.btn-danger');
     ti.oninput=function(){customRows[i].text=this.value;updateCustomPreview();};
     ri.oninput=function(){customRows[i].size=parseInt(this.value);sl.textContent=this.value+'pt';updateCustomPreview();};
@@ -841,39 +943,55 @@ async function sendCustomPrint(){
   var has=customRows.some(function(r){return r.text.trim();});
   if(!has){toast('Add some text first','err');return;}
   var now=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-  var content=customRows.filter(function(r){return r.text.trim();}).map(function(r){return r.text+'('+r.size+'pt)';}).join(' | ');
-  var first=customRows.filter(function(r){return r.text.trim();})[0].text;
-  var job={product_name:'[CUSTOM] '+first,staff_name:user.name,section:document.getElementById('c-stn').value||null,job_code:document.getElementById('c-job').value||null,quantity:parseInt(document.getElementById('c-qty').value)||1,date_prepped:new Date().toISOString().split('T')[0],date_useby:null,contains:null,may_contain:null,notes:'Custom: '+content,printed_at:now};
-  try{
-    await supa('POST','print_jobs',job,'');
-    var ok=await sendToPrinter(job);
-    if(ok){toast('Custom label printed ✓','ok');}else{toast('Saved — check printer','err');}
+  var lines=customRows.filter(function(r){return r.text.trim();});
+  // Build a custom job — send raw lines to printer
+  var customJob={
+    custom:true,
+    lines:lines,
+    staff_name:user.name,
+    section:document.getElementById('c-stn').value||null,
+    job_code:document.getElementById('c-job').value||null,
+    quantity:parseInt(document.getElementById('c-qty').value)||1,
+    printed_at:now
+  };
+  toast('Sending custom label…');
+  var ok=await sendToPrinter(customJob);
+  if(ok){
+    toast('Custom label printed ✓','ok');
+    // Save to history
+    await supa('POST','print_jobs',{product_name:'[Custom] '+lines[0].text,staff_name:user.name,section:customJob.section,job_code:customJob.job_code,quantity:customJob.quantity,date_prepped:new Date().toISOString().split('T')[0],date_useby:null,contains:null,may_contain:null,notes:'Custom label',printed_at:now},'');
     loadDash();
-  }catch(e){toast('Error: '+e.message,'err');}
+  }
 }
 
+/* ADMIN */
 function renderAdminProds(q){
   var el=document.getElementById('adm-prod-list');
   if(!products.length){el.innerHTML='<div style="color:var(--text3);font-size:13px;padding:8px">No products yet</div>';return;}
   var list=products.filter(function(p){return p.name.toLowerCase().indexOf((q||'').toLowerCase())>=0;});
-  el.innerHTML=list.map(function(p){return'<div class="prod-row"><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--text)">'+p.name+'</div><div style="font-size:10px;color:var(--text2);font-family:DM Mono,monospace;margin-top:2px">'+p.category+' · '+p.shelf_life_hours+'h · '+(p.contains?'⚠ '+p.contains:'No allergens')+'</div></div><button class="btn btn-danger btn-sm" onclick="deleteProd(\''+p.id+'\')">Delete</button></div>';}).join('');
+  el.innerHTML=list.map(function(p){
+    var menuTag=p.menu_type?'<span class="menu-badge">'+p.menu_type+'</span>':'';
+    return'<div class="prod-row"><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--text)">'+p.name+menuTag+'</div><div style="font-size:10px;color:var(--text2);font-family:DM Mono,monospace;margin-top:2px">'+p.category+' · '+p.shelf_life_hours+'h · '+(p.contains?'⚠ '+p.contains:'No allergens')+'</div></div><button class="btn btn-danger btn-sm" onclick="deleteProd(\''+p.id+'\')">Delete</button></div>';
+  }).join('');
 }
 
 function toggleAddProd(){
   var w=document.getElementById('add-prod-wrap'),showing=w.style.display==='block';
   w.style.display=showing?'none':'block';
-  if(!showing){buildChips('np-chips',false);ALLERGENS.forEach(function(a){npState[a]='none';});}
+  if(!showing){buildChips('np-chips',false);ALLERGENS.forEach(function(a){npState[a]='none';});renderMenuCatSelect();}
 }
 
 async function saveNewProd(){
   var name=document.getElementById('np-name').value.trim();
   if(!name){toast('Enter a product name','err');return;}
   var c=[],m=[];ALLERGENS.forEach(function(a){if(npState[a]==='contains')c.push(a);else if(npState[a]==='may')m.push(a);});
-  var cat=document.getElementById('np-cat').value,shelf=parseInt(document.getElementById('np-shelf').value)||72;
-  var prod={name:name,category:cat,shelf_life_hours:shelf,contains:c.join(', ')||null,may_contain:m.join(', ')||null};
+  var cat=document.getElementById('np-cat').value;
+  var menuType=document.getElementById('np-menutype').value||null;
+  var shelf=parseInt(document.getElementById('np-shelf').value)||72;
+  var prod={name:name,category:cat,menu_type:menuType,shelf_life_hours:shelf,contains:c.join(', ')||null,may_contain:m.join(', ')||null};
   try{
     await supa('POST','products',prod,'');
-    logAudit('Added product',name+' — '+cat+', '+shelf+'h'+(c.length?' — contains: '+c.join(', '):''));
+    logAudit('Added product',name+' — '+cat+(menuType?' ('+menuType+')':'')+', '+shelf+'h');
     toast('"'+name+'" saved','ok');toggleAddProd();document.getElementById('np-name').value='';
     await loadProducts();
   }catch(e){toast('Could not save: '+e.message,'err');}
@@ -884,7 +1002,7 @@ async function deleteProd(id){
   if(!confirm('Delete '+(prod?prod.name:'this product')+'?'))return;
   try{
     await supa('DELETE','products','','id=eq.'+id);
-    logAudit('Deleted product',prod?prod.name+' ('+prod.category+')':'ID '+id);
+    logAudit('Deleted product',prod?prod.name:'ID '+id);
     toast('Deleted','ok');await loadProducts();
   }catch(e){toast('Could not delete','err');}
 }
@@ -965,12 +1083,12 @@ async function checkPrinterStatus(){
   piMsg.textContent='Checking…';prMsg.textContent='Checking…';
   piDot.className='status-dot status-unknown';prDot.className='status-dot status-unknown';
   try{
-    var r=await fetch(PRINT_STATUS_URL,{method:'GET',signal:AbortSignal.timeout(5000)});
+    var r=await fetch(PRINT_STATUS_URL,{method:'GET',headers:{'ngrok-skip-browser-warning':'true'},signal:AbortSignal.timeout(5000)});
     if(r.ok){
       var data=await r.json();
-      piDot.className='status-dot status-online';piMsg.textContent='Online — print server running at 192.168.1.175:3000';
-      if(data.printer){prDot.className='status-dot status-online';prMsg.textContent='Online — Brother QL-820NWBc ready at 192.168.1.127';}
-      else{prDot.className='status-dot status-offline';prMsg.textContent='Offline — check printer is on and on the Wi-Fi';}
+      piDot.className='status-dot status-online';piMsg.textContent='Online — running at 192.168.1.175:3000';
+      if(data.printer){prDot.className='status-dot status-online';prMsg.textContent='Online — Brother QL-820NWBc ready';}
+      else{prDot.className='status-dot status-offline';prMsg.textContent='Offline — check printer is on and connected to Wi-Fi';}
     }else{throw new Error();}
   }catch(e){
     piDot.className='status-dot status-offline';piMsg.textContent='Offline — check Pi is powered on and on kitchen Wi-Fi';
@@ -980,7 +1098,7 @@ async function checkPrinterStatus(){
 
 async function sendTestPrint(){
   toast('Sending test print…');
-  var job={product_name:'TEST LABEL',staff_name:user.name,section:'Test',job_code:'TEST',quantity:1,date_prepped:new Date().toISOString().split('T')[0],date_useby:new Date().toISOString().split('T')[0],contains:null,may_contain:null,notes:'Test print from Digby\'s CPS',printed_at:new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})};
+  var job={product_name:'TEST LABEL',staff_name:user.name,section:'Test',job_code:'TEST',quantity:1,date_prepped:new Date().toISOString().split('T')[0],date_useby:new Date().toISOString().split('T')[0],contains:null,may_contain:null,notes:'Test print from Digbys CPS',printed_at:new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})};
   var ok=await sendToPrinter(job);
   if(ok)toast('Test label printed ✓','ok');
 }
@@ -988,7 +1106,7 @@ async function sendTestPrint(){
 function savePrinterSettings(){
   PRINT_SERVER=document.getElementById('pr-srv').value;
   PRINT_STATUS_URL=PRINT_SERVER.replace('/print','/status');
-  logAudit('Updated printer settings','IP: '+document.getElementById('pr-ip').value+' · Server: '+PRINT_SERVER);
+  logAudit('Updated printer settings','Server: '+PRINT_SERVER);
   toast('Settings saved','ok');
 }
 
