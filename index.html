@@ -18,10 +18,8 @@
 }
 body{font-family:'Geist',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
 *::-webkit-scrollbar{width:3px}*::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
-
-/* LOGIN */
 .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);padding:20px;position:relative;overflow:hidden}
-.login-bg{position:absolute;font-family:'Instrument Serif',serif;font-size:200px;color:rgba(232,197,71,0.03);white-space:nowrap;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;letter-spacing:-4px;user-select:none}
+.login-bg{position:absolute;font-family:'Instrument Serif',serif;font-size:200px;color:rgba(232,197,71,0.03);white-space:nowrap;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;user-select:none}
 .login-box{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:36px;width:100%;max-width:380px;position:relative;z-index:1}
 .login-mark{font-family:'Instrument Serif',serif;font-size:34px;color:var(--accent);letter-spacing:-.5px;line-height:1}
 .login-sub{font-size:11px;color:var(--text3);letter-spacing:3px;text-transform:uppercase;margin-top:6px;margin-bottom:32px}
@@ -31,41 +29,30 @@ body{font-family:'Geist',sans-serif;background:var(--bg);color:var(--text);min-h
 .lf input,.lf select{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:10px 14px;color:var(--text);font-family:'Geist',sans-serif;font-size:13px;outline:none;transition:border .15s}
 .lf input:focus,.lf select:focus{border-color:var(--accent)}
 select option{background:var(--bg3)}
-.login-btn{width:100%;background:var(--accent);color:#000;border:none;border-radius:var(--radius);padding:13px;font-family:'Geist',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;letter-spacing:.3px}
+.login-btn{width:100%;background:var(--accent);color:#000;border:none;border-radius:var(--radius);padding:13px;font-family:'Geist',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s}
 .login-btn:hover{background:var(--accent2)}
-
-/* SHELL */
 .shell{display:flex;height:100vh;overflow:hidden}
 .sidebar{width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
 .main{flex:1;overflow-y:auto;background:var(--bg)}
-
-/* SIDEBAR */
 .logo-wrap{padding:22px 18px 18px;border-bottom:1px solid var(--border)}
 .logo-main{font-family:'Instrument Serif',serif;font-size:20px;color:var(--accent);letter-spacing:-.3px;line-height:1.1}
 .logo-sub{font-size:10px;color:var(--text3);margin-top:4px;letter-spacing:2px;text-transform:uppercase}
 .nav{padding:10px 8px;flex:1;overflow-y:auto}
-.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--radius);cursor:pointer;color:var(--text2);font-size:12px;font-weight:500;transition:all .15s;margin-bottom:1px;letter-spacing:.2px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--radius);cursor:pointer;color:var(--text2);font-size:12px;font-weight:500;transition:all .15s;margin-bottom:1px}
 .nav-item:hover{background:var(--bg3);color:var(--text)}
 .nav-item.active{background:var(--bg4);color:var(--accent)}
 .nav-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
 .nav-section{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:2px;padding:12px 10px 4px;font-weight:600}
 .user-wrap{padding:12px;border-top:1px solid var(--border)}
-.user-card{background:var(--bg3);border-radius:var(--radius);padding:10px 12px;display:flex;align-items:center;gap:10px;cursor:pointer;border:1px solid var(--border);transition:border .15s}
-.user-card:hover{border-color:var(--border2)}
+.user-card{background:var(--bg3);border-radius:var(--radius);padding:10px 12px;display:flex;align-items:center;gap:10px;cursor:pointer;border:1px solid var(--border)}
 .uav{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:11px;flex-shrink:0}
-
-/* PAGES */
 .page{display:none;padding:28px 32px}
 .page.active{display:block}
 .pg-title{font-family:'Instrument Serif',serif;font-size:28px;color:var(--text);letter-spacing:-.5px;margin-bottom:4px}
-.pg-sub{font-size:12px;color:var(--text3);margin-bottom:28px;letter-spacing:.3px}
-
-/* CARDS */
+.pg-sub{font-size:12px;color:var(--text3);margin-bottom:28px}
 .card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
 .card+.card{margin-top:12px}
 .card-title{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px}
-
-/* FORMS */
 label{display:block;font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:5px}
 input,select,textarea{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:9px 12px;color:var(--text);font-family:'Geist',sans-serif;font-size:13px;outline:none;transition:border .15s}
 input:focus,select:focus,textarea:focus{border-color:var(--accent)}
@@ -74,131 +61,115 @@ select option{background:var(--bg3)}
 textarea{resize:vertical;min-height:70px;line-height:1.5}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .form-full{grid-column:1/-1}
-
-/* BUTTONS */
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius);font-size:12px;font-weight:500;cursor:pointer;border:none;transition:all .15s;font-family:'Geist',sans-serif;letter-spacing:.2px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius);font-size:12px;font-weight:500;cursor:pointer;border:none;transition:all .15s;font-family:'Geist',sans-serif}
 .btn-primary{background:var(--accent);color:#000}
 .btn-primary:hover{background:var(--accent2)}
 .btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border2)}
 .btn-ghost:hover{background:var(--bg3);color:var(--text)}
 .btn-danger{background:#2a0808;color:#ff8866;border:1px solid #4a1010}
-.btn-danger:hover{background:#3a0a0a}
 .btn-green{background:#0a2a1a;color:#4ae090;border:1px solid #0a3a20}
-.btn-green:hover{background:#0a3a20}
-.btn-blue{background:#0a1a2a;color:#6ab0f0;border:1px solid #1a4a7a}
-.btn-blue:hover{background:#0a2a3a}
 .btn-amber{background:#2a1a00;color:#f0c040;border:1px solid #4a3000}
-.btn-amber:hover{background:#3a2500}
 .btn-sm{padding:5px 12px;font-size:11px}
 .row-btns{display:flex;gap:8px;margin-top:16px;align-items:center;flex-wrap:wrap}
 .sep{height:1px;background:var(--border);margin:16px 0}
-
-/* ALLERGEN CHIPS */
 .allergen-grid{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
-.chip{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:500;border:1px solid var(--border2);color:var(--text3);background:var(--bg3);cursor:pointer;transition:all .15s;font-family:'DM Mono',monospace;user-select:none;letter-spacing:.3px}
+.chip{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:500;border:1px solid var(--border2);color:var(--text3);background:var(--bg3);cursor:pointer;transition:all .15s;font-family:'DM Mono',monospace;user-select:none}
 .chip.contains{background:#2a0a00;border-color:var(--red);color:#ff8866}
 .chip.may{background:#0a1a2a;border-color:#1a4a7a;color:#6ab0f0}
-
-/* LABEL PREVIEW */
-.label-wrap{background:#fff;border-radius:6px;overflow:hidden;font-family:'DM Mono',monospace;border:2px solid #111}
+.label-wrap{background:#fff;border-radius:6px;overflow:hidden;border:2px solid #111}
 .lh{background:#111;color:#fff;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:8px}
 .lh-name{font-family:'Geist',sans-serif;font-weight:600;font-size:14px;color:#fff;flex:1}
-.lh-code{background:transparent;color:#fff;font-size:10px;padding:2px 8px;border-radius:3px;border:1px solid #fff;white-space:nowrap;font-family:'DM Mono',monospace;letter-spacing:.5px}
+.lh-code{color:#fff;font-size:10px;padding:2px 8px;border-radius:3px;border:1px solid #fff;white-space:nowrap;font-family:'DM Mono',monospace}
 .lb{padding:10px 14px}
-.lr{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px solid #eee}
+.lr{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #eee}
 .lr:last-child{border-bottom:none}
 .ll{font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:#999;font-family:'Geist',sans-serif}
 .lv{font-size:12px;font-weight:500;color:#111;font-family:'Geist',sans-serif}
 .lv.red{color:#cc2200}
-.abar{border-top:2px solid #cc2200;padding:8px 14px;background:#fff}
+.abar{border-top:2px solid #cc2200;padding:8px 14px}
 .abar-title{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#cc2200;margin-bottom:3px;font-family:'Geist',sans-serif}
 .abar-list{font-size:11px;color:#cc2200;font-family:'DM Mono',monospace}
 .abar-may{font-size:10px;color:#333;margin-top:3px;font-family:'Geist',sans-serif}
 .abar-none{font-size:11px;color:#999;font-family:'Geist',sans-serif}
 .notes-bar{border-top:1px solid #eee;padding:6px 14px;background:#fffdf5}
-.notes-bar-text{font-size:10px;color:#555;font-family:'Geist',sans-serif;font-style:italic}
-.lfoot{background:#f8f8f8;padding:5px 14px;display:flex;justify-content:space-between;font-size:9px;color:#aaa;font-family:'Geist',sans-serif;border-top:1px solid #eee}
-
-/* CUSTOM LABEL */
+.notes-text{font-size:10px;color:#555;font-style:italic}
+.lfoot{background:#f8f8f8;padding:5px 14px;display:flex;justify-content:space-between;font-size:9px;color:#aaa;border-top:1px solid #eee}
 .custom-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px}
 .custom-row input[type=text]{flex:1;background:var(--bg4);border:1px solid var(--border2);color:var(--text)}
 .custom-row input[type=range]{width:80px;flex-shrink:0;accent-color:var(--accent)}
-.custom-row .size-lbl{font-size:10px;color:var(--text2);width:28px;text-align:right;flex-shrink:0;font-family:'DM Mono',monospace}
+.size-lbl{font-size:10px;color:var(--text2);width:28px;text-align:right;flex-shrink:0;font-family:'DM Mono',monospace}
 .custom-preview-wrap{background:#fff;border:2px solid #111;border-radius:6px;padding:16px;min-height:100px}
 .custom-preview-line{color:#111;line-height:1.3;margin-bottom:4px;font-family:'Geist',sans-serif;font-weight:500;word-break:break-word}
-
-/* STATS */
 .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px}
 .stat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px}
 .stat-num{font-family:'Instrument Serif',serif;font-size:36px;line-height:1}
 .stat-lbl{font-size:10px;color:var(--text3);margin-top:6px;text-transform:uppercase;letter-spacing:1.5px}
-
-/* TABLE */
 .tbl{width:100%;border-collapse:collapse}
 .tbl th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);padding:8px 12px;border-bottom:1px solid var(--border);font-weight:500}
 .tbl td{padding:9px 12px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text2)}
 .tbl tr:last-child td{border-bottom:none}
 .tbl tr:hover td{background:var(--bg3)}
-
-/* TABS */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .tabs{display:flex;gap:2px;margin-bottom:20px;background:var(--bg2);padding:3px;border-radius:var(--radius);border:1px solid var(--border);flex-wrap:wrap}
-.tab{padding:6px 14px;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;color:var(--text3);transition:all .15s;letter-spacing:.3px}
+.tab{padding:6px 14px;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;color:var(--text3);transition:all .15s}
 .tab.active{background:var(--bg4);color:var(--text)}
 .tab-content{display:none}.tab-content.active{display:block}
-
-/* PROD ROW */
-.prod-row{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px;transition:border .15s}
-.prod-row:hover{border-color:var(--border2)}
-
-/* STAFF GRID */
+.prod-row{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px}
 .staff-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
 .staff-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:14px;display:flex;align-items:center;gap:12px}
-
-/* JOB CODE */
 .jc-preview-box{font-family:'DM Mono',monospace;font-size:22px;font-weight:500;color:var(--accent);letter-spacing:3px;text-align:center;padding:14px;background:var(--bg4);border-radius:var(--radius);margin-top:14px;border:1px solid var(--border2)}
-
-/* PRINTER STATUS */
-.status-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px;flex-shrink:0}
+.status-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:8px;flex-shrink:0}
 .status-online{background:#22a060}
 .status-offline{background:#cc2200}
 .status-unknown{background:#8a8785}
-.status-row{display:flex;align-items:center;padding:12px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border);margin-bottom:8px;font-size:13px;color:var(--text2)}
-
-/* AUDIT LOG */
-.audit-row{padding:10px 14px;border-bottom:1px solid var(--border);font-size:12px}
+.status-row{display:flex;align-items:center;padding:14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border);margin-bottom:8px}
+.audit-row{padding:12px 14px;border-bottom:1px solid var(--border)}
 .audit-row:last-child{border-bottom:none}
-.audit-who{color:var(--accent);font-weight:500}
-.audit-what{color:var(--text2);margin-top:2px}
-.audit-when{color:var(--text3);font-size:10px;font-family:'DM Mono',monospace;margin-top:2px}
-
-/* LOADING */
+.audit-who{color:var(--accent);font-weight:500;font-size:13px}
+.audit-what{color:var(--text2);margin-top:3px;font-size:12px}
+.audit-when{color:var(--text3);font-size:10px;font-family:'DM Mono',monospace;margin-top:3px}
+.live-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;color:var(--green2);padding:3px 8px;background:#0a2a1a;border:1px solid #0a3a20;border-radius:20px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green2);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 .loading{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text3);padding:20px 0}
 .spinner{width:14px;height:14px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-/* LIVE INDICATOR */
-.live-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;color:var(--green2);font-family:'DM Mono',monospace;padding:3px 8px;background:#0a2a1a;border:1px solid #0a3a20;border-radius:20px}
-.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green2);animation:pulse 1.5s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-
-/* TOAST */
 .toast{position:fixed;bottom:20px;right:20px;background:var(--bg2);border:1px solid var(--border2);color:var(--text);padding:12px 18px;border-radius:var(--radius);font-size:12px;font-weight:500;transform:translateY(60px);opacity:0;transition:all .3s;z-index:9999;pointer-events:none;max-width:300px}
 .toast.show{transform:translateY(0);opacity:1}
 .toast.ok{border-color:var(--green2);color:#4ae090}
 .toast.err{border-color:var(--red2);color:#ff8866}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
 
-@media(max-width:700px){
-  .shell{flex-direction:column}
-  .sidebar{width:100%;height:auto;flex-direction:row;align-items:center;border-right:none;border-bottom:1px solid var(--border)}
-  .logo-wrap{padding:12px 16px;border-bottom:none;border-right:1px solid var(--border)}
-  .nav{display:flex;padding:8px;flex:1;overflow-x:auto}
+/* ── MOBILE PORTRAIT ONLY ── */
+@media(max-width:600px) and (orientation:portrait){
+  .shell{flex-direction:column-reverse}
+  .sidebar{width:100%;height:auto;flex-direction:row;border-right:none;border-top:1px solid var(--border);flex-shrink:0}
+  .logo-wrap{display:none}
+  .nav{display:flex;flex-direction:row;padding:4px;flex:1;overflow-x:auto;gap:0}
   .nav-section{display:none}
-  .nav-item{white-space:nowrap}
-  .user-wrap{padding:8px;border-top:none;border-left:1px solid var(--border)}
+  .nav-item{flex-direction:column;gap:2px;padding:6px 8px;font-size:10px;white-space:nowrap;min-width:52px;justify-content:center;align-items:center;text-align:center}
+  .nav-dot{display:none}
+  .user-wrap{padding:6px 8px;border-top:none;border-left:1px solid var(--border);display:flex;align-items:center}
+  .user-card{padding:6px;border:none;background:transparent}
+  #sb-name,#sb-role{display:none}
   .main{flex:1;overflow-y:auto}
-  .page{padding:16px}
+  .page{padding:14px 12px}
+  .pg-title{font-size:22px}
+  .pg-sub{margin-bottom:14px;font-size:11px}
+  .two-col{grid-template-columns:1fr}
   .form-grid{grid-template-columns:1fr}
-  .stats-row{grid-template-columns:repeat(3,1fr)}
+  .stats-row{gap:6px}
+  .stat{padding:10px}
+  .stat-num{font-size:26px}
+  .stat-lbl{font-size:9px}
+  .staff-grid{grid-template-columns:1fr 1fr}
+  .portrait-hide{display:none}
+  .btn{padding:10px 16px;font-size:13px}
+  .btn-sm{padding:8px 12px;font-size:12px}
+  input,select,textarea{padding:11px 12px;font-size:15px}
+  .chip{padding:5px 12px;font-size:11px}
+  .custom-row{flex-wrap:wrap}
+  .custom-row input[type=range]{width:100%}
 }
 </style>
 </head>
@@ -211,14 +182,8 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
     <div class="login-mark">Digby's CPS</div>
     <div class="login-sub">Central Print System</div>
     <div id="lerr" class="login-err"></div>
-    <div class="lf">
-      <label>Your name</label>
-      <select id="luser"><option value="">— Select staff member —</option></select>
-    </div>
-    <div class="lf">
-      <label>PIN</label>
-      <input type="password" id="lpin" placeholder="••••" maxlength="4" style="letter-spacing:8px;font-size:20px;text-align:center">
-    </div>
+    <div class="lf"><label>Your name</label><select id="luser"><option value="">— Select staff member —</option></select></div>
+    <div class="lf"><label>PIN</label><input type="password" id="lpin" placeholder="••••" maxlength="4" style="letter-spacing:8px;font-size:20px;text-align:center"></div>
     <button class="login-btn" onclick="doLogin()">Sign in</button>
   </div>
 </div>
@@ -241,12 +206,9 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
       <div class="nav-item" id="nav-audit" onclick="showPage('audit')" data-page="audit" style="display:none"><span class="nav-dot"></span>Audit Log</div>
     </nav>
     <div class="user-wrap">
-      <div class="user-card" onclick="doLogout()" title="Sign out">
+      <div class="user-card" onclick="doLogout()">
         <div class="uav" id="sb-av"></div>
-        <div>
-          <div style="font-size:12px;font-weight:500;color:var(--text)" id="sb-name"></div>
-          <div style="font-size:10px;color:var(--text3)">Tap to sign out</div>
-        </div>
+        <div><div style="font-size:12px;font-weight:500;color:var(--text)" id="sb-name"></div><div style="font-size:10px;color:var(--text3)" id="sb-role">Tap to sign out</div></div>
       </div>
     </div>
   </div>
@@ -259,22 +221,22 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
         <div class="pg-title" id="dash-greet">Dashboard</div>
         <span class="live-badge"><span class="live-dot"></span>Live</span>
       </div>
-      <div class="pg-sub">Kitchen overview — updates in real time</div>
+      <div class="pg-sub">Updates every 15 seconds</div>
       <div class="stats-row">
         <div class="stat"><div class="stat-num" id="st-today" style="color:var(--accent)">—</div><div class="stat-lbl">Labels today</div></div>
         <div class="stat"><div class="stat-num" id="st-q" style="color:var(--green2)">—</div><div class="stat-lbl">In queue</div></div>
-        <div class="stat"><div class="stat-num" id="st-prods" style="color:var(--text)">—</div><div class="stat-lbl">Products loaded</div></div>
+        <div class="stat"><div class="stat-num" id="st-prods" style="color:var(--text)">—</div><div class="stat-lbl">Products</div></div>
       </div>
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
           <div class="card-title" style="margin-bottom:0">Recent labels</div>
-          <span style="font-size:10px;color:var(--text3)">Click a row to reprint</span>
+          <span style="font-size:10px;color:var(--text3)">Tap a row to reprint</span>
         </div>
         <div id="dash-loading" class="loading"><div class="spinner"></div>Loading...</div>
-        <table class="tbl" id="dash-table" style="display:none">
-          <thead><tr><th>Product</th><th>Staff</th><th>Section</th><th>Job code</th><th>Qty</th><th>Time</th><th></th></tr></thead>
+        <div class="tbl-wrap"><table class="tbl" id="dash-table" style="display:none">
+          <thead><tr><th>Product</th><th>Staff</th><th>Job</th><th>Qty</th><th>Time</th><th></th></tr></thead>
           <tbody id="dash-recent"></tbody>
-        </table>
+        </table></div>
       </div>
     </div>
 
@@ -282,14 +244,12 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
     <div class="page" id="page-print">
       <div class="pg-title">Print a Label</div>
       <div class="pg-sub">Select product, confirm details, send to printer</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start">
+      <div class="two-col">
         <div>
           <div class="card">
             <div class="card-title">Product</div>
             <div style="margin-bottom:10px"><label>Search</label><input type="text" id="psearch" placeholder="Search by name or category…" oninput="filterProds(this.value)"></div>
-            <div id="prod-results" style="max-height:220px;overflow-y:auto;display:grid;gap:4px">
-              <div class="loading"><div class="spinner"></div>Loading products…</div>
-            </div>
+            <div id="prod-results" style="max-height:220px;overflow-y:auto;display:grid;gap:4px"><div class="loading"><div class="spinner"></div>Loading…</div></div>
           </div>
           <div class="card">
             <div class="card-title">Details</div>
@@ -303,10 +263,8 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
                   <option>Dessert</option><option>Evening Grazing</option><option>Tasting Menu</option>
                 </select>
               </div>
-              <div><label>Job code</label>
-                <select id="sel-job"><option value="">— No job code —</option></select>
-              </div>
-              <div><label>Quantity</label><input type="number" id="qty" value="1" min="1" max="50" style="width:80px"></div>
+              <div><label>Job code</label><select id="sel-job"><option value="">— No job code —</option></select></div>
+              <div class="form-full"><label>Quantity</label><input type="number" id="qty" value="1" min="1" max="50" style="width:80px"></div>
             </div>
           </div>
           <div class="card">
@@ -316,7 +274,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
           </div>
           <div class="card">
             <div class="card-title">Notes <span style="font-size:10px;color:var(--text3);text-transform:none;letter-spacing:0"> — optional, printed on label</span></div>
-            <textarea id="print-notes" placeholder="e.g. Made without alliums · Client is nut free · See chef for details…" style="min-height:60px"></textarea>
+            <textarea id="print-notes" placeholder="e.g. Made without alliums · Client nut free…"></textarea>
           </div>
           <div class="row-btns">
             <button class="btn btn-primary" onclick="sendPrint()">Print label</button>
@@ -324,28 +282,23 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
             <span id="pstatus" style="font-size:11px;color:var(--text3)"></span>
           </div>
         </div>
-        <div class="card">
-          <div class="card-title">Live preview</div>
-          <div class="label-wrap">
-            <div class="lh">
-              <span class="lh-name" id="pv-name">Select a product</span>
-              <span class="lh-code" id="pv-job">—</span>
+        <div class="portrait-hide">
+          <div class="card">
+            <div class="card-title">Live preview</div>
+            <div class="label-wrap">
+              <div class="lh"><span class="lh-name" id="pv-name">Select a product</span><span class="lh-code" id="pv-job">—</span></div>
+              <div class="lb">
+                <div class="lr"><span class="ll">Prep date</span><span class="lv" id="pv-prep">—</span></div>
+                <div class="lr"><span class="ll">Use by</span><span class="lv red" id="pv-useby">—</span></div>
+                <div class="lr"><span class="ll">Prepared by</span><span class="lv" id="pv-staff">—</span></div>
+                <div class="lr"><span class="ll">Section</span><span class="lv" id="pv-stn">—</span></div>
+              </div>
+              <div class="abar"><div id="pv-al-wrap"><div class="abar-none">No allergens declared</div></div></div>
+              <div class="notes-bar" id="pv-notes-bar" style="display:none"><div class="notes-text" id="pv-notes-text"></div></div>
+              <div class="lfoot"><span id="pv-ft-code">—</span><span id="pv-ft-time">—</span></div>
             </div>
-            <div class="lb">
-              <div class="lr"><span class="ll">Prep date</span><span class="lv" id="pv-prep">—</span></div>
-              <div class="lr"><span class="ll">Use by</span><span class="lv red" id="pv-useby">—</span></div>
-              <div class="lr"><span class="ll">Prepared by</span><span class="lv" id="pv-staff">—</span></div>
-              <div class="lr"><span class="ll">Section</span><span class="lv" id="pv-stn">—</span></div>
-            </div>
-            <div class="abar">
-              <div id="pv-al-wrap"><div class="abar-none">No allergens declared</div></div>
-            </div>
-            <div class="notes-bar" id="pv-notes-bar" style="display:none">
-              <div class="notes-bar-text" id="pv-notes-text"></div>
-            </div>
-            <div class="lfoot"><span id="pv-ft-code">—</span><span id="pv-ft-time">—</span></div>
+            <div style="margin-top:10px;font-size:11px;color:var(--text3);text-align:center">Black & red · DK-2251 · Brother QL-820NWBc</div>
           </div>
-          <div style="margin-top:10px;font-size:11px;color:var(--text3);text-align:center">Black & red · DK-2251 · Brother QL-820NWBc</div>
         </div>
       </div>
     </div>
@@ -353,8 +306,8 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
     <!-- CUSTOM LABEL -->
     <div class="page" id="page-custom">
       <div class="pg-title">Custom Label</div>
-      <div class="pg-sub">Blank canvas — fully editable rows with adjustable text size</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start">
+      <div class="pg-sub">Blank canvas — add rows with adjustable text size</div>
+      <div class="two-col">
         <div>
           <div class="card">
             <div class="card-title">Label rows</div>
@@ -374,22 +327,18 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
                   <option>Dessert</option><option>Evening Grazing</option><option>Tasting Menu</option>
                 </select>
               </div>
-              <div><label>Job code</label>
-                <select id="c-job"><option value="">— No job code —</option></select>
-              </div>
+              <div><label>Job code</label><select id="c-job"><option value="">— No job code —</option></select></div>
               <div><label>Quantity</label><input type="number" id="c-qty" value="1" min="1" max="50" style="width:80px"></div>
             </div>
           </div>
-          <div class="row-btns">
-            <button class="btn btn-primary" onclick="sendCustomPrint()">Print custom label</button>
-          </div>
+          <div class="row-btns"><button class="btn btn-primary" onclick="sendCustomPrint()">Print custom label</button></div>
         </div>
-        <div class="card">
-          <div class="card-title">Live preview</div>
-          <div class="custom-preview-wrap" id="custom-preview">
-            <div style="font-size:12px;color:#ccc;font-family:Geist,sans-serif">Add rows to see preview…</div>
+        <div class="portrait-hide">
+          <div class="card">
+            <div class="card-title">Live preview</div>
+            <div class="custom-preview-wrap" id="custom-preview"><div style="font-size:12px;color:#ccc">Add rows to preview…</div></div>
+            <div style="margin-top:10px;font-size:11px;color:var(--text3);text-align:center">Black · DK-2251 · Brother QL-820NWBc</div>
           </div>
-          <div style="margin-top:10px;font-size:11px;color:var(--text3);text-align:center">Black · DK-2251 · Brother QL-820NWBc</div>
         </div>
       </div>
     </div>
@@ -397,22 +346,19 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
     <!-- QUEUE -->
     <div class="page" id="page-queue">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px">
-        <div>
-          <div class="pg-title">Print Queue</div>
-          <div class="pg-sub" style="margin-bottom:0">Full history — click any row to reprint</div>
-        </div>
-        <div style="display:flex;gap:8px;align-items:center">
+        <div><div class="pg-title">Print Queue</div><div class="pg-sub" style="margin-bottom:0">Full history — tap any row to reprint</div></div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
           <span class="live-badge"><span class="live-dot"></span>Live</span>
           <button class="btn btn-ghost btn-sm" onclick="exportCSV()">Export CSV</button>
         </div>
       </div>
       <div class="card">
-        <div id="q-loading" class="loading"><div class="spinner"></div>Loading queue…</div>
-        <table class="tbl" id="q-table" style="display:none">
-          <thead><tr><th>Product</th><th>Staff</th><th>Section</th><th>Job code</th><th>Qty</th><th>Use by</th><th>Notes</th><th>Printed at</th><th></th></tr></thead>
+        <div id="q-loading" class="loading"><div class="spinner"></div>Loading…</div>
+        <div class="tbl-wrap"><table class="tbl" id="q-table" style="display:none">
+          <thead><tr><th>Product</th><th>Staff</th><th>Section</th><th>Job</th><th>Qty</th><th>Use by</th><th>Notes</th><th>Time</th><th></th></tr></thead>
           <tbody id="q-body"></tbody>
-        </table>
-        <div id="q-empty" style="text-align:center;padding:32px;color:var(--text3);display:none;font-size:13px">No labels printed yet</div>
+        </table></div>
+        <div id="q-empty" style="text-align:center;padding:32px;color:var(--text3);display:none">No labels printed yet</div>
       </div>
     </div>
 
@@ -428,7 +374,6 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
         <div class="tab" onclick="showTab(this,'t-backup')">Backup</div>
       </div>
 
-      <!-- PRODUCTS -->
       <div class="tab-content active" id="t-products">
         <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
           <input type="text" placeholder="Search products…" oninput="renderAdminProds(this.value)" style="max-width:240px">
@@ -441,11 +386,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
             <div class="form-grid">
               <div class="form-full"><label>Product name</label><input type="text" id="np-name" placeholder="e.g. Beef Wellington"></div>
               <div><label>Category</label>
-                <select id="np-cat">
-                  <option>Canapés</option><option>Starters</option><option>Mains</option>
-                  <option>Desserts</option><option>Evening Grazing</option><option>Tasting Menu</option>
-                  <option>Sauces & Dressings</option><option>Stocks & Soups</option><option>Pastry</option><option>Other</option>
-                </select>
+                <select id="np-cat"><option>Canapés</option><option>Starters</option><option>Mains</option><option>Desserts</option><option>Evening Grazing</option><option>Tasting Menu</option><option>Sauces & Dressings</option><option>Stocks & Soups</option><option>Pastry</option><option>Other</option></select>
               </div>
               <div><label>Shelf life (hours)</label><input type="number" id="np-shelf" value="72" min="1"></div>
             </div>
@@ -460,7 +401,6 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
         </div>
       </div>
 
-      <!-- STAFF -->
       <div class="tab-content" id="t-staff">
         <div class="staff-grid" id="staff-grid"><div class="loading"><div class="spinner"></div>Loading…</div></div>
         <div style="margin-top:16px" class="card">
@@ -473,11 +413,10 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
         </div>
       </div>
 
-      <!-- JOB CODES -->
       <div class="tab-content" id="t-jobcodes">
         <div class="card" style="margin-bottom:14px">
           <div class="card-title">Build a job code</div>
-          <p style="font-size:12px;color:var(--text2);margin-bottom:16px">3 letters of client name + date (DDMMYY) + event type</p>
+          <p style="font-size:12px;color:var(--text2);margin-bottom:16px">3 letters client + date DDMMYY + event type</p>
           <div style="display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap">
             <div><label>Client initials</label><input type="text" id="jc-client" maxlength="3" placeholder="DFG" oninput="buildJCPreview()" style="width:90px;text-transform:uppercase;font-family:'DM Mono',monospace;letter-spacing:2px"></div>
             <div style="font-size:20px;color:var(--text3);padding-bottom:10px">+</div>
@@ -485,14 +424,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
             <div style="font-size:20px;color:var(--text3);padding-bottom:10px">+</div>
             <div><label>Event type</label>
               <select id="jc-type" onchange="buildJCPreview()" style="width:140px">
-                <option value="TM">TM – Tasting Menu</option>
-                <option value="CAN">CAN – Canapés</option>
-                <option value="BUF">BUF – Buffet</option>
-                <option value="WED">WED – Wedding</option>
-                <option value="CORP">CORP – Corporate</option>
-                <option value="GAL">GAL – Gala Dinner</option>
-                <option value="GRZ">GRZ – Grazing</option>
-                <option value="PRIV">PRIV – Private Dining</option>
+                <option value="TM">TM – Tasting Menu</option><option value="CAN">CAN – Canapés</option><option value="BUF">BUF – Buffet</option><option value="WED">WED – Wedding</option><option value="CORP">CORP – Corporate</option><option value="GAL">GAL – Gala Dinner</option><option value="GRZ">GRZ – Grazing</option><option value="PRIV">PRIV – Private Dining</option>
               </select>
             </div>
             <div style="flex:1;min-width:160px"><label>Description</label><input type="text" id="jc-desc" placeholder="e.g. Douglas F. Gig"></div>
@@ -500,46 +432,37 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
           <div class="jc-preview-box" id="jc-preview">———</div>
           <div class="row-btns"><button class="btn btn-primary btn-sm" onclick="addJC()">+ Save to database</button></div>
         </div>
-        <div class="card">
-          <div class="card-title">Active job codes</div>
-          <div id="jc-list"><div class="loading"><div class="spinner"></div>Loading…</div></div>
-        </div>
+        <div class="card"><div class="card-title">Active job codes</div><div id="jc-list"><div class="loading"><div class="spinner"></div>Loading…</div></div></div>
       </div>
 
-      <!-- PRINTER -->
       <div class="tab-content" id="t-printer">
         <div class="card" style="margin-bottom:12px">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-            <div class="card-title" style="margin-bottom:0">Printer status</div>
+            <div class="card-title" style="margin-bottom:0">System status</div>
             <button class="btn btn-ghost btn-sm" onclick="checkPrinterStatus()">↻ Check now</button>
           </div>
-          <div class="status-row" id="status-pi">
+          <div class="status-row">
             <span class="status-dot status-unknown" id="pi-dot"></span>
-            <div>
-              <div style="font-weight:500;color:var(--text)">Raspberry Pi print server</div>
-              <div style="font-size:11px;color:var(--text3);margin-top:2px" id="pi-msg">Not checked yet — click Check now</div>
+            <div style="flex:1">
+              <div style="font-weight:500;color:var(--text);font-size:13px">Raspberry Pi print server</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:2px" id="pi-msg">192.168.1.175:3000 — click Check now</div>
             </div>
           </div>
-          <div class="status-row" id="status-printer">
+          <div class="status-row">
             <span class="status-dot status-unknown" id="printer-dot"></span>
-            <div>
-              <div style="font-weight:500;color:var(--text)">Brother QL-820NWBc</div>
-              <div style="font-size:11px;color:var(--text3);margin-top:2px" id="printer-msg">Not checked yet — click Check now</div>
+            <div style="flex:1">
+              <div style="font-weight:500;color:var(--text);font-size:13px">Brother QL-820NWBc</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:2px" id="printer-msg">192.168.1.127 — click Check now</div>
             </div>
           </div>
-          <div id="print-job-status" style="margin-top:12px;font-size:12px;color:var(--text3)"></div>
+          <div id="last-print-status" style="margin-top:10px;font-size:11px;color:var(--text3)"></div>
         </div>
-        <div class="card">
-          <div class="card-title">Brother QL-820NWBc settings</div>
+        <div class="card" style="margin-bottom:12px">
+          <div class="card-title">Connection settings</div>
           <div class="form-grid">
-            <div><label>Printer IP address</label><input type="text" id="pr-ip" value="192.168.1.100"></div>
-            <div><label>Label roll</label>
-              <select>
-                <option>DK-2251 (black & red — recommended)</option>
-                <option>DK-2205 (black only)</option>
-              </select>
-            </div>
-            <div class="form-full"><label>Raspberry Pi print server URL</label><input type="text" id="pr-srv" value="http://192.168.1.50:3000/print"></div>
+            <div><label>Printer IP</label><input type="text" id="pr-ip" value="192.168.1.127"></div>
+            <div><label>Label roll</label><select id="pr-roll"><option value="dk2251">DK-2251 — black & red (recommended)</option><option value="dk2205">DK-2205 — black only</option></select></div>
+            <div class="form-full"><label>Raspberry Pi print server URL</label><input type="text" id="pr-srv" value="http://192.168.1.175:3000/print"></div>
           </div>
           <div class="row-btns">
             <button class="btn btn-green btn-sm" onclick="sendTestPrint()">Send test print</button>
@@ -547,79 +470,66 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
           </div>
         </div>
         <div class="card">
-          <div class="card-title">Setup guide</div>
-          <ol style="color:var(--text2);font-size:13px;line-height:2.4;padding-left:18px">
-            <li>Connect Brother QL-820NWBc to kitchen Wi-Fi via its LCD menu</li>
-            <li>Hold the feed button to print a network report — note the IP address</li>
-            <li>Enter that IP above and save</li>
-            <li>Set up Raspberry Pi print server — ask Claude to generate the code</li>
-            <li>Every device on the same Wi-Fi sends labels to the one printer</li>
-          </ol>
+          <div class="card-title">Your setup</div>
+          <div style="display:grid;gap:8px">
+            <div style="padding:10px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Printer</div><div style="font-size:13px;color:var(--text);font-family:'DM Mono',monospace">Brother QL-820NWBc · 192.168.1.127</div></div>
+            <div style="padding:10px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Print server</div><div style="font-size:13px;color:var(--text);font-family:'DM Mono',monospace">Raspberry Pi · 192.168.1.175:3000</div></div>
+            <div style="padding:10px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Label roll</div><div style="font-size:13px;color:var(--text)">DK-2251 — black & red</div></div>
+          </div>
         </div>
       </div>
 
-      <!-- BACKUP -->
       <div class="tab-content" id="t-backup">
         <div class="card" style="margin-bottom:12px">
           <div class="card-title">Export data backup</div>
-          <p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.6">Download a full backup of your data as CSV files. Keep these somewhere safe — if anything goes wrong you can use them to restore your database.</p>
+          <p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.6">Download your data as CSV files. Keep these somewhere safe — restore from them in Supabase if anything goes wrong.</p>
           <div style="display:grid;gap:8px">
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)">
-              <div><div style="font-weight:500;font-size:13px;color:var(--text)">Products database</div><div style="font-size:11px;color:var(--text3);margin-top:2px">All products, allergens and shelf life</div></div>
-              <button class="btn btn-green btn-sm" onclick="exportTable('products')">Download CSV</button>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)">
-              <div><div style="font-weight:500;font-size:13px;color:var(--text)">Staff list</div><div style="font-size:11px;color:var(--text3);margin-top:2px">All staff members (PINs not included)</div></div>
-              <button class="btn btn-green btn-sm" onclick="exportTable('staff')">Download CSV</button>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)">
-              <div><div style="font-weight:500;font-size:13px;color:var(--text)">Job codes</div><div style="font-size:11px;color:var(--text3);margin-top:2px">All active job codes and descriptions</div></div>
-              <button class="btn btn-green btn-sm" onclick="exportTable('job_codes')">Download CSV</button>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)">
-              <div><div style="font-weight:500;font-size:13px;color:var(--text)">Full print history</div><div style="font-size:11px;color:var(--text3);margin-top:2px">Every label ever printed — full audit trail</div></div>
-              <button class="btn btn-green btn-sm" onclick="exportCSV()">Download CSV</button>
-            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)"><div><div style="font-weight:500;font-size:13px;color:var(--text)">Products database</div><div style="font-size:11px;color:var(--text3);margin-top:2px">All products, allergens and shelf life</div></div><button class="btn btn-green btn-sm" onclick="exportTable('products')">Download</button></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)"><div><div style="font-weight:500;font-size:13px;color:var(--text)">Staff list</div><div style="font-size:11px;color:var(--text3);margin-top:2px">All staff members (PINs excluded)</div></div><button class="btn btn-green btn-sm" onclick="exportTable('staff')">Download</button></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)"><div><div style="font-weight:500;font-size:13px;color:var(--text)">Job codes</div><div style="font-size:11px;color:var(--text3);margin-top:2px">All active job codes</div></div><button class="btn btn-green btn-sm" onclick="exportTable('job_codes')">Download</button></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)"><div><div style="font-weight:500;font-size:13px;color:var(--text)">Full print history</div><div style="font-size:11px;color:var(--text3);margin-top:2px">Every label ever printed</div></div><button class="btn btn-green btn-sm" onclick="exportCSV()">Download</button></div>
           </div>
         </div>
-        <div class="card">
-          <div class="card-title">How to restore from backup</div>
-          <p style="font-size:13px;color:var(--text2);line-height:1.8">If data is lost or incorrectly changed, go to <strong style="color:var(--text)">supabase.com</strong> → your project → Table Editor → select the table → Import data from CSV. Upload your backup file and the data will be restored. The print history audit log cannot be altered by any staff member.</p>
-        </div>
+        <div class="card"><div class="card-title">How to restore</div><p style="font-size:13px;color:var(--text2);line-height:1.8">Go to <strong style="color:var(--text)">supabase.com</strong> → Digby's CPS project → Table Editor → select table → Import data from CSV.</p></div>
       </div>
     </div>
 
-    <!-- AUDIT LOG (manager only) -->
+    <!-- AUDIT LOG -->
     <div class="page" id="page-audit">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px">
-        <div>
-          <div class="pg-title">Audit Log</div>
-          <div class="pg-sub" style="margin-bottom:0">All admin changes — visible to manager only · cannot be deleted</div>
-        </div>
+        <div><div class="pg-title">Audit Log</div><div class="pg-sub" style="margin-bottom:0">All admin changes — manager view only · cannot be deleted</div></div>
         <button class="btn btn-green btn-sm" onclick="exportAudit()">Export log</button>
       </div>
       <div class="card">
-        <div id="audit-loading" class="loading"><div class="spinner"></div>Loading audit log…</div>
+        <div id="audit-loading" class="loading" style="display:none"><div class="spinner"></div>Loading…</div>
         <div id="audit-list"></div>
-        <div id="audit-empty" style="text-align:center;padding:32px;color:var(--text3);display:none;font-size:13px">No admin changes logged yet</div>
+        <div id="audit-empty" style="text-align:center;padding:32px;color:var(--text3);display:none">No admin changes logged yet — changes will appear here as you use the system</div>
       </div>
     </div>
 
   </div>
 </div>
-
 <div class="toast" id="toast-el"></div>
 
 <script>
 var SUPA_URL='https://jaajrllkozknilvmdezt.supabase.co';
 var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImphYWpybGxrb3prbmlsdm1kZXp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwMjQxNDAsImV4cCI6MjA5MjYwMDE0MH0.09U5cba3JxRmysrn2X3TxPqr-q6jJE4QhyeKQwEK03M';
+var PRINT_SERVER='http://192.168.1.175:3000/print';
+var PRINT_STATUS_URL='http://192.168.1.175:3000/status';
 var ALLERGENS=['Gluten','Crustaceans','Eggs','Fish','Peanuts','Soya','Milk','Nuts','Celery','Mustard','Sesame','Sulphites','Lupin','Molluscs'];
 var COLORS=['#e8c547','#e06030','#4090d0','#a060d0','#40b080','#d06090','#60b0a0','#d09040'];
-var MANAGER_PIN='1810';
 var MANAGER_NAME='James Brierley';
+var MANAGER_PIN='1810';
+var user=null,staffList=[],products=[],jobCodes=[],selProd=null,aState={c:[],m:[]},npState={},customRows=[];
 
-var user=null,staffList=[],products=[],jobCodes=[],selProd=null,aState={c:[],m:[]},npState={};
-var realtimeSub=null;
+function logAudit(action,detail){
+  try{
+    var log=JSON.parse(localStorage.getItem('digby_audit_v2')||'[]');
+    log.unshift({who:user?user.name:'Unknown',action:action,detail:detail,when:new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})});
+    if(log.length>1000)log=log.slice(0,1000);
+    localStorage.setItem('digby_audit_v2',JSON.stringify(log));
+  }catch(e){}
+}
 
 async function supa(method,table,body,query){
   var url=SUPA_URL+'/rest/v1/'+table+(query?'?'+query:'');
@@ -630,17 +540,13 @@ async function supa(method,table,body,query){
   try{return await r.json();}catch(e){return[];}
 }
 
-async function logAudit(action,detail){
+async function sendToPrinter(job){
   try{
-    await supa('POST','print_jobs',null,null);
-    // Store audit in a simple way using print_jobs notes field approach
-    // We'll use a separate fetch to a dedicated audit table if it exists
-    // For now store in localStorage as backup
-    var log=JSON.parse(localStorage.getItem('digby_audit')||'[]');
-    log.unshift({who:user?user.name:'Unknown',action:action,detail:detail,when:new Date().toLocaleString('en-GB')});
-    if(log.length>500)log=log.slice(0,500);
-    localStorage.setItem('digby_audit',JSON.stringify(log));
-  }catch(e){}
+    var r=await fetch(PRINT_SERVER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(job),signal:AbortSignal.timeout(10000)});
+    var d=await r.json();
+    if(d.success){document.getElementById('last-print-status').textContent='Last print: '+job.quantity+' label(s) at '+job.printed_at;return true;}
+    toast('Printer error: '+(d.error||'Unknown'),'err');return false;
+  }catch(e){toast('Cannot reach print server — is the Pi on?','err');return false;}
 }
 
 async function loadStaffForLogin(){
@@ -648,14 +554,8 @@ async function loadStaffForLogin(){
     staffList=await supa('GET','staff','','order=name.asc');
     var sel=document.getElementById('luser');
     sel.innerHTML='<option value="">— Select staff member —</option>';
-    staffList.forEach(function(s,i){
-      var o=document.createElement('option');o.value=i;o.textContent=s.name;sel.appendChild(o);
-    });
-  }catch(e){
-    var err=document.getElementById('lerr');
-    err.textContent='Could not connect to database: '+e.message;
-    err.style.display='block';
-  }
+    staffList.forEach(function(s,i){var o=document.createElement('option');o.value=i;o.textContent=s.name;sel.appendChild(o);});
+  }catch(e){var err=document.getElementById('lerr');err.textContent='Could not connect: '+e.message;err.style.display='block';}
 }
 
 function doLogin(){
@@ -664,25 +564,19 @@ function doLogin(){
   if(ui===''){showErr('Please select your name.');return;}
   var s=staffList[parseInt(ui)];
   if(!s){showErr('Staff not found.');return;}
-  if(pin!==s.pin){showErr('Incorrect PIN. Please try again.');return;}
+  if(pin!==s.pin){showErr('Incorrect PIN.');return;}
   user=s;
-  var isManager=(pin===MANAGER_PIN&&s.name===MANAGER_NAME);
-  user.isManager=isManager;
+  user.isManager=(s.name===MANAGER_NAME&&pin===MANAGER_PIN);
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app').style.display='flex';
-  if(isManager)document.getElementById('nav-audit').style.display='flex';
+  if(user.isManager)document.getElementById('nav-audit').style.display='flex';
   initApp();
 }
-
-function showErr(m){
-  var e=document.getElementById('lerr');e.textContent=m;e.style.display='block';
-  setTimeout(function(){e.style.display='none';},3000);
-}
+function showErr(m){var e=document.getElementById('lerr');e.textContent=m;e.style.display='block';setTimeout(function(){e.style.display='none';},3000);}
 document.getElementById('lpin').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
 
 function doLogout(){
-  user=null;selProd=null;products=[];jobCodes=[];
-  if(realtimeSub){try{realtimeSub.unsubscribe();}catch(e){}}
+  user=null;selProd=null;products=[];jobCodes=[];customRows=[];
   document.getElementById('login-screen').style.display='flex';
   document.getElementById('app').style.display='none';
   document.getElementById('lpin').value='';
@@ -696,6 +590,7 @@ async function initApp(){
   var av=document.getElementById('sb-av');
   av.textContent=ini;av.style.background=col+'33';av.style.color=col;
   document.getElementById('sb-name').textContent=user.name;
+  document.getElementById('sb-role').textContent=user.isManager?'Manager ★':'Tap to sign out';
   var h=new Date().getHours();
   document.getElementById('dash-greet').textContent=(h<12?'Good morning':h<17?'Good afternoon':'Good evening')+', '+user.name.split(' ')[0];
   document.getElementById('d-prep').value=new Date().toISOString().split('T')[0];
@@ -704,24 +599,14 @@ async function initApp(){
   initCustomRows();
   await Promise.all([loadProducts(),loadJobCodes(),loadDash(),loadStaff()]);
   updatePreview();
-  startRealtime();
-}
-
-function startRealtime(){
-  // Poll every 15 seconds for real-time feel without websocket complexity
-  setInterval(function(){
-    var activePage=document.querySelector('.page.active');
-    if(activePage&&activePage.id==='page-dashboard')loadDash();
-    if(activePage&&activePage.id==='page-queue')loadQueue();
-  },15000);
+  setInterval(function(){var ap=document.querySelector('.page.active');if(ap){if(ap.id==='page-dashboard')loadDash();if(ap.id==='page-queue')loadQueue();}},15000);
 }
 
 function showPage(id){
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
   document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active');});
   document.getElementById('page-'+id).classList.add('active');
-  var nav=document.querySelector('[data-page="'+id+'"]');
-  if(nav)nav.classList.add('active');
+  var nav=document.querySelector('[data-page="'+id+'"]');if(nav)nav.classList.add('active');
   if(id==='queue')loadQueue();
   if(id==='dashboard')loadDash();
   if(id==='audit')loadAudit();
@@ -735,18 +620,12 @@ function showTab(el,id){
 }
 
 async function loadProducts(){
-  try{
-    products=await supa('GET','products','','order=name.asc');
-    document.getElementById('st-prods').textContent=products.length;
-    filterProds('');renderAdminProds('');
-  }catch(e){toast('Could not load products: '+e.message,'err');}
+  try{products=await supa('GET','products','','order=name.asc');document.getElementById('st-prods').textContent=products.length;filterProds('');renderAdminProds('');}
+  catch(e){toast('Could not load products','err');}
 }
 
 async function loadJobCodes(){
-  try{
-    jobCodes=await supa('GET','job_codes','','order=created_at.desc');
-    populateJCSelect();renderJC();populateCustomJobSelect();
-  }catch(e){toast('Could not load job codes','err');}
+  try{jobCodes=await supa('GET','job_codes','','order=created_at.desc');populateJCSelect();renderJC();populateCustomJobSelect();}catch(e){}
 }
 
 async function loadDash(){
@@ -757,14 +636,12 @@ async function loadDash(){
     document.getElementById('dash-loading').style.display='none';
     document.getElementById('dash-table').style.display='table';
     var tb=document.getElementById('dash-recent');
-    if(!jobs.length){
-      tb.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:20px">No labels printed yet</td></tr>';
-      return;
-    }
+    if(!jobs.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:20px">No labels printed yet</td></tr>';return;}
     tb.innerHTML=jobs.map(function(j){
-      return'<tr style="cursor:pointer" onclick="reprintJob('+JSON.stringify(j).replace(/"/g,'&quot;')+')" title="Click to reprint"><td style="font-weight:500;color:var(--text)">'+j.product_name+'</td><td style="color:var(--text2)">'+j.staff_name+'</td><td style="color:var(--text2)">'+(j.section||'—')+'</td><td style="font-family:DM Mono,monospace;color:var(--accent);font-size:11px">'+(j.job_code||'—')+'</td><td style="color:var(--text2)">'+j.quantity+'</td><td style="font-family:DM Mono,monospace;font-size:11px;color:var(--text2)">'+(j.printed_at||'')+'</td><td><button class="btn btn-amber btn-sm" onclick="event.stopPropagation();reprintJob('+JSON.stringify(j).replace(/"/g,'&quot;')+')">Reprint</button></td></tr>';
+      var enc=encodeURIComponent(JSON.stringify(j));
+      return'<tr style="cursor:pointer" onclick="reprintJob(\''+enc+'\')"><td style="font-weight:500;color:var(--text)">'+j.product_name+'</td><td>'+j.staff_name+'</td><td style="font-family:DM Mono,monospace;color:var(--accent);font-size:11px">'+(j.job_code||'—')+'</td><td>'+j.quantity+'</td><td style="font-family:DM Mono,monospace;font-size:11px">'+(j.printed_at||'')+'</td><td><button class="btn btn-amber btn-sm" onclick="event.stopPropagation();reprintJob(\''+enc+'\')">Reprint</button></td></tr>';
     }).join('');
-  }catch(e){toast('Could not load dashboard','err');}
+  }catch(e){}
 }
 
 async function loadQueue(){
@@ -777,80 +654,56 @@ async function loadQueue(){
     if(!jobs.length){document.getElementById('q-empty').style.display='block';return;}
     document.getElementById('q-table').style.display='table';
     document.getElementById('q-body').innerHTML=jobs.map(function(j){
-      return'<tr style="cursor:pointer" onclick="reprintJob('+JSON.stringify(j).replace(/"/g,'&quot;')+')"><td style="font-weight:500;color:var(--text)">'+j.product_name+'</td><td>'+j.staff_name+'</td><td>'+(j.section||'—')+'</td><td style="font-family:DM Mono,monospace;color:var(--accent);font-size:11px">'+(j.job_code||'—')+'</td><td>'+j.quantity+'</td><td>'+fmtDate(j.date_useby)+'</td><td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+(j.notes||'')+'">'+(j.notes||'—')+'</td><td style="font-family:DM Mono,monospace;font-size:11px">'+(j.printed_at||'')+'</td><td><button class="btn btn-amber btn-sm" onclick="event.stopPropagation();reprintJob('+JSON.stringify(j).replace(/"/g,'&quot;')+')">Reprint</button></td></tr>';
+      var enc=encodeURIComponent(JSON.stringify(j));
+      return'<tr style="cursor:pointer" onclick="reprintJob(\''+enc+'\')"><td style="font-weight:500;color:var(--text)">'+j.product_name+'</td><td>'+j.staff_name+'</td><td>'+(j.section||'—')+'</td><td style="font-family:DM Mono,monospace;color:var(--accent);font-size:11px">'+(j.job_code||'—')+'</td><td>'+j.quantity+'</td><td>'+fmtDate(j.date_useby)+'</td><td style="max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(j.notes||'—')+'</td><td style="font-family:DM Mono,monospace;font-size:11px">'+(j.printed_at||'')+'</td><td><button class="btn btn-amber btn-sm" onclick="event.stopPropagation();reprintJob(\''+enc+'\')">Reprint</button></td></tr>';
     }).join('');
   }catch(e){toast('Could not load queue','err');}
 }
 
-function reprintJob(j){
-  // Load the job back into the print screen
+function reprintJob(enc){
+  var j=JSON.parse(decodeURIComponent(enc));
   showPage('print');
-  // Find the product
-  var prod=null;
-  for(var i=0;i<products.length;i++){if(products[i].name===j.product_name){prod=products[i];break;}}
-  if(prod){selectProd(prod);}else{
-    // Set manually if product not found
-    document.getElementById('pv-name').textContent=j.product_name;
-  }
-  // Set dates
+  var prod=null;for(var i=0;i<products.length;i++){if(products[i].name===j.product_name){prod=products[i];break;}}
+  if(prod)selectProd(prod);
   if(j.date_prepped)document.getElementById('d-prep').value=j.date_prepped;
   if(j.date_useby)document.getElementById('d-useby').value=j.date_useby;
-  // Set section
-  if(j.section){
-    var stn=document.getElementById('sel-stn');
-    for(var i=0;i<stn.options.length;i++){if(stn.options[i].value===j.section){stn.selectedIndex=i;break;}}
-  }
-  // Set job code
-  if(j.job_code){
-    var jc=document.getElementById('sel-job');
-    for(var i=0;i<jc.options.length;i++){if(jc.options[i].value===j.job_code){jc.selectedIndex=i;break;}}
-  }
-  // Set qty
+  var stn=document.getElementById('sel-stn');for(var i=0;i<stn.options.length;i++){if(stn.options[i].value===(j.section||'')){stn.selectedIndex=i;break;}}
+  var jc=document.getElementById('sel-job');for(var i=0;i<jc.options.length;i++){if(jc.options[i].value===(j.job_code||'')){jc.selectedIndex=i;break;}}
   document.getElementById('qty').value=j.quantity||1;
-  // Set notes
   document.getElementById('print-notes').value=j.notes||'';
-  // Set allergens
   var c=j.contains?j.contains.split(',').map(function(x){return x.trim();}).filter(Boolean):[];
   var m=j.may_contain?j.may_contain.split(',').map(function(x){return x.trim();}).filter(Boolean):[];
-  setChips(c,m);
-  updatePreview();
-  toast('Label loaded — check details and print','ok');
+  setChips(c,m);updatePreview();
+  toast('Label loaded — check and print','ok');
 }
 
 async function loadStaff(){
-  try{
-    var list=await supa('GET','staff','','order=name.asc');
-    staffList=list;renderStaff(list);
-  }catch(e){toast('Could not load staff','err');}
+  try{var list=await supa('GET','staff','','order=name.asc');staffList=list;renderStaff(list);}catch(e){}
 }
 
 function loadAudit(){
   var el=document.getElementById('audit-list');
   var em=document.getElementById('audit-empty');
-  document.getElementById('audit-loading').style.display='none';
-  var log=JSON.parse(localStorage.getItem('digby_audit')||'[]');
+  var log=JSON.parse(localStorage.getItem('digby_audit_v2')||'[]');
   if(!log.length){em.style.display='block';el.innerHTML='';return;}
   em.style.display='none';
-  el.innerHTML=log.map(function(entry){
-    return'<div class="audit-row"><div class="audit-who">'+entry.who+'</div><div class="audit-what">'+entry.action+' — '+entry.detail+'</div><div class="audit-when">'+entry.when+'</div></div>';
+  el.innerHTML=log.map(function(e){
+    return'<div class="audit-row"><div class="audit-who">'+e.who+'</div><div class="audit-what">'+e.action+' — '+e.detail+'</div><div class="audit-when">'+e.when+'</div></div>';
   }).join('');
 }
 
 function exportAudit(){
-  var log=JSON.parse(localStorage.getItem('digby_audit')||'[]');
-  if(!log.length){toast('No audit log entries yet','err');return;}
-  var csv='Who,Action,Detail,When\n'+log.map(function(e){
-    return'"'+e.who+'","'+e.action+'","'+e.detail+'","'+e.when+'"';
-  }).join('\n');
-  downloadCSV(csv,'digbys-cps-audit-log.csv');
+  var log=JSON.parse(localStorage.getItem('digby_audit_v2')||'[]');
+  if(!log.length){toast('No audit entries yet','err');return;}
+  var csv='Who,Action,Detail,When\n'+log.map(function(e){return'"'+e.who+'","'+e.action+'","'+e.detail+'","'+e.when+'"';}).join('\n');
+  downloadCSV(csv,'digbys-cps-audit-'+new Date().toISOString().split('T')[0]+'.csv');
   toast('Audit log exported','ok');
 }
 
 function buildChips(cid,isMain){
   var c=document.getElementById(cid);c.innerHTML='';
   ALLERGENS.forEach(function(a){
-    var ch=document.createElement('div');
-    ch.className='chip';ch.textContent=a;ch.dataset.name=a;ch.dataset.state='none';
+    var ch=document.createElement('div');ch.className='chip';ch.textContent=a;ch.dataset.name=a;ch.dataset.state='none';
     ch.onclick=function(){
       var s=ch.dataset.state;
       if(s==='none'){ch.dataset.state='contains';ch.classList.add('contains');ch.classList.remove('may');}
@@ -861,15 +714,13 @@ function buildChips(cid,isMain){
     c.appendChild(ch);
   });
 }
-
-function setChips(contains,may){
+function setChips(c,m){
   document.querySelectorAll('#a-chips .chip').forEach(function(ch){
     var n=ch.dataset.name;ch.classList.remove('contains','may');ch.dataset.state='none';
-    if(contains&&contains.indexOf(n)>=0){ch.dataset.state='contains';ch.classList.add('contains');}
-    else if(may&&may.indexOf(n)>=0){ch.dataset.state='may';ch.classList.add('may');}
+    if(c&&c.indexOf(n)>=0){ch.dataset.state='contains';ch.classList.add('contains');}
+    else if(m&&m.indexOf(n)>=0){ch.dataset.state='may';ch.classList.add('may');}
   });syncA();
 }
-
 function syncA(){
   aState={c:[],m:[]};
   document.querySelectorAll('#a-chips .chip').forEach(function(ch){
@@ -880,47 +731,36 @@ function syncA(){
 
 function filterProds(q){
   var el=document.getElementById('prod-results');
-  if(!products.length){el.innerHTML='<div style="color:var(--text3);font-size:12px;padding:8px">No products yet — add some in Admin</div>';return;}
+  if(!products.length){el.innerHTML='<div style="color:var(--text3);font-size:12px;padding:8px">No products yet</div>';return;}
   var list=products.filter(function(p){return p.name.toLowerCase().indexOf((q||'').toLowerCase())>=0||p.category.toLowerCase().indexOf((q||'').toLowerCase())>=0;});
   el.innerHTML='';
   list.forEach(function(p){
     var d=document.createElement('div');
     d.style.cssText='background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:9px 12px;cursor:pointer;margin-bottom:3px;transition:border-color .15s';
-    d.onmouseenter=function(){d.style.borderColor='var(--accent)';};
-    d.onmouseleave=function(){d.style.borderColor='var(--border)';};
+    d.onmouseenter=function(){d.style.borderColor='var(--accent)';};d.onmouseleave=function(){d.style.borderColor='var(--border)';};
     var c=p.contains?p.contains.split(',').slice(0,3).join(', '):'';
-    d.innerHTML='<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:13px;font-weight:500;color:var(--text)">'+p.name+'</span><span style="font-size:10px;color:var(--accent);font-family:DM Mono,monospace">'+p.category+'</span></div><div style="font-size:10px;color:var(--text2);margin-top:2px">'+p.shelf_life_hours+'h shelf life'+(c?' · ⚠ '+c:'')+'</div>';
-    d.onclick=function(){selectProd(p);};
-    el.appendChild(d);
+    d.innerHTML='<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:13px;font-weight:500;color:var(--text)">'+p.name+'</span><span style="font-size:10px;color:var(--accent);font-family:DM Mono,monospace">'+p.category+'</span></div><div style="font-size:10px;color:var(--text2);margin-top:2px">'+p.shelf_life_hours+'h'+(c?' · ⚠ '+c:'')+'</div>';
+    d.onclick=function(){selectProd(p);};el.appendChild(d);
   });
 }
 
 function selectProd(p){
   selProd=p;
   var prep=document.getElementById('d-prep').value;
-  if(prep){
-    var d=new Date(prep+'T00:00:00');
-    d.setHours(d.getHours()+parseInt(p.shelf_life_hours));
-    document.getElementById('d-useby').value=d.toISOString().split('T')[0];
-  }
+  if(prep){var d=new Date(prep+'T00:00:00');d.setHours(d.getHours()+parseInt(p.shelf_life_hours));document.getElementById('d-useby').value=d.toISOString().split('T')[0];}
   var c=p.contains?p.contains.split(',').map(function(x){return x.trim();}).filter(Boolean):[];
   var m=p.may_contain?p.may_contain.split(',').map(function(x){return x.trim();}).filter(Boolean):[];
-  setChips(c,m);updatePreview();
-  toast(p.name+' selected','ok');
+  setChips(c,m);updatePreview();toast(p.name+' selected','ok');
 }
 
 document.getElementById('d-prep').addEventListener('change',function(){
-  if(selProd){var d=new Date(this.value+'T00:00:00');d.setHours(d.getHours()+parseInt(selProd.shelf_life_hours));document.getElementById('d-useby').value=d.toISOString().split('T')[0];}
-  updatePreview();
+  if(selProd){var d=new Date(this.value+'T00:00:00');d.setHours(d.getHours()+parseInt(selProd.shelf_life_hours));document.getElementById('d-useby').value=d.toISOString().split('T')[0];}updatePreview();
 });
 document.getElementById('sel-stn').addEventListener('change',updatePreview);
 document.getElementById('sel-job').addEventListener('change',updatePreview);
 document.getElementById('print-notes').addEventListener('input',updatePreview);
 
-function fmtDate(s){
-  if(!s)return'—';
-  try{var d=new Date(s+'T00:00:00');return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});}catch(e){return s;}
-}
+function fmtDate(s){if(!s)return'—';try{var d=new Date(s+'T00:00:00');return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});}catch(e){return s;}}
 
 function updatePreview(){
   var prep=document.getElementById('d-prep').value;
@@ -937,13 +777,10 @@ function updatePreview(){
   document.getElementById('pv-ft-code').textContent=job||'—';
   document.getElementById('pv-ft-time').textContent=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
   var c=aState.c,m=aState.m,html='';
-  if(c.length||m.length){
-    if(c.length)html+='<div class="abar-title">Contains:</div><div class="abar-list">'+c.join(' · ')+'</div>';
-    if(m.length)html+='<div class="abar-may">May contain: '+m.join(', ')+'</div>';
-  }else{html='<div class="abar-none">No allergens declared</div>';}
+  if(c.length||m.length){if(c.length)html+='<div class="abar-title">Contains:</div><div class="abar-list">'+c.join(' · ')+'</div>';if(m.length)html+='<div class="abar-may">May contain: '+m.join(', ')+'</div>';}
+  else{html='<div class="abar-none">No allergens declared</div>';}
   document.getElementById('pv-al-wrap').innerHTML=html;
-  var nb=document.getElementById('pv-notes-bar');
-  var nt=document.getElementById('pv-notes-text');
+  var nb=document.getElementById('pv-notes-bar');var nt=document.getElementById('pv-notes-text');
   if(notes){nb.style.display='block';nt.textContent=notes;}else{nb.style.display='none';}
 }
 
@@ -951,114 +788,75 @@ async function sendPrint(){
   if(!selProd){toast('Please select a product first','err');return;}
   var now=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
   var notes=document.getElementById('print-notes').value.trim();
-  var job={
-    product_name:selProd.name,staff_name:user.name,
-    section:document.getElementById('sel-stn').value||null,
-    job_code:document.getElementById('sel-job').value||null,
-    quantity:parseInt(document.getElementById('qty').value)||1,
-    date_prepped:document.getElementById('d-prep').value,
-    date_useby:document.getElementById('d-useby').value,
-    contains:aState.c.join(', ')||null,
-    may_contain:aState.m.join(', ')||null,
-    notes:notes||null,
-    printed_at:now
-  };
+  var job={product_name:selProd.name,staff_name:user.name,section:document.getElementById('sel-stn').value||null,job_code:document.getElementById('sel-job').value||null,quantity:parseInt(document.getElementById('qty').value)||1,date_prepped:document.getElementById('d-prep').value,date_useby:document.getElementById('d-useby').value,contains:aState.c.join(', ')||null,may_contain:aState.m.join(', ')||null,notes:notes||null,printed_at:now};
   try{
     await supa('POST','print_jobs',job,'');
-    toast(job.quantity+' label'+(job.quantity>1?'s':'')+' sent to Brother QL','ok');
+    var ok=await sendToPrinter(job);
+    if(ok){toast(job.quantity+' label'+(job.quantity>1?'s':'')+' printed ✓','ok');}
+    else{toast('Saved to queue — check printer connection','err');}
     document.getElementById('pstatus').textContent='Sent at '+now;
     loadDash();
   }catch(e){toast('Error: '+e.message,'err');}
 }
 
 function resetForm(){
-  selProd=null;document.getElementById('psearch').value='';filterProds('');
-  setChips([],[]);document.getElementById('qty').value=1;
-  document.getElementById('d-useby').value='';
-  document.getElementById('pstatus').textContent='';
-  document.getElementById('print-notes').value='';
+  selProd=null;document.getElementById('psearch').value='';filterProds('');setChips([],[]);
+  document.getElementById('qty').value=1;document.getElementById('d-useby').value='';
+  document.getElementById('pstatus').textContent='';document.getElementById('print-notes').value='';
   updatePreview();
 }
 
-/* CUSTOM LABEL */
-var customRows=[];
-function initCustomRows(){addCustomRow();addCustomRow();}
-
-function addCustomRow(){
-  customRows.push({text:'',size:24});
-  renderCustomRows();
-}
-
+function initCustomRows(){customRows=[];addCustomRow();addCustomRow();}
+function addCustomRow(){customRows.push({text:'',size:24});renderCustomRows();}
 function clearCustomRows(){customRows=[];addCustomRow();addCustomRow();}
 
 function renderCustomRows(){
-  var el=document.getElementById('custom-rows');
-  el.innerHTML='';
+  var el=document.getElementById('custom-rows');el.innerHTML='';
   customRows.forEach(function(row,i){
-    var div=document.createElement('div');
-    div.className='custom-row';
-    div.innerHTML='<input type="text" placeholder="Line '+(i+1)+'…" value="'+row.text+'" style="flex:1;background:var(--bg4);border:1px solid var(--border2);color:var(--text)"><input type="range" min="10" max="72" value="'+row.size+'" style="width:80px;accent-color:var(--accent)"><span class="size-lbl">'+row.size+'pt</span><button class="btn btn-danger btn-sm" style="flex-shrink:0;padding:4px 8px">✕</button>';
-    var textInput=div.querySelector('input[type=text]');
-    var rangeInput=div.querySelector('input[type=range]');
-    var sizeLbl=div.querySelector('.size-lbl');
-    var delBtn=div.querySelector('.btn-danger');
-    textInput.oninput=function(){customRows[i].text=this.value;updateCustomPreview();};
-    rangeInput.oninput=function(){customRows[i].size=parseInt(this.value);sizeLbl.textContent=this.value+'pt';updateCustomPreview();};
-    delBtn.onclick=function(){customRows.splice(i,1);renderCustomRows();updateCustomPreview();};
+    var div=document.createElement('div');div.className='custom-row';
+    div.innerHTML='<input type="text" placeholder="Line '+(i+1)+'…" value="'+row.text.replace(/"/g,'&quot;')+'" style="flex:1;min-width:0"><input type="range" min="10" max="72" value="'+row.size+'"><span class="size-lbl">'+row.size+'pt</span><button class="btn btn-danger btn-sm" style="flex-shrink:0;padding:4px 10px">✕</button>';
+    var ti=div.querySelector('input[type=text]'),ri=div.querySelector('input[type=range]'),sl=div.querySelector('.size-lbl'),db=div.querySelector('.btn-danger');
+    ti.oninput=function(){customRows[i].text=this.value;updateCustomPreview();};
+    ri.oninput=function(){customRows[i].size=parseInt(this.value);sl.textContent=this.value+'pt';updateCustomPreview();};
+    db.onclick=function(){customRows.splice(i,1);renderCustomRows();updateCustomPreview();};
     el.appendChild(div);
-  });
-  updateCustomPreview();
+  });updateCustomPreview();
 }
 
 function updateCustomPreview(){
-  var el=document.getElementById('custom-preview');
-  var hasContent=customRows.some(function(r){return r.text.trim();});
-  if(!hasContent){el.innerHTML='<div style="font-size:12px;color:#ccc;font-family:Geist,sans-serif">Add text to rows to see preview…</div>';return;}
-  el.innerHTML=customRows.filter(function(r){return r.text.trim();}).map(function(r){
-    return'<div class="custom-preview-line" style="font-size:'+r.size+'px">'+r.text+'</div>';
-  }).join('');
+  var el=document.getElementById('custom-preview');if(!el)return;
+  var has=customRows.some(function(r){return r.text.trim();});
+  if(!has){el.innerHTML='<div style="font-size:12px;color:#ccc">Add text to preview…</div>';return;}
+  el.innerHTML=customRows.filter(function(r){return r.text.trim();}).map(function(r){return'<div class="custom-preview-line" style="font-size:'+r.size+'px">'+r.text+'</div>';}).join('');
 }
 
 function populateCustomJobSelect(){
-  var sel=document.getElementById('c-job');
-  if(!sel)return;
-  var cur=sel.value;
-  sel.innerHTML='<option value="">— No job code —</option>';
+  var sel=document.getElementById('c-job');if(!sel)return;
+  var cur=sel.value;sel.innerHTML='<option value="">— No job code —</option>';
   jobCodes.forEach(function(j){var o=document.createElement('option');o.value=j.code;o.textContent=j.code+' · '+j.description;sel.appendChild(o);});
   if(cur)sel.value=cur;
 }
 
 async function sendCustomPrint(){
-  var hasContent=customRows.some(function(r){return r.text.trim();});
-  if(!hasContent){toast('Add some text to the label first','err');return;}
+  var has=customRows.some(function(r){return r.text.trim();});
+  if(!has){toast('Add some text first','err');return;}
   var now=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
   var content=customRows.filter(function(r){return r.text.trim();}).map(function(r){return r.text+'('+r.size+'pt)';}).join(' | ');
-  var job={
-    product_name:'[CUSTOM] '+customRows.filter(function(r){return r.text.trim();})[0].text,
-    staff_name:user.name,
-    section:document.getElementById('c-stn').value||null,
-    job_code:document.getElementById('c-job').value||null,
-    quantity:parseInt(document.getElementById('c-qty').value)||1,
-    date_prepped:new Date().toISOString().split('T')[0],
-    date_useby:null,contains:null,may_contain:null,
-    notes:'Custom label: '+content,
-    printed_at:now
-  };
+  var first=customRows.filter(function(r){return r.text.trim();})[0].text;
+  var job={product_name:'[CUSTOM] '+first,staff_name:user.name,section:document.getElementById('c-stn').value||null,job_code:document.getElementById('c-job').value||null,quantity:parseInt(document.getElementById('c-qty').value)||1,date_prepped:new Date().toISOString().split('T')[0],date_useby:null,contains:null,may_contain:null,notes:'Custom: '+content,printed_at:now};
   try{
     await supa('POST','print_jobs',job,'');
-    toast('Custom label sent to printer','ok');
+    var ok=await sendToPrinter(job);
+    if(ok){toast('Custom label printed ✓','ok');}else{toast('Saved — check printer','err');}
     loadDash();
   }catch(e){toast('Error: '+e.message,'err');}
 }
 
 function renderAdminProds(q){
   var el=document.getElementById('adm-prod-list');
-  if(!products.length){el.innerHTML='<div style="color:var(--text3);font-size:13px;padding:8px">No products yet — add your first one above</div>';return;}
+  if(!products.length){el.innerHTML='<div style="color:var(--text3);font-size:13px;padding:8px">No products yet</div>';return;}
   var list=products.filter(function(p){return p.name.toLowerCase().indexOf((q||'').toLowerCase())>=0;});
-  el.innerHTML=list.map(function(p){
-    var c=p.contains||'No allergens';
-    return'<div class="prod-row"><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--text)">'+p.name+'</div><div style="font-size:10px;color:var(--text2);font-family:DM Mono,monospace;margin-top:2px">'+p.category+' · '+p.shelf_life_hours+'h · '+(p.contains?'⚠ '+c:'No allergens')+'</div></div><button class="btn btn-danger btn-sm" onclick="deleteProd(\''+p.id+'\')">Delete</button></div>';
-  }).join('');
+  el.innerHTML=list.map(function(p){return'<div class="prod-row"><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--text)">'+p.name+'</div><div style="font-size:10px;color:var(--text2);font-family:DM Mono,monospace;margin-top:2px">'+p.category+' · '+p.shelf_life_hours+'h · '+(p.contains?'⚠ '+p.contains:'No allergens')+'</div></div><button class="btn btn-danger btn-sm" onclick="deleteProd(\''+p.id+'\')">Delete</button></div>';}).join('');
 }
 
 function toggleAddProd(){
@@ -1070,41 +868,39 @@ function toggleAddProd(){
 async function saveNewProd(){
   var name=document.getElementById('np-name').value.trim();
   if(!name){toast('Enter a product name','err');return;}
-  var c=[],m=[];
-  ALLERGENS.forEach(function(a){if(npState[a]==='contains')c.push(a);else if(npState[a]==='may')m.push(a);});
-  var prod={name:name,category:document.getElementById('np-cat').value,shelf_life_hours:parseInt(document.getElementById('np-shelf').value)||72,contains:c.join(', ')||null,may_contain:m.join(', ')||null};
+  var c=[],m=[];ALLERGENS.forEach(function(a){if(npState[a]==='contains')c.push(a);else if(npState[a]==='may')m.push(a);});
+  var cat=document.getElementById('np-cat').value,shelf=parseInt(document.getElementById('np-shelf').value)||72;
+  var prod={name:name,category:cat,shelf_life_hours:shelf,contains:c.join(', ')||null,may_contain:m.join(', ')||null};
   try{
     await supa('POST','products',prod,'');
-    logAudit('Added product',name+' ('+prod.category+', '+prod.shelf_life_hours+'h)');
-    toast('"'+name+'" saved','ok');
-    toggleAddProd();document.getElementById('np-name').value='';
+    logAudit('Added product',name+' — '+cat+', '+shelf+'h'+(c.length?' — contains: '+c.join(', '):''));
+    toast('"'+name+'" saved','ok');toggleAddProd();document.getElementById('np-name').value='';
     await loadProducts();
   }catch(e){toast('Could not save: '+e.message,'err');}
 }
 
 async function deleteProd(id){
-  var prod=products.find(function(p){return p.id==id;});
-  if(!confirm('Delete '+(prod?prod.name:'this product')+'? This cannot be undone.'))return;
+  var prod=products.find(function(p){return String(p.id)===String(id);});
+  if(!confirm('Delete '+(prod?prod.name:'this product')+'?'))return;
   try{
     await supa('DELETE','products','','id=eq.'+id);
-    logAudit('Deleted product',prod?prod.name:'ID '+id);
-    toast('Product deleted','ok');await loadProducts();
+    logAudit('Deleted product',prod?prod.name+' ('+prod.category+')':'ID '+id);
+    toast('Deleted','ok');await loadProducts();
   }catch(e){toast('Could not delete','err');}
 }
 
 function renderStaff(list){
   var el=document.getElementById('staff-grid');
-  if(!list||!list.length){el.innerHTML='<div style="color:var(--text3);font-size:13px">No staff yet — add your team below</div>';return;}
+  if(!list||!list.length){el.innerHTML='<div style="color:var(--text3);font-size:13px">No staff yet</div>';return;}
   el.innerHTML=list.map(function(s,i){
     var col=s.color||COLORS[i%COLORS.length];
     var ini=s.initials||(s.name.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2));
-    return'<div class="staff-card"><div style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:11px;background:'+col+'33;color:'+col+';flex-shrink:0">'+ini+'</div><div><div style="font-weight:500;font-size:13px;color:var(--text)">'+s.name+'</div><div style="font-size:10px;color:var(--text3);margin-top:2px">PIN: ••••</div></div></div>';
+    return'<div class="staff-card"><div style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:11px;background:'+col+'33;color:'+col+';flex-shrink:0">'+ini+'</div><div><div style="font-weight:500;font-size:13px;color:var(--text)">'+s.name+(s.name===MANAGER_NAME?' ★':'')+'</div><div style="font-size:10px;color:var(--text3);margin-top:2px">PIN: ••••</div></div></div>';
   }).join('');
 }
 
 async function addStaff(){
-  var name=document.getElementById('ns-name').value.trim();
-  var pin=document.getElementById('ns-pin').value.trim();
+  var name=document.getElementById('ns-name').value.trim(),pin=document.getElementById('ns-pin').value.trim();
   if(!name||!pin){toast('Enter name and PIN','err');return;}
   if(pin.length!==4||isNaN(pin)){toast('PIN must be 4 digits','err');return;}
   var parts=name.split(' ');
@@ -1113,8 +909,7 @@ async function addStaff(){
   try{
     await supa('POST','staff',{name:name,pin:pin,initials:ini,color:col},'');
     logAudit('Added staff member',name);
-    toast(name+' added','ok');
-    document.getElementById('ns-name').value='';document.getElementById('ns-pin').value='';
+    toast(name+' added','ok');document.getElementById('ns-name').value='';document.getElementById('ns-pin').value='';
     await loadStaff();await loadStaffForLogin();
   }catch(e){toast('Could not save: '+e.message,'err');}
 }
@@ -1135,112 +930,91 @@ async function addJC(){
   var code=c+d+t;
   try{
     await supa('POST','job_codes',{code:code,description:desc||code},'');
-    logAudit('Added job code',code+' — '+desc);
-    toast('Job code '+code+' saved','ok');
+    logAudit('Added job code',code+' — '+(desc||'no description'));
+    toast(code+' saved','ok');
     document.getElementById('jc-client').value='';document.getElementById('jc-date').value='';document.getElementById('jc-desc').value='';
     buildJCPreview();await loadJobCodes();
   }catch(e){toast('Could not save: '+e.message,'err');}
 }
 
 async function removeJC(id){
-  var jc=jobCodes.find(function(j){return j.id==id;});
+  var jc=jobCodes.find(function(j){return String(j.id)===String(id);});
   try{
     await supa('DELETE','job_codes','','id=eq.'+id);
     logAudit('Deleted job code',jc?jc.code:'ID '+id);
-    toast('Job code removed','ok');await loadJobCodes();
+    toast('Removed','ok');await loadJobCodes();
   }catch(e){toast('Could not delete','err');}
 }
 
 function renderJC(){
   var el=document.getElementById('jc-list');
-  if(!jobCodes.length){el.innerHTML='<div style="color:var(--text3);font-size:13px;padding:8px">No job codes yet — build one above</div>';return;}
-  el.innerHTML=jobCodes.map(function(j){
-    return'<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border);margin-bottom:5px"><span style="font-family:DM Mono,monospace;font-size:12px;color:var(--accent);min-width:130px">'+j.code+'</span><span style="font-size:12px;color:var(--text2);flex:1">'+j.description+'</span><button class="btn btn-danger btn-sm" onclick="removeJC(\''+j.id+'\')">✕</button></div>';
-  }).join('');
+  if(!jobCodes.length){el.innerHTML='<div style="color:var(--text3);font-size:13px;padding:8px">No job codes yet</div>';return;}
+  el.innerHTML=jobCodes.map(function(j){return'<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border);margin-bottom:5px"><span style="font-family:DM Mono,monospace;font-size:12px;color:var(--accent);min-width:130px">'+j.code+'</span><span style="font-size:12px;color:var(--text2);flex:1">'+j.description+'</span><button class="btn btn-danger btn-sm" onclick="removeJC(\''+j.id+'\')">✕</button></div>';}).join('');
 }
 
 function populateJCSelect(){
-  var sel=document.getElementById('sel-job');
-  var cur=sel.value;
+  var sel=document.getElementById('sel-job');var cur=sel.value;
   sel.innerHTML='<option value="">— No job code —</option>';
   jobCodes.forEach(function(j){var o=document.createElement('option');o.value=j.code;o.textContent=j.code+' · '+j.description;sel.appendChild(o);});
   if(cur)sel.value=cur;
 }
 
-/* PRINTER STATUS */
 async function checkPrinterStatus(){
-  var piUrl=document.getElementById('pr-srv').value;
-  var piDot=document.getElementById('pi-dot');
-  var piMsg=document.getElementById('pi-msg');
-  var prDot=document.getElementById('printer-dot');
-  var prMsg=document.getElementById('printer-msg');
+  var piDot=document.getElementById('pi-dot'),piMsg=document.getElementById('pi-msg');
+  var prDot=document.getElementById('printer-dot'),prMsg=document.getElementById('printer-msg');
   piMsg.textContent='Checking…';prMsg.textContent='Checking…';
   piDot.className='status-dot status-unknown';prDot.className='status-dot status-unknown';
   try{
-    var r=await fetch(piUrl.replace('/print','/status'),{method:'GET',signal:AbortSignal.timeout(5000)});
+    var r=await fetch(PRINT_STATUS_URL,{method:'GET',signal:AbortSignal.timeout(5000)});
     if(r.ok){
-      piDot.className='status-dot status-online';piMsg.textContent='Online — print server running';
-      var data=await r.json().catch(function(){return{};});
-      if(data.printer){prDot.className='status-dot status-online';prMsg.textContent='Online — Brother QL ready';}
-      else{prDot.className='status-dot status-offline';prMsg.textContent='Offline — check printer is on and connected to Wi-Fi';}
-    }else{throw new Error('Server returned '+r.status);}
+      var data=await r.json();
+      piDot.className='status-dot status-online';piMsg.textContent='Online — print server running at 192.168.1.175:3000';
+      if(data.printer){prDot.className='status-dot status-online';prMsg.textContent='Online — Brother QL-820NWBc ready at 192.168.1.127';}
+      else{prDot.className='status-dot status-offline';prMsg.textContent='Offline — check printer is on and on the Wi-Fi';}
+    }else{throw new Error();}
   }catch(e){
-    piDot.className='status-dot status-offline';
-    piMsg.textContent='Offline — Raspberry Pi not reachable. Check it is powered on and on the same Wi-Fi.';
-    prDot.className='status-dot status-offline';
-    prMsg.textContent='Cannot check — Pi is offline';
+    piDot.className='status-dot status-offline';piMsg.textContent='Offline — check Pi is powered on and on kitchen Wi-Fi';
+    prDot.className='status-dot status-offline';prMsg.textContent='Cannot check — Pi is offline';
   }
 }
 
-function sendTestPrint(){
-  toast('Test print sent to Brother QL','ok');
-  document.getElementById('print-job-status').textContent='Test label sent at '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+async function sendTestPrint(){
+  toast('Sending test print…');
+  var job={product_name:'TEST LABEL',staff_name:user.name,section:'Test',job_code:'TEST',quantity:1,date_prepped:new Date().toISOString().split('T')[0],date_useby:new Date().toISOString().split('T')[0],contains:null,may_contain:null,notes:'Test print from Digby\'s CPS',printed_at:new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})};
+  var ok=await sendToPrinter(job);
+  if(ok)toast('Test label printed ✓','ok');
 }
 
 function savePrinterSettings(){
-  logAudit('Updated printer settings','IP: '+document.getElementById('pr-ip').value);
-  toast('Printer settings saved','ok');
+  PRINT_SERVER=document.getElementById('pr-srv').value;
+  PRINT_STATUS_URL=PRINT_SERVER.replace('/print','/status');
+  logAudit('Updated printer settings','IP: '+document.getElementById('pr-ip').value+' · Server: '+PRINT_SERVER);
+  toast('Settings saved','ok');
 }
 
-/* EXPORT */
-async function exportTable(tableName){
+async function exportTable(t){
   try{
-    var data=await supa('GET',tableName,'','order=created_at.asc');
-    if(!data.length){toast('No data to export','err');return;}
+    var data=await supa('GET',t,'','order=created_at.asc');
+    if(!data.length){toast('No data','err');return;}
     var keys=Object.keys(data[0]).filter(function(k){return k!=='pin';});
-    var csv=keys.join(',')+'\n'+data.map(function(row){
-      return keys.map(function(k){return'"'+(row[k]||'').toString().replace(/"/g,'""')+'"';}).join(',');
-    }).join('\n');
-    downloadCSV(csv,'digbys-cps-'+tableName+'-'+new Date().toISOString().split('T')[0]+'.csv');
-    toast(tableName+' exported','ok');
-  }catch(e){toast('Export failed: '+e.message,'err');}
+    var csv=keys.join(',')+'\n'+data.map(function(row){return keys.map(function(k){return'"'+(row[k]!=null?row[k].toString().replace(/"/g,'""'):'')+'\"';}).join(',');}).join('\n');
+    downloadCSV(csv,'digbys-cps-'+t+'-'+new Date().toISOString().split('T')[0]+'.csv');toast(t+' exported','ok');
+  }catch(e){toast('Export failed','err');}
 }
 
 async function exportCSV(){
   try{
     var jobs=await supa('GET','print_jobs','','order=created_at.desc');
-    if(!jobs.length){toast('No print history yet','err');return;}
+    if(!jobs.length){toast('No print history','err');return;}
     var keys=['product_name','staff_name','section','job_code','quantity','date_prepped','date_useby','contains','may_contain','notes','printed_at'];
-    var csv=keys.join(',')+'\n'+jobs.map(function(j){
-      return keys.map(function(k){return'"'+(j[k]||'').toString().replace(/"/g,'""')+'"';}).join(',');
-    }).join('\n');
-    downloadCSV(csv,'digbys-cps-print-history-'+new Date().toISOString().split('T')[0]+'.csv');
-    toast('Print history exported','ok');
+    var csv=keys.join(',')+'\n'+jobs.map(function(j){return keys.map(function(k){return'"'+(j[k]!=null?j[k].toString().replace(/"/g,'""'):'')+'\"';}).join(',');}).join('\n');
+    downloadCSV(csv,'digbys-cps-history-'+new Date().toISOString().split('T')[0]+'.csv');toast('Exported','ok');
   }catch(e){toast('Export failed','err');}
 }
 
-function downloadCSV(csv,filename){
-  var blob=new Blob([csv],{type:'text/csv'});
-  var url=URL.createObjectURL(blob);
-  var a=document.createElement('a');a.href=url;a.download=filename;a.click();
-  URL.revokeObjectURL(url);
-}
+function downloadCSV(csv,filename){var blob=new Blob([csv],{type:'text/csv'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download=filename;a.click();URL.revokeObjectURL(url);}
 
-function toast(msg,type){
-  var t=document.getElementById('toast-el');t.textContent=msg;
-  t.className='toast'+(type?' '+type:'');t.classList.add('show');
-  clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show');},3000);
-}
+function toast(msg,type){var t=document.getElementById('toast-el');t.textContent=msg;t.className='toast'+(type?' '+type:'');t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show');},3000);}
 
 loadStaffForLogin();
 </script>
