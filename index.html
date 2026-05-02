@@ -2,1238 +2,2021 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Digby's CPS — Central Print System</title>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Digby's CPS</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --bg:#0a0a0a;--bg2:#111111;--bg3:#1a1a1a;--bg4:#222222;
-  --border:#2a2a2a;--border2:#3a3a3a;
-  --accent:#e8c547;--accent2:#f0d060;
-  --red:#cc2200;--red2:#ff3300;
-  --green:#1a7a4a;--green2:#22a060;
-  --text:#f0ede6;--text2:#c8c4be;--text3:#8a8785;
-  --radius:8px;
+  --cream:#faf8f4;
+  --warm-white:#f5f2ec;
+  --paper:#ede9e0;
+  --border:#d8d2c4;
+  --border-dark:#b8b0a0;
+  --charcoal:#1a1814;
+  --charcoal-mid:#3d3930;
+  --charcoal-light:#6b6560;
+  --charcoal-faint:#9a9490;
+  --accent:#c8341a;
+  --accent-light:#e8402099;
+  --accent-bg:#fdf2f0;
+  --gold:#8b6914;
+  --gold-bg:#faf6ec;
+  --green:#2d6a3f;
+  --green-bg:#f0f7f2;
+  --blue:#1a4a7a;
+  --blue-bg:#f0f4f9;
+  --radius-sm:6px;
+  --radius:10px;
+  --radius-lg:16px;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.08);
+  --shadow:0 2px 12px rgba(0,0,0,.10);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.14);
 }
-body{font-family:'Geist',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
-*::-webkit-scrollbar{width:3px}*::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
-.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);padding:20px;position:relative;overflow:hidden}
-.login-bg{position:absolute;font-family:'Instrument Serif',serif;font-size:200px;color:rgba(232,197,71,0.03);white-space:nowrap;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;user-select:none}
-.login-box{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:36px;width:100%;max-width:380px;position:relative;z-index:1}
-.login-mark{font-family:'Instrument Serif',serif;font-size:34px;color:var(--accent);letter-spacing:-.5px;line-height:1}
-.login-sub{font-size:11px;color:var(--text3);letter-spacing:3px;text-transform:uppercase;margin-top:6px;margin-bottom:32px}
-.login-err{background:#2a0a00;border:1px solid var(--red);color:#ff8866;padding:10px 14px;border-radius:var(--radius);font-size:12px;margin-bottom:14px;display:none}
-.lf{margin-bottom:14px}
-.lf label{display:block;font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}
-.lf input,.lf select{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:10px 14px;color:var(--text);font-family:'Geist',sans-serif;font-size:13px;outline:none;transition:border .15s}
-.lf input:focus,.lf select:focus{border-color:var(--accent)}
-select option{background:var(--bg3)}
-.login-btn{width:100%;background:var(--accent);color:#000;border:none;border-radius:var(--radius);padding:13px;font-family:'Geist',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s}
-.login-btn:hover{background:var(--accent2)}
-.shell{display:flex;height:100vh;overflow:hidden}
-.sidebar{width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
-.main{flex:1;overflow-y:auto;background:var(--bg)}
-.logo-wrap{padding:22px 18px 18px;border-bottom:1px solid var(--border)}
-.logo-main{font-family:'Instrument Serif',serif;font-size:20px;color:var(--accent);letter-spacing:-.3px;line-height:1.1}
-.logo-sub{font-size:10px;color:var(--text3);margin-top:4px;letter-spacing:2px;text-transform:uppercase}
-.nav{padding:10px 8px;flex:1;overflow-y:auto}
-.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--radius);cursor:pointer;color:var(--text2);font-size:12px;font-weight:500;transition:all .15s;margin-bottom:1px}
-.nav-item:hover{background:var(--bg3);color:var(--text)}
-.nav-item.active{background:var(--bg4);color:var(--accent)}
-.nav-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
-.nav-section{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:2px;padding:12px 10px 4px;font-weight:600}
-.user-wrap{padding:12px;border-top:1px solid var(--border)}
-.user-card{background:var(--bg3);border-radius:var(--radius);padding:10px 12px;display:flex;align-items:center;gap:10px;cursor:pointer;border:1px solid var(--border)}
-.uav{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:11px;flex-shrink:0}
-.page{display:none;padding:28px 32px}
+
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--cream);
+  color:var(--charcoal);
+  min-height:100vh;
+  font-size:14px;
+  line-height:1.5;
+}
+
+/* ── SCROLLBARS ── */
+*::-webkit-scrollbar{width:3px;height:3px}
+*::-webkit-scrollbar-thumb{background:var(--border-dark);border-radius:2px}
+
+/* ════════════════════════════════════════
+   LOGIN
+════════════════════════════════════════ */
+.login-screen{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  padding:24px;background:var(--cream);
+  position:relative;overflow:hidden;
+}
+.login-screen::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 0%, rgba(200,52,26,.06) 0%, transparent 70%);
+  pointer-events:none;
+}
+.login-card{
+  background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);
+  padding:40px;width:100%;max-width:420px;
+  box-shadow:var(--shadow-lg);position:relative;
+}
+.login-brand{text-align:center;margin-bottom:36px}
+.login-wordmark{
+  font-family:'Playfair Display',serif;font-size:36px;font-weight:700;
+  color:var(--charcoal);letter-spacing:-.5px;line-height:1;display:block;
+}
+.login-wordmark span{color:var(--accent)}
+.login-tagline{
+  font-size:11px;color:var(--charcoal-faint);letter-spacing:3px;
+  text-transform:uppercase;margin-top:8px;display:block;
+}
+.login-divider{height:1px;background:var(--border);margin:0 -40px 32px}
+.field-group{margin-bottom:20px}
+.field-group label{
+  display:block;font-size:10px;font-weight:600;
+  color:var(--charcoal-light);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:7px;
+}
+.field-group select,.field-group input{
+  width:100%;background:var(--warm-white);border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);padding:12px 14px;
+  color:var(--charcoal);font-family:'Inter',sans-serif;font-size:14px;
+  outline:none;transition:border-color .15s,background .15s;
+  -webkit-appearance:none;appearance:none;
+}
+.field-group select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b6560'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+.field-group select:focus,.field-group input:focus{border-color:var(--charcoal);background:#fff}
+.field-group input[type=password]{letter-spacing:8px;font-size:20px;text-align:center;font-family:'JetBrains Mono',monospace}
+.login-err{
+  background:var(--accent-bg);border:1px solid rgba(200,52,26,.3);
+  color:var(--accent);padding:10px 14px;border-radius:var(--radius-sm);
+  font-size:12px;margin-bottom:16px;display:none;
+}
+.login-btn{
+  width:100%;background:var(--charcoal);color:#fff;border:none;
+  border-radius:var(--radius-sm);padding:14px;
+  font-family:'Inter',sans-serif;font-size:14px;font-weight:600;
+  cursor:pointer;transition:background .15s;letter-spacing:.3px;
+}
+.login-btn:hover{background:var(--charcoal-mid)}
+.login-footnote{text-align:center;margin-top:16px;font-size:11px;color:var(--charcoal-faint)}
+
+/* ════════════════════════════════════════
+   APP SHELL
+════════════════════════════════════════ */
+.app{display:none;min-height:100vh;flex-direction:column}
+.app.visible{display:flex}
+
+/* TOP BAR */
+.topbar{
+  background:#fff;border-bottom:1px solid var(--border);
+  padding:0 20px;height:56px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;flex-shrink:0;
+}
+.topbar-brand{
+  font-family:'Playfair Display',serif;font-size:20px;font-weight:700;
+  color:var(--charcoal);letter-spacing:-.3px;
+}
+.topbar-brand span{color:var(--accent)}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.queue-pill{
+  display:flex;align-items:center;gap:6px;
+  padding:5px 12px;border-radius:20px;
+  background:var(--warm-white);border:1px solid var(--border);
+  font-size:12px;font-weight:500;color:var(--charcoal-light);
+  cursor:pointer;transition:all .15s;white-space:nowrap;
+}
+.queue-pill.has-jobs{background:var(--gold-bg);border-color:rgba(139,105,20,.3);color:var(--gold)}
+.queue-pill-dot{width:6px;height:6px;border-radius:50%;background:var(--border-dark)}
+.queue-pill.has-jobs .queue-pill-dot{background:var(--gold);animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.topbar-user{
+  display:flex;align-items:center;gap:8px;cursor:pointer;
+  padding:6px 10px;border-radius:var(--radius-sm);
+  transition:background .15s;
+}
+.topbar-user:hover{background:var(--warm-white)}
+.user-avatar{
+  width:30px;height:30px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:600;flex-shrink:0;
+}
+.topbar-user-name{font-size:13px;font-weight:500;color:var(--charcoal)}
+
+/* CONTENT AREA */
+.content{flex:1;overflow-y:auto}
+
+/* BOTTOM NAV */
+.bottom-nav{
+  background:#fff;border-top:1px solid var(--border);
+  display:flex;align-items:stretch;
+  position:sticky;bottom:0;z-index:100;
+  padding-bottom:env(safe-area-inset-bottom);
+  flex-shrink:0;
+}
+.nav-tab{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:10px 4px;gap:4px;cursor:pointer;
+  color:var(--charcoal-faint);transition:color .15s;
+  border:none;background:none;font-family:'Inter',sans-serif;
+  position:relative;
+}
+.nav-tab.active{color:var(--charcoal)}
+.nav-tab.active::after{
+  content:'';position:absolute;top:0;left:20%;right:20%;
+  height:2px;background:var(--charcoal);border-radius:0 0 2px 2px;
+}
+.nav-tab svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav-tab-label{font-size:10px;font-weight:500;letter-spacing:.3px}
+
+/* ════════════════════════════════════════
+   PAGES
+════════════════════════════════════════ */
+.page{display:none;padding:20px;max-width:900px;margin:0 auto}
 .page.active{display:block}
-.pg-title{font-family:'Instrument Serif',serif;font-size:28px;color:var(--text);letter-spacing:-.5px;margin-bottom:4px}
-.pg-sub{font-size:12px;color:var(--text3);margin-bottom:28px}
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
-.card+.card{margin-top:12px}
-.card-title{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px}
-label{display:block;font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:5px}
-input,select,textarea{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:9px 12px;color:var(--text);font-family:'Geist',sans-serif;font-size:13px;outline:none;transition:border .15s}
-input:focus,select:focus,textarea:focus{border-color:var(--accent)}
-input[readonly]{opacity:.5;cursor:not-allowed}
-select option{background:var(--bg3)}
-textarea{resize:vertical;min-height:60px;line-height:1.5}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.form-full{grid-column:1/-1}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius);font-size:12px;font-weight:500;cursor:pointer;border:none;transition:all .15s;font-family:'Geist',sans-serif}
-.btn-primary{background:var(--accent);color:#000}
-.btn-primary:hover{background:var(--accent2)}
-.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border2)}
-.btn-ghost:hover{background:var(--bg3);color:var(--text)}
-.btn-danger{background:#2a0808;color:#ff8866;border:1px solid #4a1010}
-.btn-danger:hover{background:#3a0a0a}
-.btn-green{background:#0a2a1a;color:#4ae090;border:1px solid #0a3a20}
-.btn-amber{background:#2a1a00;color:#f0c040;border:1px solid #4a3000}
-.btn-blue{background:#0a1a2a;color:#6ab0f0;border:1px solid #1a4a7a}
-.btn-blue:hover{background:#0a2a3a}
-.btn-sm{padding:5px 12px;font-size:11px}
-.row-btns{display:flex;gap:8px;margin-top:16px;align-items:center;flex-wrap:wrap}
-.sep{height:1px;background:var(--border);margin:16px 0}
-/* ALLERGEN CHIPS */
-.allergen-grid{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
-.chip{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:500;border:1px solid var(--border2);color:var(--text3);background:var(--bg3);cursor:pointer;transition:all .15s;font-family:'DM Mono',monospace;user-select:none}
-.chip:hover:not(.locked){border-color:var(--border2);opacity:.8}
-.chip.contains{background:#2a0a00;border-color:var(--red);color:#ff8866}
-.chip.may{background:#0a1a2a;border-color:#1a4a7a;color:#6ab0f0}
-.chip.na-chip{background:#1a2a1a;border-color:var(--green2);color:#4ae090}
-.chip.na-chip.active-na{background:#0a3a1a;border-color:#22a060;color:#4ae090;font-weight:700}
-.chip.locked{opacity:.4;cursor:not-allowed}
-/* LABEL PREVIEW */
-.label-wrap{background:#fff;border-radius:6px;overflow:hidden;border:2px solid #111}
-.lh{background:#111;color:#fff;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:8px}
-.lh-name{font-family:'Geist',sans-serif;font-weight:600;font-size:14px;color:#fff;flex:1}
-.lh-code{color:#fff;font-size:10px;padding:2px 8px;border-radius:3px;border:1px solid #fff;white-space:nowrap;font-family:'DM Mono',monospace}
-.lb{padding:10px 14px}
-.lr{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #eee}
-.lr:last-child{border-bottom:none}
-.ll{font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:#999;font-family:'Geist',sans-serif}
-.lv{font-size:12px;font-weight:500;color:#111;font-family:'Geist',sans-serif}
-.lv.red{color:#cc2200}
-.abar{border-top:2px solid #cc2200;padding:8px 14px}
-.abar-title{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#cc2200;margin-bottom:3px;font-family:'Geist',sans-serif}
-.abar-list{font-size:11px;color:#cc2200;font-family:'DM Mono',monospace}
-.abar-may{font-size:10px;color:#333;margin-top:3px;font-family:'Geist',sans-serif}
-.abar-none{font-size:11px;color:#999;font-family:'Geist',sans-serif}
-.notes-bar{border-top:1px solid #eee;padding:7px 14px;background:#fffdf5}
-.notes-text{font-size:11px;color:#444;font-style:italic;font-family:'Geist',sans-serif}
-.lfoot{background:#f8f8f8;padding:5px 14px;display:flex;justify-content:space-between;font-size:9px;color:#aaa;border-top:1px solid #eee}
+.page-desktop{display:none;padding:28px;max-width:1100px;margin:0 auto}
+.page-desktop.active{display:block}
+
+/* PAGE HEADER */
+.page-header{margin-bottom:24px}
+.page-header h1{
+  font-family:'Playfair Display',serif;font-size:28px;font-weight:700;
+  color:var(--charcoal);letter-spacing:-.3px;line-height:1.2;
+}
+.page-header p{font-size:13px;color:var(--charcoal-light);margin-top:4px}
+
+/* ════════════════════════════════════════
+   PRINT PAGE — THE HEART OF THE SYSTEM
+════════════════════════════════════════ */
+.print-layout{display:grid;grid-template-columns:1fr 380px;gap:20px;align-items:start}
+
+/* PRODUCT SEARCH */
+.search-block{
+  background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-lg);
+  overflow:hidden;box-shadow:var(--shadow-sm);
+}
+.search-input-wrap{
+  display:flex;align-items:center;gap:12px;padding:16px 18px;
+  border-bottom:1px solid var(--border);
+}
+.search-icon{color:var(--charcoal-faint);flex-shrink:0}
+.search-input{
+  flex:1;border:none;background:none;font-family:'Inter',sans-serif;
+  font-size:16px;color:var(--charcoal);outline:none;
+}
+.search-input::placeholder{color:var(--charcoal-faint)}
+.search-clear{
+  background:var(--warm-white);border:1px solid var(--border);border-radius:var(--radius-sm);
+  color:var(--charcoal-light);font-size:11px;padding:3px 8px;cursor:pointer;
+  display:none;font-family:'Inter',sans-serif;
+}
+.search-results{max-height:320px;overflow-y:auto}
+.search-result{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:13px 18px;border-bottom:1px solid var(--border);
+  cursor:pointer;transition:background .1s;gap:12px;
+}
+.search-result:last-child{border-bottom:none}
+.search-result:hover,.search-result:active{background:var(--warm-white)}
+.search-result.selected{background:var(--charcoal);color:#fff}
+.result-name{font-weight:500;font-size:14px;line-height:1.3}
+.result-meta{font-size:11px;color:var(--charcoal-faint);margin-top:2px}
+.search-result.selected .result-name{color:#fff}
+.search-result.selected .result-meta{color:rgba(255,255,255,.6)}
+.result-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+.result-cat{
+  font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;
+  color:var(--charcoal-light);white-space:nowrap;
+}
+.search-result.selected .result-cat{color:rgba(255,255,255,.7)}
+.result-menu-type{
+  font-size:10px;padding:1px 6px;border-radius:10px;
+  background:var(--gold-bg);border:1px solid rgba(139,105,20,.2);
+  color:var(--gold);white-space:nowrap;font-weight:500;
+}
+.search-result.selected .result-menu-type{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.3);color:#fff}
+.search-empty{padding:40px 20px;text-align:center;color:var(--charcoal-faint);font-size:13px}
+
+/* DETAILS BLOCK */
+.details-block{
+  background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-lg);
+  padding:20px;box-shadow:var(--shadow-sm);margin-top:12px;
+}
+.details-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field-label{
+  font-size:10px;font-weight:600;color:var(--charcoal-light);
+  text-transform:uppercase;letter-spacing:1.2px;margin-bottom:6px;display:block;
+}
+.field-input{
+  width:100%;background:var(--warm-white);border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);padding:10px 12px;
+  color:var(--charcoal);font-family:'Inter',sans-serif;font-size:14px;
+  outline:none;transition:border-color .15s;-webkit-appearance:none;
+}
+.field-input:focus{border-color:var(--charcoal);background:#fff}
+.field-input[readonly]{opacity:.6;cursor:not-allowed;background:var(--paper)}
+.field-input.useby-field{color:var(--accent);font-weight:600}
+select.field-input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b6560'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-color:var(--warm-white)}
+select.field-input:focus{background-color:#fff}
+
+/* ALLERGEN BLOCK */
+.allergen-block{
+  background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-lg);
+  padding:20px;box-shadow:var(--shadow-sm);margin-top:12px;
+}
+.allergen-header{
+  display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;
+}
+.allergen-title{font-size:12px;font-weight:600;color:var(--charcoal);text-transform:uppercase;letter-spacing:.8px}
+.allergen-legend{
+  display:flex;gap:12px;font-size:10px;color:var(--charcoal-faint);
+}
+.legend-item{display:flex;align-items:center;gap:4px}
+.legend-dot{width:8px;height:8px;border-radius:50%}
+.legend-dot.contains{background:var(--accent)}
+.legend-dot.may{background:var(--blue)}
+.allergen-chips{display:flex;flex-wrap:wrap;gap:6px}
+.a-chip{
+  padding:6px 12px;border-radius:20px;font-size:12px;font-weight:500;
+  border:1.5px solid var(--border);color:var(--charcoal-light);
+  background:var(--warm-white);cursor:pointer;transition:all .15s;
+  font-family:'Inter',sans-serif;user-select:none;white-space:nowrap;
+}
+.a-chip:hover:not(.locked){border-color:var(--charcoal-light)}
+.a-chip.contains{background:var(--accent-bg);border-color:rgba(200,52,26,.4);color:var(--accent);font-weight:600}
+.a-chip.may{background:var(--blue-bg);border-color:rgba(26,74,122,.3);color:var(--blue);font-weight:600}
+.a-chip.na{background:var(--green-bg);border-color:rgba(45,106,63,.3);color:var(--green);font-weight:600}
+.a-chip.na.active{background:var(--green);border-color:var(--green);color:#fff}
+.a-chip.locked{opacity:.35;cursor:not-allowed}
+
+/* NOTES BLOCK */
+.notes-block{
+  background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-lg);
+  padding:20px;box-shadow:var(--shadow-sm);margin-top:12px;
+}
+.notes-textarea{
+  width:100%;border:none;background:none;resize:none;
+  font-family:'Inter',sans-serif;font-size:14px;color:var(--charcoal);
+  outline:none;min-height:64px;line-height:1.6;
+}
+.notes-textarea::placeholder{color:var(--charcoal-faint)}
+
+/* PRINT BUTTON */
+.print-action{margin-top:16px}
+.print-btn{
+  width:100%;background:var(--charcoal);color:#fff;border:none;
+  border-radius:var(--radius);padding:16px;
+  font-family:'Inter',sans-serif;font-size:15px;font-weight:600;
+  cursor:pointer;transition:all .15s;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  letter-spacing:.2px;
+}
+.print-btn:hover{background:var(--charcoal-mid);transform:translateY(-1px);box-shadow:var(--shadow)}
+.print-btn:active{transform:translateY(0)}
+.print-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.print-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.clear-btn{
+  width:100%;background:none;color:var(--charcoal-light);border:1.5px solid var(--border);
+  border-radius:var(--radius);padding:12px;margin-top:8px;
+  font-family:'Inter',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;
+}
+.clear-btn:hover{background:var(--warm-white)}
+.qty-row{display:flex;align-items:center;gap:12px;margin-top:12px}
+.qty-label{font-size:12px;color:var(--charcoal-light);font-weight:500}
+.qty-control{display:flex;align-items:center;gap:0;border:1.5px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
+.qty-btn{
+  background:var(--warm-white);border:none;width:36px;height:36px;
+  font-size:18px;cursor:pointer;color:var(--charcoal-mid);
+  font-family:'Inter',sans-serif;transition:background .1s;display:flex;align-items:center;justify-content:center;
+}
+.qty-btn:hover{background:var(--paper)}
+.qty-val{
+  width:44px;text-align:center;font-size:15px;font-weight:600;
+  color:var(--charcoal);border:none;background:none;
+  font-family:'Inter',sans-serif;outline:none;padding:0;
+}
+
+/* ════════════════════════════════════════
+   LABEL PREVIEW — RIGHT COLUMN
+════════════════════════════════════════ */
+.preview-panel{position:sticky;top:76px}
+.preview-card{
+  background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-lg);
+  overflow:hidden;box-shadow:var(--shadow);
+}
+.preview-header-bar{
+  background:var(--warm-white);border-bottom:1px solid var(--border);
+  padding:12px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.preview-header-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--charcoal-light)}
+.preview-live{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--green)}
+.preview-live-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 1.5s infinite}
+
+/* THE ACTUAL LABEL */
+.label{background:#fff;font-family:'Inter',sans-serif}
+.label-top{
+  background:var(--charcoal);color:#fff;
+  padding:14px 16px;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+}
+.label-product-name{
+  font-family:'Playfair Display',serif;font-size:18px;font-weight:700;
+  line-height:1.2;flex:1;
+}
+.label-job-code{
+  background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);
+  color:#fff;font-size:10px;font-family:'JetBrains Mono',monospace;
+  padding:3px 8px;border-radius:4px;white-space:nowrap;flex-shrink:0;margin-top:3px;
+}
+.label-rows{padding:12px 16px;border-bottom:1px solid var(--border)}
+.label-row{display:flex;align-items:baseline;padding:5px 0;border-bottom:1px solid var(--paper)}
+.label-row:last-child{border-bottom:none}
+.label-row-key{
+  font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:1px;
+  color:var(--charcoal-faint);width:90px;flex-shrink:0;
+}
+.label-row-val{font-size:13px;font-weight:500;color:var(--charcoal);line-height:1.3}
+.label-row-val.danger{color:var(--accent);font-weight:700}
+.label-allergen-bar{
+  padding:10px 16px;
+  border-bottom:1px solid var(--border);
+}
+.label-allergen-bar.has-allergens{
+  background:var(--accent-bg);border-top:3px solid var(--accent);
+}
+.label-allergen-title{
+  font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;
+  color:var(--accent);margin-bottom:4px;
+}
+.label-allergen-list{font-size:12px;font-weight:600;color:var(--accent);line-height:1.4}
+.label-may-contain{font-size:11px;color:var(--charcoal-mid);margin-top:4px;font-weight:400}
+.label-no-allergens{font-size:12px;color:var(--charcoal-faint);font-style:italic}
+.label-notes-bar{
+  padding:8px 16px;background:var(--gold-bg);border-top:1px solid rgba(139,105,20,.2);
+  display:none;
+}
+.label-notes-text{font-size:12px;color:var(--charcoal-mid);font-style:italic;line-height:1.4}
+.label-footer{
+  padding:7px 16px;background:var(--warm-white);border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;
+  font-size:9px;color:var(--charcoal-faint);font-family:'JetBrains Mono',monospace;
+}
+
+/* ════════════════════════════════════════
+   QUEUE PAGE
+════════════════════════════════════════ */
+.queue-header{
+  display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;
+}
+.queue-empty{
+  text-align:center;padding:60px 20px;
+  color:var(--charcoal-faint);
+}
+.queue-empty svg{width:48px;height:48px;stroke:var(--border-dark);fill:none;stroke-width:1.5;margin-bottom:16px;stroke-linecap:round;stroke-linejoin:round}
+.queue-empty p{font-size:14px}
+.queue-empty small{font-size:12px;display:block;margin-top:4px}
+.queue-item{
+  background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);
+  padding:16px;margin-bottom:10px;box-shadow:var(--shadow-sm);
+  display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
+}
+.queue-item:hover{border-color:var(--border-dark)}
+.queue-item-main{flex:1;min-width:0}
+.queue-item-name{font-size:15px;font-weight:600;color:var(--charcoal);margin-bottom:4px}
+.queue-item-meta{font-size:12px;color:var(--charcoal-light);display:flex;gap:12px;flex-wrap:wrap}
+.queue-item-meta span{display:flex;align-items:center;gap:4px}
+.queue-item-actions{display:flex;gap:8px;flex-shrink:0;align-items:flex-start}
+.status-badge{
+  display:inline-flex;align-items:center;gap:5px;padding:3px 10px;
+  border-radius:20px;font-size:11px;font-weight:500;
+}
+.status-pending{background:var(--gold-bg);border:1px solid rgba(139,105,20,.25);color:var(--gold)}
+.status-printed{background:var(--green-bg);border:1px solid rgba(45,106,63,.25);color:var(--green)}
+.status-failed{background:var(--accent-bg);border:1px solid rgba(200,52,26,.25);color:var(--accent)}
+
+/* ════════════════════════════════════════
+   HISTORY PAGE
+════════════════════════════════════════ */
+.history-table-wrap{overflow-x:auto;border-radius:var(--radius);border:1.5px solid var(--border);box-shadow:var(--shadow-sm)}
+.history-table{width:100%;border-collapse:collapse;background:#fff}
+.history-table th{
+  text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1.2px;
+  color:var(--charcoal-light);padding:11px 14px;border-bottom:1.5px solid var(--border);
+  font-weight:600;background:var(--warm-white);white-space:nowrap;
+}
+.history-table td{
+  padding:12px 14px;border-bottom:1px solid var(--paper);
+  font-size:13px;color:var(--charcoal-mid);vertical-align:middle;
+}
+.history-table tr:last-child td{border-bottom:none}
+.history-table tr:hover td{background:var(--warm-white)}
+.history-table td strong{color:var(--charcoal);font-weight:500}
+.mono{font-family:'JetBrains Mono',monospace;font-size:11px}
+
+/* ════════════════════════════════════════
+   SETTINGS / MANAGER PAGE
+════════════════════════════════════════ */
+.settings-grid{display:grid;grid-template-columns:220px 1fr;gap:0;min-height:calc(100vh - 120px);border:1.5px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;background:#fff;box-shadow:var(--shadow-sm)}
+.settings-nav{background:var(--warm-white);border-right:1px solid var(--border);padding:16px 0}
+.settings-nav-item{
+  display:flex;align-items:center;gap:10px;padding:10px 20px;
+  cursor:pointer;color:var(--charcoal-light);font-size:13px;font-weight:500;
+  transition:all .15s;border-left:3px solid transparent;
+}
+.settings-nav-item:hover{background:var(--paper);color:var(--charcoal)}
+.settings-nav-item.active{background:#fff;color:var(--charcoal);border-left-color:var(--charcoal);font-weight:600}
+.settings-nav-item svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.settings-nav-section{
+  font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--charcoal-faint);padding:16px 20px 6px;
+}
+.settings-content{padding:28px;overflow-y:auto}
+.settings-panel{display:none}
+.settings-panel.active{display:block}
+.settings-panel h2{
+  font-family:'Playfair Display',serif;font-size:22px;font-weight:700;
+  color:var(--charcoal);margin-bottom:6px;
+}
+.settings-panel .panel-sub{font-size:13px;color:var(--charcoal-light);margin-bottom:24px}
+
+/* SECTION CARD */
+.section-card{
+  background:var(--warm-white);border:1.5px solid var(--border);
+  border-radius:var(--radius);padding:20px;margin-bottom:16px;
+}
+.section-card-title{
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;
+  color:var(--charcoal-light);margin-bottom:16px;
+}
+
+/* PRODUCT LIST */
+.prod-list-item{
+  background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);
+  padding:14px 16px;margin-bottom:8px;
+  display:flex;align-items:center;gap:14px;transition:border-color .15s;
+}
+.prod-list-item:hover{border-color:var(--border-dark)}
+.prod-list-item-info{flex:1;min-width:0}
+.prod-list-item-name{font-size:14px;font-weight:500;color:var(--charcoal)}
+.prod-list-item-meta{font-size:11px;color:var(--charcoal-faint);margin-top:3px}
+.prod-list-item-tags{display:flex;gap:6px;margin-top:5px;flex-wrap:wrap}
+.tag{
+  font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500;
+  background:var(--warm-white);border:1px solid var(--border);color:var(--charcoal-light);
+}
+.tag.allergen-tag{background:var(--accent-bg);border-color:rgba(200,52,26,.2);color:var(--accent)}
+.tag.menu-tag{background:var(--gold-bg);border-color:rgba(139,105,20,.2);color:var(--gold)}
+
+/* FORMS */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.form-row.single{grid-template-columns:1fr}
+.form-row.triple{grid-template-columns:1fr 1fr 1fr}
+.f-label{display:block;font-size:10px;font-weight:600;color:var(--charcoal-light);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:6px}
+.f-input{
+  width:100%;background:var(--warm-white);border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);padding:10px 12px;
+  color:var(--charcoal);font-family:'Inter',sans-serif;font-size:13px;
+  outline:none;transition:border-color .15s;-webkit-appearance:none;
+}
+.f-input:focus{border-color:var(--charcoal);background:#fff}
+select.f-input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b6560'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+textarea.f-input{resize:vertical;min-height:80px;line-height:1.5}
+
+/* BUTTONS */
+.btn{
+  display:inline-flex;align-items:center;gap:7px;padding:9px 18px;
+  border-radius:var(--radius-sm);font-size:13px;font-weight:500;
+  cursor:pointer;border:none;transition:all .15s;font-family:'Inter',sans-serif;
+}
+.btn-dark{background:var(--charcoal);color:#fff}
+.btn-dark:hover{background:var(--charcoal-mid)}
+.btn-outline{background:#fff;color:var(--charcoal);border:1.5px solid var(--border)}
+.btn-outline:hover{background:var(--warm-white);border-color:var(--border-dark)}
+.btn-danger{background:var(--accent-bg);color:var(--accent);border:1.5px solid rgba(200,52,26,.3)}
+.btn-danger:hover{background:var(--accent);color:#fff}
+.btn-success{background:var(--green-bg);color:var(--green);border:1.5px solid rgba(45,106,63,.3)}
+.btn-success:hover{background:var(--green);color:#fff}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-xs{padding:4px 10px;font-size:11px}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+
+/* JC BUILDER */
+.jc-builder{
+  display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;
+  background:var(--warm-white);border:1.5px solid var(--border);
+  border-radius:var(--radius);padding:16px;
+}
+.jc-segment{display:flex;flex-direction:column;gap:5px}
+.jc-seg-label{font-size:10px;font-weight:600;color:var(--charcoal-light);text-transform:uppercase;letter-spacing:1px}
+.jc-seg-input{
+  background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:14px;
+  font-weight:500;color:var(--charcoal);outline:none;transition:border-color .15s;
+  text-transform:uppercase;
+}
+.jc-seg-input:focus{border-color:var(--charcoal)}
+.jc-plus{font-size:18px;color:var(--border-dark);padding-bottom:8px}
+.jc-preview-wrap{margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+.jc-preview-label{font-size:10px;font-weight:600;color:var(--charcoal-light);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.jc-preview{
+  font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:500;
+  color:var(--charcoal);letter-spacing:3px;padding:12px 16px;
+  background:var(--cream);border:1.5px solid var(--border);border-radius:var(--radius-sm);
+}
+
+/* STATUS PANEL */
+.status-card{
+  background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);
+  padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;
+}
+.status-indicator{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.status-indicator.online{background:var(--green)}
+.status-indicator.offline{background:var(--accent)}
+.status-indicator.unknown{background:var(--border-dark)}
+.status-text{flex:1}
+.status-text strong{display:block;font-size:13px;font-weight:500;color:var(--charcoal)}
+.status-text small{font-size:11px;color:var(--charcoal-faint)}
+
+/* MENU TYPE CHIPS */
+.menu-type-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 12px;background:var(--gold-bg);border:1.5px solid rgba(139,105,20,.25);
+  border-radius:20px;font-size:12px;font-weight:500;color:var(--gold);
+  margin:3px;
+}
+.menu-type-chip button{
+  background:none;border:none;color:var(--gold);cursor:pointer;
+  font-size:14px;line-height:1;padding:0 0 0 4px;opacity:.6;
+}
+.menu-type-chip button:hover{opacity:1}
+
 /* CUSTOM LABEL */
-.custom-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px}
-.custom-row input[type=text]{flex:1;background:var(--bg4);border:1px solid var(--border2);color:var(--text)}
-.custom-row input[type=range]{width:80px;flex-shrink:0;accent-color:var(--accent)}
-.size-lbl{font-size:10px;color:var(--text2);width:28px;text-align:right;flex-shrink:0;font-family:'DM Mono',monospace}
-.custom-preview-wrap{background:#fff;border:2px solid #111;border-radius:6px;padding:16px;min-height:100px}
-.custom-preview-line{color:#111;line-height:1.3;margin-bottom:6px;font-family:'Geist',sans-serif;font-weight:500;word-break:break-word}
-/* STATS */
-.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px}
-.stat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px}
-.stat-num{font-family:'Instrument Serif',serif;font-size:36px;line-height:1}
-.stat-lbl{font-size:10px;color:var(--text3);margin-top:6px;text-transform:uppercase;letter-spacing:1.5px}
-/* TABLE */
-.tbl{width:100%;border-collapse:collapse}
-.tbl th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);padding:8px 12px;border-bottom:1px solid var(--border);font-weight:500}
-.tbl td{padding:9px 12px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text2)}
-.tbl tr:last-child td{border-bottom:none}
-.tbl tr:hover td{background:var(--bg3)}
-.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
-/* TABS */
-.tabs{display:flex;gap:2px;margin-bottom:20px;background:var(--bg2);padding:3px;border-radius:var(--radius);border:1px solid var(--border);flex-wrap:wrap}
-.tab{padding:6px 14px;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;color:var(--text3);transition:all .15s}
-.tab.active{background:var(--bg4);color:var(--text)}
-.tab-content{display:none}.tab-content.active{display:block}
-.prod-row{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px}
-.staff-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
-.staff-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:14px;display:flex;align-items:center;gap:12px}
-.jc-preview-box{font-family:'DM Mono',monospace;font-size:22px;font-weight:500;color:var(--accent);letter-spacing:3px;text-align:center;padding:14px;background:var(--bg4);border-radius:var(--radius);margin-top:14px;border:1px solid var(--border2)}
-.status-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:8px;flex-shrink:0}
-.status-online{background:#22a060}.status-offline{background:#cc2200}.status-unknown{background:#8a8785}
-.status-row{display:flex;align-items:center;padding:14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border);margin-bottom:8px}
-.audit-row{padding:12px 14px;border-bottom:1px solid var(--border)}
-.audit-row:last-child{border-bottom:none}
-.audit-who{color:var(--accent);font-weight:500;font-size:13px}
-.audit-what{color:var(--text2);margin-top:3px;font-size:12px}
-.audit-when{color:var(--text3);font-size:10px;font-family:'DM Mono',monospace;margin-top:3px}
-.live-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;color:var(--green2);padding:3px 8px;background:#0a2a1a;border:1px solid #0a3a20;border-radius:20px}
-.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green2);animation:pulse 1.5s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.loading{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text3);padding:20px 0}
-.spinner{width:14px;height:14px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
-@keyframes spin{to{transform:rotate(360deg)}}
-.toast{position:fixed;bottom:20px;right:20px;background:var(--bg2);border:1px solid var(--border2);color:var(--text);padding:12px 18px;border-radius:var(--radius);font-size:12px;font-weight:500;transform:translateY(60px);opacity:0;transition:all .3s;z-index:9999;pointer-events:none;max-width:300px}
-.toast.show{transform:translateY(0);opacity:1}
-.toast.ok{border-color:var(--green2);color:#4ae090}
-.toast.err{border-color:var(--red2);color:#ff8866}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
-.menu-badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:500;background:var(--bg4);border:1px solid var(--border2);color:var(--accent);font-family:'DM Mono',monospace;margin-left:6px}
-.badge-pending{background:#1e3a5f;color:#93c5fd;padding:2px 8px;border-radius:20px;font-size:10px;font-family:'DM Mono',monospace}
-/* EDIT MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px}
+.custom-row-item{
+  display:flex;align-items:center;gap:10px;padding:12px 14px;
+  background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  margin-bottom:8px;
+}
+.custom-row-input{
+  flex:1;border:none;background:none;font-family:'Inter',sans-serif;
+  font-size:14px;color:var(--charcoal);outline:none;
+}
+.custom-row-input::placeholder{color:var(--charcoal-faint)}
+.custom-size-slider{width:80px;accent-color:var(--charcoal);flex-shrink:0}
+.custom-size-label{font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--charcoal-light);width:30px;text-align:right;flex-shrink:0}
+.custom-preview-area{
+  background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);
+  padding:20px;min-height:120px;
+}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:20px 0}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--charcoal);color:#fff;padding:11px 20px;
+  border-radius:20px;font-size:13px;font-weight:500;
+  opacity:0;transition:all .25s;z-index:9999;pointer-events:none;
+  white-space:nowrap;box-shadow:var(--shadow-lg);
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.success{background:var(--green)}
+.toast.error{background:var(--accent)}
+
+/* MODAL */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(26,24,20,.5);
+  z-index:500;display:none;align-items:center;justify-content:center;padding:20px;
+  backdrop-filter:blur(2px);
+}
 .modal-overlay.open{display:flex}
-.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:24px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto}
-.modal-title{font-family:'Instrument Serif',serif;font-size:22px;color:var(--text);margin-bottom:20px}
-/* MOBILE PORTRAIT */
-@media(max-width:600px) and (orientation:portrait){
-  .shell{flex-direction:column-reverse}
-  .sidebar{width:100%;height:auto;flex-direction:row;border-right:none;border-top:1px solid var(--border);flex-shrink:0}
-  .logo-wrap{display:none}
-  .nav{display:flex;flex-direction:row;padding:4px;flex:1;overflow-x:auto;gap:0}
-  .nav-section{display:none}
-  .nav-item{flex-direction:column;gap:2px;padding:6px 8px;font-size:10px;white-space:nowrap;min-width:52px;justify-content:center;align-items:center;text-align:center}
-  .nav-dot{display:none}
-  .user-wrap{padding:6px 8px;border-top:none;border-left:1px solid var(--border);display:flex;align-items:center}
-  .user-card{padding:6px;border:none;background:transparent}
-  #sb-name,#sb-role{display:none}
-  .main{flex:1;overflow-y:auto}
-  .page{padding:14px 12px}
-  .pg-title{font-size:22px}
-  .pg-sub{margin-bottom:14px;font-size:11px}
-  .two-col{grid-template-columns:1fr}
-  .form-grid{grid-template-columns:1fr}
-  .stats-row{gap:6px}
-  .stat{padding:10px}
-  .stat-num{font-size:26px}
-  .stat-lbl{font-size:9px}
-  .staff-grid{grid-template-columns:1fr 1fr}
-  .portrait-hide{display:none}
-  .btn{padding:10px 16px;font-size:13px}
-  .btn-sm{padding:8px 12px;font-size:12px}
-  input,select,textarea{padding:11px 12px;font-size:15px}
-  .chip{padding:5px 12px;font-size:11px}
-  .custom-row{flex-wrap:wrap}
-  .custom-row input[type=range]{width:100%}
-  .modal{padding:16px}
+.modal{
+  background:#fff;border-radius:var(--radius-lg);padding:28px;
+  width:100%;max-width:560px;max-height:90vh;overflow-y:auto;
+  box-shadow:var(--shadow-lg);
+}
+.modal h2{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--charcoal);margin-bottom:20px}
+
+/* LOADING */
+.loading-row{display:flex;align-items:center;gap:10px;padding:20px 0;color:var(--charcoal-faint);font-size:13px}
+.spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--charcoal);border-radius:50%;animation:spin .6s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* STAFF CARDS */
+.staff-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.staff-item{
+  background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);
+  padding:14px;display:flex;align-items:center;gap:12px;
+}
+.staff-avatar{
+  width:38px;height:38px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:600;flex-shrink:0;
+}
+.staff-name{font-size:13px;font-weight:500;color:var(--charcoal)}
+.staff-role{font-size:11px;color:var(--charcoal-faint);margin-top:2px}
+
+/* DESKTOP ADAPTATIONS */
+@media(min-width:768px){
+  .topbar{padding:0 32px}
+  .page{padding:28px 32px}
+  .page-desktop{display:block}
+  .toast{bottom:24px}
+}
+@media(max-width:767px){
+  .print-layout{grid-template-columns:1fr}
+  .details-grid{grid-template-columns:1fr}
+  .settings-grid{grid-template-columns:1fr;min-height:unset}
+  .settings-nav{display:flex;overflow-x:auto;border-right:none;border-bottom:1px solid var(--border);padding:8px}
+  .settings-nav-item{flex-direction:column;gap:4px;padding:8px 12px;font-size:11px;border-left:none;border-bottom:3px solid transparent;white-space:nowrap;text-align:center;border-radius:var(--radius-sm)}
+  .settings-nav-item.active{border-bottom-color:var(--charcoal);border-left-color:transparent;background:var(--warm-white)}
+  .settings-nav-section{display:none}
+  .settings-content{padding:16px}
+  .form-row{grid-template-columns:1fr}
+  .form-row.triple{grid-template-columns:1fr}
+  .jc-builder{flex-direction:column;gap:10px}
+  .jc-plus{display:none}
+  .history-table th:nth-child(n+5),.history-table td:nth-child(n+5){display:none}
 }
 </style>
 </head>
 <body>
 
 <!-- LOGIN -->
-<div id="login-screen" class="login-wrap">
-  <div class="login-bg">Digby's</div>
-  <div class="login-box">
-    <div class="login-mark">Digby's CPS</div>
-    <div class="login-sub">Central Print System</div>
-    <div id="lerr" class="login-err"></div>
-    <div class="lf"><label>Your name</label><select id="luser"><option value="">— Select staff member —</option></select></div>
-    <div class="lf"><label>PIN</label><input type="password" id="lpin" placeholder="••••" maxlength="4" style="letter-spacing:8px;font-size:20px;text-align:center"></div>
-    <button class="login-btn" onclick="doLogin()">Sign in</button>
+<div id="login-screen" class="login-screen">
+  <div class="login-card">
+    <div class="login-brand">
+      <span class="login-wordmark">Digby's <span>CPS</span></span>
+      <span class="login-tagline">Central Print System</span>
+    </div>
+    <div class="login-divider"></div>
+    <div id="login-err" class="login-err"></div>
+    <div class="field-group">
+      <label>Who are you?</label>
+      <select id="l-user"><option value="">— Select your name —</option></select>
+    </div>
+    <div class="field-group">
+      <label>Your PIN</label>
+      <input type="password" id="l-pin" placeholder="••••" maxlength="4">
+    </div>
+    <button class="login-btn" onclick="doLogin()">Sign in to kitchen</button>
+    <p class="login-footnote">Digby's CPS · Event Catering</p>
   </div>
 </div>
 
 <!-- EDIT PRODUCT MODAL -->
 <div class="modal-overlay" id="edit-modal">
   <div class="modal">
-    <div class="modal-title">Edit Product</div>
-    <input type="hidden" id="edit-prod-id">
-    <div class="form-grid" style="margin-bottom:14px">
-      <div class="form-full"><label>Product name</label><input type="text" id="edit-name" placeholder="Product name"></div>
-      <div><label>Food category</label>
-        <select id="edit-cat"><option>Canapés</option><option>Starters</option><option>Mains</option><option>Desserts</option><option>Evening Grazing</option><option>Tasting Menu</option><option>Sauces & Dressings</option><option>Stocks & Soups</option><option>Pastry</option><option>Other</option></select>
+    <h2>Edit Product</h2>
+    <input type="hidden" id="ep-id">
+    <div class="form-row">
+      <div class="form-row single" style="margin-bottom:0">
+        <div><span class="f-label">Product name</span><input type="text" class="f-input" id="ep-name"></div>
       </div>
-      <div><label>Menu type</label><select id="edit-menutype"><option value="">— No menu type —</option></select></div>
-      <div><label>Shelf life (hours)</label><input type="number" id="edit-shelf" value="72" min="1"></div>
     </div>
-    <div class="sep"></div>
-    <div class="card-title">Allergens</div>
-    <div style="font-size:11px;color:var(--text2);margin-bottom:8px">Tap = Contains → May contain → Clear &nbsp;·&nbsp; N/A = no allergens</div>
-    <div class="allergen-grid" id="edit-chips"></div>
-    <div class="row-btns">
-      <button class="btn btn-primary btn-sm" onclick="saveEditProd()">Save changes</button>
-      <button class="btn btn-ghost btn-sm" onclick="closeEditModal()">Cancel</button>
+    <div class="form-row" style="margin-top:14px">
+      <div><span class="f-label">Food category</span>
+        <select class="f-input" id="ep-cat">
+          <option>Canapés</option><option>Starters</option><option>Mains</option><option>Desserts</option><option>Evening Grazing</option><option>Tasting Menu</option><option>Sauces & Dressings</option><option>Stocks & Soups</option><option>Pastry</option><option>Other</option>
+        </select>
+      </div>
+      <div><span class="f-label">Menu type</span><select class="f-input" id="ep-menu"></select></div>
+    </div>
+    <div class="form-row">
+      <div><span class="f-label">Shelf life (hours)</span><input type="number" class="f-input" id="ep-shelf" min="1"></div>
+    </div>
+    <div class="divider"></div>
+    <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--charcoal-light);margin-bottom:10px">Allergens — tap to cycle: Contains → May contain → Clear</div>
+    <div class="allergen-chips" id="ep-chips"></div>
+    <div class="btn-row" style="margin-top:20px">
+      <button class="btn btn-dark" onclick="saveEditProduct()">Save changes</button>
+      <button class="btn btn-outline" onclick="closeModal('edit-modal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD PRODUCT MODAL -->
+<div class="modal-overlay" id="add-modal">
+  <div class="modal">
+    <h2>Add Product</h2>
+    <div class="form-row single"><div><span class="f-label">Product name</span><input type="text" class="f-input" id="ap-name" placeholder="e.g. Beef Wellington"></div></div>
+    <div class="form-row" style="margin-top:14px">
+      <div><span class="f-label">Food category</span>
+        <select class="f-input" id="ap-cat">
+          <option>Canapés</option><option>Starters</option><option>Mains</option><option>Desserts</option><option>Evening Grazing</option><option>Tasting Menu</option><option>Sauces & Dressings</option><option>Stocks & Soups</option><option>Pastry</option><option>Other</option>
+        </select>
+      </div>
+      <div><span class="f-label">Menu type</span><select class="f-input" id="ap-menu"></select></div>
+    </div>
+    <div class="form-row">
+      <div><span class="f-label">Shelf life (hours)</span><input type="number" class="f-input" id="ap-shelf" value="72" min="1"></div>
+    </div>
+    <div class="divider"></div>
+    <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--charcoal-light);margin-bottom:10px">Allergens</div>
+    <div class="allergen-chips" id="ap-chips"></div>
+    <div class="btn-row" style="margin-top:20px">
+      <button class="btn btn-dark" onclick="saveNewProduct()">Add product</button>
+      <button class="btn btn-outline" onclick="closeModal('add-modal')">Cancel</button>
     </div>
   </div>
 </div>
 
 <!-- APP -->
-<div id="app" class="shell" style="display:none">
-  <div class="sidebar">
-    <div class="logo-wrap">
-      <div class="logo-main">Digby's CPS</div>
-      <div class="logo-sub">Central Print System</div>
-    </div>
-    <nav class="nav">
-      <div class="nav-section">Kitchen</div>
-      <div class="nav-item active" onclick="showPage('dashboard')" data-page="dashboard"><span class="nav-dot"></span>Dashboard</div>
-      <div class="nav-item" onclick="showPage('print')" data-page="print"><span class="nav-dot"></span>Print Label</div>
-      <div class="nav-item" onclick="showPage('custom')" data-page="custom"><span class="nav-dot"></span>Custom Label</div>
-      <div class="nav-item" onclick="showPage('queue')" data-page="queue"><span class="nav-dot"></span>Print Queue</div>
-      <div class="nav-section">Management</div>
-      <div class="nav-item" onclick="showPage('admin')" data-page="admin"><span class="nav-dot"></span>Admin</div>
-      <div class="nav-item" id="nav-audit" onclick="showPage('audit')" data-page="audit" style="display:none"><span class="nav-dot"></span>Audit Log</div>
-    </nav>
-    <div class="user-wrap">
-      <div class="user-card" onclick="doLogout()">
-        <div class="uav" id="sb-av"></div>
-        <div><div style="font-size:12px;font-weight:500;color:var(--text)" id="sb-name"></div><div style="font-size:10px;color:var(--text3)" id="sb-role">Tap to sign out</div></div>
+<div class="app" id="app">
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-brand">Digby's <span>CPS</span></div>
+    <div class="topbar-right">
+      <div class="queue-pill" id="queue-pill" onclick="switchTab('queue')">
+        <span class="queue-pill-dot" id="queue-dot"></span>
+        <span id="queue-pill-text">Queue empty</span>
+      </div>
+      <div class="topbar-user" onclick="doLogout()" title="Sign out">
+        <div class="user-avatar" id="top-avatar"></div>
+        <span class="topbar-user-name" id="top-name"></span>
       </div>
     </div>
-  </div>
+  </header>
 
-  <div class="main">
+  <!-- CONTENT -->
+  <div class="content" id="content">
 
-    <!-- DASHBOARD -->
-    <div class="page active" id="page-dashboard">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
-        <div class="pg-title" id="dash-greet">Dashboard</div>
-        <span class="live-badge"><span class="live-dot"></span>Live</span>
-      </div>
-      <div class="pg-sub">Last 10 labels · updates every 15 seconds</div>
-      <div class="stats-row">
-        <div class="stat"><div class="stat-num" id="st-today" style="color:var(--accent)">—</div><div class="stat-lbl">Labels today</div></div>
-        <div class="stat"><div class="stat-num" id="st-q" style="color:var(--green2)">—</div><div class="stat-lbl">In queue</div></div>
-        <div class="stat"><div class="stat-num" id="st-prods" style="color:var(--text)">—</div><div class="stat-lbl">Products</div></div>
-      </div>
-      <div class="card">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-          <div class="card-title" style="margin-bottom:0">Recent labels</div>
-          <span style="font-size:10px;color:var(--text3)">Tap to reprint</span>
-        </div>
-        <div id="dash-loading" class="loading"><div class="spinner"></div>Loading...</div>
-        <div class="tbl-wrap"><table class="tbl" id="dash-table" style="display:none">
-          <thead><tr><th>Product</th><th>Staff</th><th>Job</th><th>Qty</th><th>Time</th><th></th></tr></thead>
-          <tbody id="dash-recent"></tbody>
-        </table></div>
-      </div>
-    </div>
-
-    <!-- PRINT LABEL -->
-    <div class="page" id="page-print">
-      <div class="pg-title">Print a Label</div>
-      <div class="pg-sub">Select product, confirm details, send to printer</div>
-      <div class="two-col">
+    <!-- PRINT TAB -->
+    <div class="page active" id="tab-print">
+      <div class="print-layout">
         <div>
-          <div class="card">
-            <div class="card-title">Product</div>
-            <div style="margin-bottom:10px"><label>Search</label><input type="text" id="psearch" placeholder="Search by name, category or menu type…" oninput="filterProds(this.value)"></div>
-            <div id="prod-results" style="max-height:220px;overflow-y:auto;display:grid;gap:4px"><div class="loading"><div class="spinner"></div>Loading…</div></div>
+          <!-- SEARCH -->
+          <div class="search-block">
+            <div class="search-input-wrap">
+              <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input class="search-input" id="prod-search" type="text" placeholder="Search products, categories, menu types…" oninput="filterProducts(this.value)" autocomplete="off">
+              <button class="search-clear" id="search-clear" onclick="clearSearch()">Clear</button>
+            </div>
+            <div class="search-results" id="search-results">
+              <div class="search-empty">
+                <p>Start typing to search your products</p>
+                <small>Search by name, category or menu type</small>
+              </div>
+            </div>
           </div>
-          <div class="card">
-            <div class="card-title">Details</div>
-            <div class="form-grid">
-              <div><label>Date prepped</label><input type="date" id="d-prep"></div>
-              <div><label>Use by (auto)</label><input type="date" id="d-useby" readonly></div>
-              <div><label>Section</label>
-                <select id="sel-stn">
+
+          <!-- DETAILS -->
+          <div class="details-block">
+            <div class="details-grid">
+              <div>
+                <span class="field-label">Date prepped</span>
+                <input type="date" class="field-input" id="d-prep">
+              </div>
+              <div>
+                <span class="field-label">Use by — auto calculated</span>
+                <input type="date" class="field-input useby-field" id="d-useby" readonly>
+              </div>
+              <div>
+                <span class="field-label">Section</span>
+                <select class="field-input" id="d-section">
                   <option value="">— No section —</option>
                   <option>Canapés</option><option>Starters</option><option>Mains</option>
                   <option>Dessert</option><option>Evening Grazing</option><option>Tasting Menu</option>
                 </select>
               </div>
-              <div><label>Job code</label><select id="sel-job"><option value="">— No job code —</option></select></div>
-              <div class="form-full"><label>Quantity</label><input type="number" id="qty" value="1" min="1" max="50" style="width:80px"></div>
+              <div>
+                <span class="field-label">Job code</span>
+                <select class="field-input" id="d-job"><option value="">— No job code —</option></select>
+              </div>
             </div>
           </div>
-          <div class="card">
-            <div class="card-title">Allergens <span style="font-size:10px;color:var(--text3);text-transform:none;letter-spacing:0"> — auto-loaded · tap to override</span></div>
-            <div style="font-size:11px;color:var(--text2);margin-bottom:8px">🟠 Contains &nbsp;·&nbsp; 🔵 May contain &nbsp;·&nbsp; 🟢 N/A = no allergens &nbsp;·&nbsp; Grey = not present</div>
-            <div class="allergen-grid" id="a-chips"></div>
+
+          <!-- ALLERGENS -->
+          <div class="allergen-block">
+            <div class="allergen-header">
+              <span class="allergen-title">Allergens</span>
+              <div class="allergen-legend">
+                <span class="legend-item"><span class="legend-dot contains"></span>Contains</span>
+                <span class="legend-item"><span class="legend-dot may"></span>May contain</span>
+              </div>
+            </div>
+            <div class="allergen-chips" id="print-chips"></div>
           </div>
-          <div class="card">
-            <div class="card-title">Notes <span style="font-size:10px;color:var(--text3);text-transform:none;letter-spacing:0"> — optional, printed on label</span></div>
-            <textarea id="print-notes" placeholder="e.g. Made without alliums · Client nut free…"></textarea>
+
+          <!-- NOTES -->
+          <div class="notes-block">
+            <span class="field-label" style="margin-bottom:8px">Notes — optional, prints on label</span>
+            <textarea class="notes-textarea" id="print-notes" placeholder="e.g. Made without alliums · Client is nut free · See head chef…" rows="2"></textarea>
           </div>
-          <div class="row-btns">
-            <button class="btn btn-primary" onclick="sendPrint()">Print label</button>
-            <button class="btn btn-ghost" onclick="resetForm()">Clear</button>
-            <span id="pstatus" style="font-size:11px;color:var(--text3)"></span>
+
+          <!-- QUANTITY + PRINT -->
+          <div class="qty-row">
+            <span class="qty-label">Quantity</span>
+            <div class="qty-control">
+              <button class="qty-btn" onclick="changeQty(-1)">−</button>
+              <input class="qty-val" id="print-qty" type="number" value="1" min="1" max="50">
+              <button class="qty-btn" onclick="changeQty(1)">+</button>
+            </div>
+          </div>
+          <div class="print-action">
+            <button class="print-btn" id="print-btn" onclick="doPrint()">
+              <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+              Print label
+            </button>
+            <button class="clear-btn" onclick="clearPrintForm()">Clear form</button>
           </div>
         </div>
-        <div class="portrait-hide">
-          <div class="card">
-            <div class="card-title">Live preview</div>
-            <div class="label-wrap">
-              <div class="lh"><span class="lh-name" id="pv-name">Select a product</span><span class="lh-code" id="pv-job">—</span></div>
-              <div class="lb">
-                <div class="lr"><span class="ll">Prep date</span><span class="lv" id="pv-prep">—</span></div>
-                <div class="lr"><span class="ll">Use by</span><span class="lv red" id="pv-useby">—</span></div>
-                <div class="lr"><span class="ll">Prepared by</span><span class="lv" id="pv-staff">—</span></div>
-                <div class="lr"><span class="ll">Section</span><span class="lv" id="pv-stn">—</span></div>
-              </div>
-              <div class="abar"><div id="pv-al-wrap"><div class="abar-none">No allergens declared</div></div></div>
-              <div class="notes-bar" id="pv-notes-bar" style="display:none"><div class="notes-text" id="pv-notes-text"></div></div>
-              <div class="lfoot"><span id="pv-ft-code">—</span><span id="pv-ft-time">—</span></div>
+
+        <!-- LABEL PREVIEW -->
+        <div class="preview-panel" id="preview-col">
+          <div class="preview-card">
+            <div class="preview-header-bar">
+              <span class="preview-header-title">Label preview</span>
+              <span class="preview-live"><span class="preview-live-dot"></span>Updates live</span>
             </div>
-            <div style="margin-top:10px;font-size:11px;color:var(--text3);text-align:center">Black & red · DK-2251 · Brother QL-820NWBc</div>
+            <div class="label" id="label-preview">
+              <div class="label-top">
+                <span class="label-product-name" id="lbl-name">Select a product</span>
+                <span class="label-job-code" id="lbl-job" style="display:none"></span>
+              </div>
+              <div class="label-rows">
+                <div class="label-row"><span class="label-row-key">Prep date</span><span class="label-row-val" id="lbl-prep">—</span></div>
+                <div class="label-row"><span class="label-row-key">Use by</span><span class="label-row-val danger" id="lbl-useby">—</span></div>
+                <div class="label-row"><span class="label-row-key">Prepared by</span><span class="label-row-val" id="lbl-staff">—</span></div>
+                <div class="label-row" id="lbl-section-row" style="display:none"><span class="label-row-key">Section</span><span class="label-row-val" id="lbl-section"></span></div>
+              </div>
+              <div class="label-allergen-bar" id="lbl-allergy-bar">
+                <div class="label-no-allergens">No allergens declared</div>
+              </div>
+              <div class="label-notes-bar" id="lbl-notes-bar">
+                <span class="label-notes-text" id="lbl-notes-text"></span>
+              </div>
+              <div class="label-footer">
+                <span id="lbl-footer-code">Digby's CPS</span>
+                <span id="lbl-footer-time"></span>
+              </div>
+            </div>
           </div>
+          <p style="text-align:center;font-size:11px;color:var(--charcoal-faint);margin-top:10px">DK-2251 · Black & red · Brother QL-820NWBc</p>
         </div>
       </div>
     </div>
 
-    <!-- CUSTOM LABEL -->
-    <div class="page" id="page-custom">
-      <div class="pg-title">Custom Label</div>
-      <div class="pg-sub">Blank canvas — type anything, adjust size per line</div>
-      <div class="two-col">
-        <div>
-          <div class="card">
-            <div class="card-title">Label content</div>
-            <div style="font-size:11px;color:var(--text2);margin-bottom:12px">Each row prints exactly as typed. Drag the slider to change text size.</div>
-            <div id="custom-rows"></div>
-            <div class="row-btns">
-              <button class="btn btn-ghost btn-sm" onclick="addCustomRow()">+ Add row</button>
-              <button class="btn btn-danger btn-sm" onclick="clearCustomRows()">Clear all</button>
+    <!-- QUEUE TAB -->
+    <div class="page" id="tab-queue">
+      <div class="page-header">
+        <h1>Print Queue</h1>
+        <p>Jobs in progress — cancel if sent in error</p>
+      </div>
+      <div id="queue-list">
+        <div class="queue-empty">
+          <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          <p>Queue is clear</p>
+          <small>Labels appear here when sent and clear when printed</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- HISTORY TAB -->
+    <div class="page" id="tab-history">
+      <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
+        <div><h1>Print History</h1><p>Every label printed — full audit trail</p></div>
+        <button class="btn btn-outline btn-sm" onclick="exportHistory()">Export CSV</button>
+      </div>
+      <div id="history-loading" class="loading-row"><div class="spinner"></div>Loading history…</div>
+      <div class="history-table-wrap" id="history-wrap" style="display:none">
+        <table class="history-table">
+          <thead><tr><th>Product</th><th>Staff</th><th>Job code</th><th>Qty</th><th>Use by</th><th>Notes</th><th>Time</th></tr></thead>
+          <tbody id="history-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SETTINGS TAB -->
+    <div class="page" id="tab-settings">
+      <div class="settings-grid">
+        <nav class="settings-nav">
+          <div class="settings-nav-section">Products</div>
+          <div class="settings-nav-item active" onclick="showSettingsPanel('products',this)">
+            <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>Products
+          </div>
+          <div class="settings-nav-item" onclick="showSettingsPanel('menu-types',this)">
+            <svg viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>Menu Types
+          </div>
+          <div class="settings-nav-section">Events</div>
+          <div class="settings-nav-item" onclick="showSettingsPanel('job-codes',this)">
+            <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>Job Codes
+          </div>
+          <div class="settings-nav-section">Team</div>
+          <div class="settings-nav-item" onclick="showSettingsPanel('staff',this)">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Staff
+          </div>
+          <div class="settings-nav-section">System</div>
+          <div class="settings-nav-item" onclick="showSettingsPanel('printer',this)">
+            <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Printer
+          </div>
+          <div class="settings-nav-item" id="audit-nav" onclick="showSettingsPanel('audit',this)" style="display:none">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>Audit Log
+          </div>
+          <div class="settings-nav-item" onclick="showSettingsPanel('backup',this)">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Backup
+          </div>
+          <div class="settings-nav-item" onclick="showSettingsPanel('custom',this)">
+            <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Custom Labels
+          </div>
+        </nav>
+
+        <div class="settings-content">
+
+          <!-- PRODUCTS -->
+          <div class="settings-panel active" id="panel-products">
+            <h2>Products</h2>
+            <p class="panel-sub">Manage your product database — allergens, shelf life and categories</p>
+            <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+              <input type="text" class="f-input" style="flex:1;min-width:200px" placeholder="Search products…" oninput="renderProductList(this.value)">
+              <button class="btn btn-dark" onclick="openModal('add-modal');buildChips('ap-chips','ap');renderMenuSelect('ap-menu')">+ Add product</button>
+            </div>
+            <div id="product-list"><div class="loading-row"><div class="spinner"></div>Loading…</div></div>
+          </div>
+
+          <!-- MENU TYPES -->
+          <div class="settings-panel" id="panel-menu-types">
+            <h2>Menu Types</h2>
+            <p class="panel-sub">Categorise products by event type. Shown in search, never on labels.</p>
+            <div class="section-card">
+              <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:14px" id="menu-type-chips-admin"></div>
+              <div style="display:flex;gap:8px">
+                <input type="text" class="f-input" id="new-menu-type" placeholder="e.g. Corporate" style="flex:1">
+                <button class="btn btn-dark btn-sm" onclick="addMenuType()">+ Add</button>
+              </div>
             </div>
           </div>
-          <div class="card">
-            <div class="card-title">Details</div>
-            <div class="form-grid">
-              <div><label>Section</label>
-                <select id="c-stn">
-                  <option value="">— No section —</option>
-                  <option>Canapés</option><option>Starters</option><option>Mains</option>
-                  <option>Dessert</option><option>Evening Grazing</option><option>Tasting Menu</option>
+
+          <!-- JOB CODES -->
+          <div class="settings-panel" id="panel-job-codes">
+            <h2>Job Codes</h2>
+            <p class="panel-sub">Build event job codes · Format: client initials + DDMMYY + event type</p>
+            <div class="jc-builder">
+              <div class="jc-segment">
+                <span class="jc-seg-label">Client name</span>
+                <input type="text" class="jc-seg-input" id="jc-client" placeholder="Douglas Faulconbridge" style="width:200px" oninput="buildJCPreview()">
+                <span style="font-size:10px;color:var(--charcoal-faint);margin-top:3px">Initials auto-generated</span>
+              </div>
+              <span class="jc-plus">+</span>
+              <div class="jc-segment">
+                <span class="jc-seg-label">Event date</span>
+                <input type="date" class="jc-seg-input" id="jc-date" oninput="buildJCPreview()" style="width:160px">
+              </div>
+              <span class="jc-plus">+</span>
+              <div class="jc-segment">
+                <span class="jc-seg-label">Event type</span>
+                <select class="jc-seg-input" id="jc-type" onchange="buildJCPreview()" style="width:180px">
+                  <option value="TM">TM — Tasting Menu</option>
+                  <option value="CAN">CAN — Canapés</option>
+                  <option value="BUF">BUF — Buffet</option>
+                  <option value="WED">WED — Wedding</option>
+                  <option value="CORP">CORP — Corporate</option>
+                  <option value="GAL">GAL — Gala Dinner</option>
+                  <option value="GRZ">GRZ — Grazing</option>
+                  <option value="PRIV">PRIV — Private Dining</option>
+                  <option value="WAK">WAK — Wake</option>
                 </select>
               </div>
-              <div><label>Job code</label><select id="c-job"><option value="">— No job code —</option></select></div>
-              <div><label>Quantity</label><input type="number" id="c-qty" value="1" min="1" max="50" style="width:80px"></div>
-            </div>
-          </div>
-          <div class="row-btns"><button class="btn btn-primary" onclick="sendCustomPrint()">Print custom label</button></div>
-        </div>
-        <div class="portrait-hide">
-          <div class="card">
-            <div class="card-title">Live preview</div>
-            <div class="custom-preview-wrap" id="custom-preview"><div style="font-size:12px;color:#ccc">Add rows to preview…</div></div>
-            <div style="margin-top:10px;font-size:11px;color:var(--text3);text-align:center">Prints exactly as shown · DK-2251</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- QUEUE -->
-    <div class="page" id="page-queue">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px">
-        <div><div class="pg-title">Print Queue</div><div class="pg-sub" style="margin-bottom:0">Pending jobs · tap row to reprint · cancel to remove</div></div>
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-          <span class="live-badge"><span class="live-dot"></span>Live</span>
-          <button class="btn btn-ghost btn-sm" onclick="exportCSV()">Export history</button>
-        </div>
-      </div>
-      <div class="card">
-        <div id="q-loading" class="loading" style="display:none"><div class="spinner"></div>Loading…</div>
-        <div class="tbl-wrap"><table class="tbl" id="q-table" style="display:none">
-          <thead><tr><th>Product</th><th>Staff</th><th>Section</th><th>Job</th><th>Qty</th><th>Use by</th><th>Notes</th><th>Time</th><th>Status</th><th></th></tr></thead>
-          <tbody id="q-body"></tbody>
-        </table></div>
-        <div id="q-empty" style="text-align:center;padding:32px;color:var(--text3)">Queue is empty — labels appear here when sent</div>
-      </div>
-    </div>
-
-    <!-- ADMIN -->
-    <div class="page" id="page-admin">
-      <div class="pg-title">Admin</div>
-      <div class="pg-sub">Manage products, staff, job codes and printer</div>
-      <div class="tabs">
-        <div class="tab active" onclick="showTab(this,'t-products')">Products</div>
-        <div class="tab" onclick="showTab(this,'t-staff')">Staff</div>
-        <div class="tab" onclick="showTab(this,'t-jobcodes')">Job Codes</div>
-        <div class="tab" onclick="showTab(this,'t-menucats')">Menu Types</div>
-        <div class="tab" onclick="showTab(this,'t-printer')">Printer</div>
-        <div class="tab" onclick="showTab(this,'t-backup')">Backup</div>
-      </div>
-
-      <div class="tab-content active" id="t-products">
-        <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
-          <input type="text" placeholder="Search products…" oninput="renderAdminProds(this.value)" style="max-width:240px">
-          <button class="btn btn-primary btn-sm" onclick="toggleAddProd()">+ Add product</button>
-        </div>
-        <div id="adm-prod-list"><div class="loading"><div class="spinner"></div>Loading…</div></div>
-        <div id="add-prod-wrap" style="display:none;margin-top:14px">
-          <div class="card">
-            <div class="card-title">New product</div>
-            <div class="form-grid">
-              <div class="form-full"><label>Product name</label><input type="text" id="np-name" placeholder="e.g. Beef Wellington"></div>
-              <div><label>Food category</label>
-                <select id="np-cat"><option>Canapés</option><option>Starters</option><option>Mains</option><option>Desserts</option><option>Evening Grazing</option><option>Tasting Menu</option><option>Sauces & Dressings</option><option>Stocks & Soups</option><option>Pastry</option><option>Other</option></select>
+              <div class="jc-segment" style="flex:1;min-width:160px">
+                <span class="jc-seg-label">Description</span>
+                <input type="text" class="jc-seg-input" id="jc-desc" placeholder="e.g. Gig at The Garage" style="width:100%">
               </div>
-              <div><label>Menu type</label><select id="np-menutype"><option value="">— No menu type —</option></select></div>
-              <div><label>Shelf life (hours)</label><input type="number" id="np-shelf" value="72" min="1"></div>
+              <div class="jc-preview-wrap" style="width:100%">
+                <div class="jc-preview-label">Generated code</div>
+                <div class="jc-preview" id="jc-preview">———</div>
+                <div class="btn-row">
+                  <button class="btn btn-dark btn-sm" onclick="saveJobCode()">+ Save job code</button>
+                </div>
+              </div>
             </div>
-            <div class="sep"></div>
-            <div class="card-title">Allergens <span style="font-size:10px;color:var(--text3);text-transform:none;letter-spacing:0">Tap = Contains → May contain → Clear · N/A = none</span></div>
-            <div class="allergen-grid" id="np-chips"></div>
-            <div class="row-btns">
-              <button class="btn btn-primary btn-sm" onclick="saveNewProd()">Save to database</button>
-              <button class="btn btn-ghost btn-sm" onclick="toggleAddProd()">Cancel</button>
+            <div style="margin-top:20px" id="jc-list-wrap">
+              <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--charcoal-light);margin-bottom:10px">Active job codes</div>
+              <div id="jc-list"><div class="loading-row"><div class="spinner"></div>Loading…</div></div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div class="tab-content" id="t-staff">
-        <div class="staff-grid" id="staff-grid"><div class="loading"><div class="spinner"></div>Loading…</div></div>
-        <div style="margin-top:16px" class="card">
-          <div class="card-title">Add staff member</div>
-          <div class="form-grid">
-            <div><label>Full name</label><input type="text" id="ns-name" placeholder="e.g. Sarah Jones"></div>
-            <div><label>PIN (4 digits)</label><input type="text" id="ns-pin" placeholder="e.g. 5678" maxlength="4"></div>
-          </div>
-          <div class="row-btns"><button class="btn btn-primary btn-sm" onclick="addStaff()">+ Add to database</button></div>
-        </div>
-      </div>
-
-      <div class="tab-content" id="t-jobcodes">
-        <div class="card" style="margin-bottom:14px">
-          <div class="card-title">Build a job code</div>
-          <p style="font-size:12px;color:var(--text2);margin-bottom:16px">3 letters client + date DDMMYY + event type</p>
-          <div style="display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap">
-            <div><label>Client initials</label><input type="text" id="jc-client" maxlength="3" placeholder="DFG" oninput="buildJCPreview()" style="width:90px;text-transform:uppercase;font-family:'DM Mono',monospace;letter-spacing:2px"></div>
-            <div style="font-size:20px;color:var(--text3);padding-bottom:10px">+</div>
-            <div><label>Date DDMMYY</label><input type="text" id="jc-date" maxlength="6" placeholder="100626" oninput="buildJCPreview()" style="width:110px;font-family:'DM Mono',monospace;letter-spacing:2px"></div>
-            <div style="font-size:20px;color:var(--text3);padding-bottom:10px">+</div>
-            <div><label>Event type</label>
-              <select id="jc-type" onchange="buildJCPreview()" style="width:140px">
-                <option value="TM">TM – Tasting Menu</option><option value="CAN">CAN – Canapés</option><option value="BUF">BUF – Buffet</option><option value="WED">WED – Wedding</option><option value="CORP">CORP – Corporate</option><option value="GAL">GAL – Gala Dinner</option><option value="GRZ">GRZ – Grazing</option><option value="PRIV">PRIV – Private Dining</option>
-              </select>
+          <!-- STAFF -->
+          <div class="settings-panel" id="panel-staff">
+            <h2>Staff</h2>
+            <p class="panel-sub">Manage your kitchen team</p>
+            <div class="staff-grid" id="staff-list"><div class="loading-row"><div class="spinner"></div>Loading…</div></div>
+            <div class="divider"></div>
+            <div class="section-card">
+              <div class="section-card-title">Add staff member</div>
+              <div class="form-row">
+                <div><span class="f-label">Full name</span><input type="text" class="f-input" id="new-staff-name" placeholder="e.g. Sarah Jones"></div>
+                <div><span class="f-label">PIN (4 digits)</span><input type="text" class="f-input" id="new-staff-pin" placeholder="e.g. 5678" maxlength="4"></div>
+              </div>
+              <div class="btn-row"><button class="btn btn-dark btn-sm" onclick="addStaff()">+ Add to team</button></div>
             </div>
-            <div style="flex:1;min-width:160px"><label>Description</label><input type="text" id="jc-desc" placeholder="e.g. Douglas F. Gig"></div>
           </div>
-          <div class="jc-preview-box" id="jc-preview">———</div>
-          <div class="row-btns"><button class="btn btn-primary btn-sm" onclick="addJC()">+ Save to database</button></div>
-        </div>
-        <div class="card"><div class="card-title">Active job codes</div><div id="jc-list"><div class="loading"><div class="spinner"></div>Loading…</div></div></div>
-      </div>
 
-      <div class="tab-content" id="t-menucats">
-        <div class="card">
-          <div class="card-title">Menu types</div>
-          <p style="font-size:12px;color:var(--text2);margin-bottom:16px;line-height:1.6">Appear on products to help with categorisation. Show in search but never print on labels.</p>
-          <div id="menucat-list" style="display:grid;gap:6px;margin-bottom:14px"></div>
-          <div class="sep"></div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <input type="text" id="mc-name" placeholder="e.g. Corporate" style="flex:1;min-width:160px">
-            <button class="btn btn-primary btn-sm" onclick="addMenuCat()">+ Add</button>
+          <!-- PRINTER -->
+          <div class="settings-panel" id="panel-printer">
+            <h2>Printer & System</h2>
+            <p class="panel-sub">Hardware status and connection settings</p>
+            <div style="margin-bottom:20px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--charcoal-light)">Live status</div>
+                <button class="btn btn-outline btn-xs" onclick="checkStatus()">↻ Refresh</button>
+              </div>
+              <div class="status-card"><div class="status-indicator unknown" id="pi-ind"></div><div class="status-text"><strong>Raspberry Pi print server</strong><small id="pi-msg">Click refresh to check</small></div></div>
+              <div class="status-card"><div class="status-indicator unknown" id="pr-ind"></div><div class="status-text"><strong>Brother QL-820NWBc</strong><small id="pr-msg">Click refresh to check</small></div></div>
+            </div>
+            <div class="section-card">
+              <div class="section-card-title">Connection settings</div>
+              <div class="form-row">
+                <div><span class="f-label">Printer IP</span><input type="text" class="f-input" id="set-printer-ip" value="192.168.1.127"></div>
+                <div><span class="f-label">Label roll</span><select class="f-input"><option>DK-2251 — Black & red</option><option>DK-2205 — Black only</option></select></div>
+              </div>
+              <div class="form-row single"><div><span class="f-label">Print server URL</span><input type="text" class="f-input" id="set-server-url" value="https://palatable-shack-scallion.ngrok-free.dev/print"></div></div>
+              <div class="btn-row">
+                <button class="btn btn-success btn-sm" onclick="sendTestPrint()">Send test print</button>
+                <button class="btn btn-dark btn-sm" onclick="savePrinterSettings()">Save settings</button>
+              </div>
+            </div>
+            <div class="section-card" style="margin-top:12px">
+              <div class="section-card-title">Your setup</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--charcoal-mid);line-height:2">
+                <div>Printer · 192.168.1.127</div>
+                <div>Pi · 192.168.1.175:3000</div>
+                <div>Tunnel · palatable-shack-scallion.ngrok-free.dev</div>
+                <div>Roll · DK-2251 black & red</div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
-      <div class="tab-content" id="t-printer">
-        <div class="card" style="margin-bottom:12px">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-            <div class="card-title" style="margin-bottom:0">System status</div>
-            <button class="btn btn-ghost btn-sm" onclick="checkPrinterStatus()">↻ Check now</button>
+          <!-- AUDIT -->
+          <div class="settings-panel" id="panel-audit">
+            <h2>Audit Log</h2>
+            <p class="panel-sub">Every admin action logged — manager view only · cannot be deleted</p>
+            <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
+              <button class="btn btn-outline btn-sm" onclick="exportAudit()">Export log</button>
+            </div>
+            <div id="audit-log-list"></div>
+            <div id="audit-empty" style="display:none;text-align:center;padding:40px;color:var(--charcoal-faint);font-size:13px">No admin changes logged yet</div>
           </div>
-          <div class="status-row"><span class="status-dot status-unknown" id="pi-dot"></span><div style="flex:1"><div style="font-weight:500;color:var(--text);font-size:13px">Raspberry Pi print server</div><div style="font-size:11px;color:var(--text3);margin-top:2px" id="pi-msg">Click Check now</div></div></div>
-          <div class="status-row"><span class="status-dot status-unknown" id="printer-dot"></span><div style="flex:1"><div style="font-weight:500;color:var(--text);font-size:13px">Brother QL-820NWBc</div><div style="font-size:11px;color:var(--text3);margin-top:2px" id="printer-msg">Click Check now</div></div></div>
-          <div id="last-print-status" style="margin-top:10px;font-size:11px;color:var(--text3)"></div>
-        </div>
-        <div class="card" style="margin-bottom:12px">
-          <div class="card-title">Connection settings</div>
-          <div class="form-grid">
-            <div><label>Printer IP</label><input type="text" id="pr-ip" value="192.168.1.127"></div>
-            <div><label>Label roll</label><select><option>DK-2251 — black & red</option><option>DK-2205 — black only</option></select></div>
-            <div class="form-full"><label>Print server URL (ngrok)</label><input type="text" id="pr-srv" value="https://palatable-shack-scallion.ngrok-free.dev/print"></div>
-          </div>
-          <div class="row-btns">
-            <button class="btn btn-green btn-sm" onclick="sendTestPrint()">Send test print</button>
-            <button class="btn btn-primary btn-sm" onclick="savePrinterSettings()">Save settings</button>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-title">Your setup</div>
-          <div style="display:grid;gap:8px">
-            <div style="padding:10px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Printer</div><div style="font-size:13px;color:var(--text);font-family:'DM Mono',monospace">Brother QL-820NWBc · 192.168.1.127</div></div>
-            <div style="padding:10px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Print server</div><div style="font-size:13px;color:var(--text);font-family:'DM Mono',monospace">Raspberry Pi · 192.168.1.175:3000</div></div>
-            <div style="padding:10px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Tunnel</div><div style="font-size:13px;color:var(--text);font-family:'DM Mono',monospace">palatable-shack-scallion.ngrok-free.dev</div></div>
-          </div>
-        </div>
-      </div>
 
-      <div class="tab-content" id="t-backup">
-        <div class="card" style="margin-bottom:12px">
-          <div class="card-title">Export data backup</div>
-          <div style="display:grid;gap:8px">
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)"><div><div style="font-weight:500;font-size:13px;color:var(--text)">Products database</div><div style="font-size:11px;color:var(--text3);margin-top:2px">All products, allergens and shelf life</div></div><button class="btn btn-green btn-sm" onclick="exportTable('products')">Download</button></div>
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)"><div><div style="font-weight:500;font-size:13px;color:var(--text)">Staff list</div><div style="font-size:11px;color:var(--text3);margin-top:2px">All staff (PINs excluded)</div></div><button class="btn btn-green btn-sm" onclick="exportTable('staff')">Download</button></div>
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)"><div><div style="font-weight:500;font-size:13px;color:var(--text)">Job codes</div><div style="font-size:11px;color:var(--text3);margin-top:2px">All active job codes</div></div><button class="btn btn-green btn-sm" onclick="exportTable('job_codes')">Download</button></div>
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)"><div><div style="font-weight:500;font-size:13px;color:var(--text)">Full print history</div><div style="font-size:11px;color:var(--text3);margin-top:2px">Every label ever printed</div></div><button class="btn btn-green btn-sm" onclick="exportCSV()">Download</button></div>
+          <!-- BACKUP -->
+          <div class="settings-panel" id="panel-backup">
+            <h2>Backup & Export</h2>
+            <p class="panel-sub">Download your data. Restore via Supabase Table Editor if needed.</p>
+            <div style="display:grid;gap:10px">
+              <div class="status-card" style="justify-content:space-between">
+                <div><strong style="font-size:13px;color:var(--charcoal)">Products database</strong><br><small style="color:var(--charcoal-faint)">All products, allergens and shelf life</small></div>
+                <button class="btn btn-outline btn-sm" onclick="exportTable('products')">Download CSV</button>
+              </div>
+              <div class="status-card" style="justify-content:space-between">
+                <div><strong style="font-size:13px;color:var(--charcoal)">Staff list</strong><br><small style="color:var(--charcoal-faint)">All staff members (PINs excluded)</small></div>
+                <button class="btn btn-outline btn-sm" onclick="exportTable('staff')">Download CSV</button>
+              </div>
+              <div class="status-card" style="justify-content:space-between">
+                <div><strong style="font-size:13px;color:var(--charcoal)">Job codes</strong><br><small style="color:var(--charcoal-faint)">All active job codes</small></div>
+                <button class="btn btn-outline btn-sm" onclick="exportTable('job_codes')">Download CSV</button>
+              </div>
+              <div class="status-card" style="justify-content:space-between">
+                <div><strong style="font-size:13px;color:var(--charcoal)">Full print history</strong><br><small style="color:var(--charcoal-faint)">Every label ever printed</small></div>
+                <button class="btn btn-outline btn-sm" onclick="exportHistory()">Download CSV</button>
+              </div>
+            </div>
           </div>
+
+          <!-- CUSTOM LABELS -->
+          <div class="settings-panel" id="panel-custom">
+            <h2>Custom Label</h2>
+            <p class="panel-sub">Blank canvas — type anything, set size per line. Perfect for storage containers.</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
+              <div>
+                <div id="custom-rows-list"></div>
+                <div class="btn-row">
+                  <button class="btn btn-outline btn-sm" onclick="addCustomRow()">+ Add row</button>
+                  <button class="btn btn-danger btn-sm" onclick="clearCustomRows()">Clear</button>
+                </div>
+                <div class="form-row" style="margin-top:16px">
+                  <div><span class="f-label">Section</span>
+                    <select class="f-input" id="custom-section">
+                      <option value="">— No section —</option>
+                      <option>Canapés</option><option>Starters</option><option>Mains</option>
+                      <option>Dessert</option><option>Evening Grazing</option><option>Tasting Menu</option>
+                    </select>
+                  </div>
+                  <div><span class="f-label">Job code</span><select class="f-input" id="custom-job"><option value="">— None —</option></select></div>
+                </div>
+                <div class="form-row single"><div><span class="f-label">Quantity</span><input type="number" class="f-input" id="custom-qty" value="1" min="1" max="50" style="width:80px"></div></div>
+                <button class="btn btn-dark" onclick="printCustomLabel()" style="margin-top:8px;width:100%">Print custom label</button>
+              </div>
+              <div>
+                <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--charcoal-light);margin-bottom:8px">Preview</div>
+                <div class="custom-preview-area" id="custom-preview">
+                  <span style="font-size:13px;color:var(--charcoal-faint);font-style:italic">Add rows to see preview…</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
-        <div class="card"><div class="card-title">How to restore</div><p style="font-size:13px;color:var(--text2);line-height:1.8">Go to <strong style="color:var(--text)">supabase.com</strong> → Digby's CPS → Table Editor → select table → Import data from CSV.</p></div>
       </div>
     </div>
 
-    <!-- AUDIT LOG -->
-    <div class="page" id="page-audit">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px">
-        <div><div class="pg-title">Audit Log</div><div class="pg-sub" style="margin-bottom:0">All admin changes — manager view only</div></div>
-        <button class="btn btn-green btn-sm" onclick="exportAudit()">Export log</button>
-      </div>
-      <div class="card">
-        <div id="audit-list"></div>
-        <div id="audit-empty" style="text-align:center;padding:32px;color:var(--text3);display:none">No admin changes logged yet</div>
-      </div>
-    </div>
   </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-tab active" id="nav-print" onclick="switchTab('print')">
+      <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      <span class="nav-tab-label">Print</span>
+    </button>
+    <button class="nav-tab" id="nav-queue" onclick="switchTab('queue')">
+      <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      <span class="nav-tab-label">Queue</span>
+    </button>
+    <button class="nav-tab" id="nav-history" onclick="switchTab('history')">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span class="nav-tab-label">History</span>
+    </button>
+    <button class="nav-tab" id="nav-settings" onclick="switchTab('settings')">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M5.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+      <span class="nav-tab-label">Settings</span>
+    </button>
+  </nav>
 </div>
-<div class="toast" id="toast-el"></div>
+
+<div class="toast" id="toast"></div>
 
 <script>
-var SUPA_URL='https://jaajrllkozknilvmdezt.supabase.co';
-var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImphYWpybGxrb3prbmlsdm1kZXp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwMjQxNDAsImV4cCI6MjA5MjYwMDE0MH0.09U5cba3JxRmysrn2X3TxPqr-q6jJE4QhyeKQwEK03M';
-var PRINT_SERVER='https://palatable-shack-scallion.ngrok-free.dev/print';
-var PRINT_STATUS_URL='https://palatable-shack-scallion.ngrok-free.dev/status';
+/* ══════════════════════════════════════════
+   CONFIG
+══════════════════════════════════════════ */
+var SUPA='https://jaajrllkozknilvmdezt.supabase.co';
+var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImphYWpybGxrb3prbmlsdm1kZXp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwMjQxNDAsImV4cCI6MjA5MjYwMDE0MH0.09U5cba3JxRmysrn2X3TxPqr-q6jJE4QhyeKQwEK03M';
+var PRINT_URL='https://palatable-shack-scallion.ngrok-free.dev/print';
+var STATUS_URL='https://palatable-shack-scallion.ngrok-free.dev/status';
 var ALLERGENS=['Gluten','Crustaceans','Eggs','Fish','Peanuts','Soya','Milk','Nuts','Celery','Mustard','Sesame','Sulphites','Lupin','Molluscs'];
-var COLORS=['#e8c547','#e06030','#4090d0','#a060d0','#40b080','#d06090','#60b0a0','#d09040'];
-var MANAGER_NAME='James Brierley';
+var COLORS=['#8b6914','#c8341a','#1a4a7a','#2d6a3f','#6b3a8a','#1a6a6a','#8a4a1a','#3a5a1a'];
+var MANAGER='James Brierley';
 var MANAGER_PIN='1810';
-var DEFAULT_MENU_CATS=['Weddings','Tasting Menu','Bespoke','Wakes','Private Dining'];
-var user=null,staffList=[],products=[],jobCodes=[],menuCats=[],selProd=null;
-var aState={c:[],m:[],na:false};
-var npState={};
-var editState={};
-var customRows=[];
+
+/* STATE */
+var user=null,products=[],jobCodes=[],menuTypes=[],staffList=[];
 var printQueue=[];
+var selProd=null;
+var printChipState={c:[],m:[],na:false};
+var apChipState={};
+var epChipState={};
+var customRows=[];
 
-/* ── AUDIT ── */
-function logAudit(action,detail){
-  try{
-    var log=JSON.parse(localStorage.getItem('digby_audit_v2')||'[]');
-    log.unshift({who:user?user.name:'Unknown',action:action,detail:detail,when:new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})});
-    if(log.length>1000)log=log.slice(0,1000);
-    localStorage.setItem('digby_audit_v2',JSON.stringify(log));
-  }catch(e){}
-}
-
-/* ── MENU CATS ── */
-function loadMenuCats(){
-  var saved=localStorage.getItem('digby_menu_cats');
-  menuCats=saved?JSON.parse(saved):DEFAULT_MENU_CATS.slice();
-  renderMenuCatSelect('np-menutype');
-  renderMenuCatSelect('edit-menutype');
-  renderMenuCatAdmin();
-}
-function saveMenuCats(){localStorage.setItem('digby_menu_cats',JSON.stringify(menuCats));}
-function renderMenuCatSelect(selId){
-  var sel=document.getElementById(selId);if(!sel)return;
-  var cur=sel.value;
-  sel.innerHTML='<option value="">— No menu type —</option>';
-  menuCats.forEach(function(c){var o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o);});
-  if(cur)sel.value=cur;
-}
-function renderMenuCatAdmin(){
-  var el=document.getElementById('menucat-list');if(!el)return;
-  if(!menuCats.length){el.innerHTML='<div style="color:var(--text3);font-size:13px">No menu types yet</div>';return;}
-  el.innerHTML=menuCats.map(function(c,i){
-    return'<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)"><span style="font-size:13px;color:var(--text);flex:1">'+c+'</span><button class="btn btn-danger btn-sm" onclick="removeMenuCat('+i+')">✕</button></div>';
-  }).join('');
-}
-function addMenuCat(){
-  var name=document.getElementById('mc-name').value.trim();
-  if(!name){toast('Enter a menu type name','err');return;}
-  menuCats.push(name);saveMenuCats();renderMenuCatSelect('np-menutype');renderMenuCatSelect('edit-menutype');renderMenuCatAdmin();
-  logAudit('Added menu type',name);document.getElementById('mc-name').value='';toast(name+' added','ok');
-}
-function removeMenuCat(i){
-  var name=menuCats[i];menuCats.splice(i,1);saveMenuCats();renderMenuCatSelect('np-menutype');renderMenuCatSelect('edit-menutype');renderMenuCatAdmin();
-  logAudit('Removed menu type',name);toast('Removed','ok');
-}
-
-/* ── SUPABASE ── */
-async function supa(method,table,body,query){
-  var url=SUPA_URL+'/rest/v1/'+table+(query?'?'+query:'');
-  var opts={method:method,headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=representation'}};
+/* ══════════════════════════════════════════
+   SUPABASE
+══════════════════════════════════════════ */
+async function db(method,table,body,query){
+  var url=SUPA+'/rest/v1/'+table+(query?'?'+query:'');
+  var h={'apikey':KEY,'Authorization':'Bearer '+KEY,'Content-Type':'application/json','Prefer':'return=representation'};
+  var opts={method:method,headers:h};
   if(body)opts.body=JSON.stringify(body);
   var r=await fetch(url,opts);
-  if(!r.ok){var e=await r.text();throw new Error(e);}
+  if(!r.ok)throw new Error(await r.text());
   try{return await r.json();}catch(e){return[];}
 }
 
-/* ── PRINTER ── */
-async function sendToPrinter(job){
+/* ══════════════════════════════════════════
+   AUDIT
+══════════════════════════════════════════ */
+function audit(action,detail){
   try{
-    var r=await fetch(PRINT_SERVER,{method:'POST',headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'true'},body:JSON.stringify(job),signal:AbortSignal.timeout(15000)});
-    var d=await r.json();
-    if(d.success){document.getElementById('last-print-status').textContent='Last print: '+job.quantity+' label(s) at '+(job.printed_at||'');return true;}
-    toast('Printer error: '+(d.error||'Unknown'),'err');return false;
-  }catch(e){toast('Cannot reach print server — is the Pi on?','err');return false;}
-}
-
-/* ── LOGIN ── */
-async function loadStaffForLogin(){
-  try{
-    staffList=await supa('GET','staff','','order=name.asc');
-    var sel=document.getElementById('luser');
-    sel.innerHTML='<option value="">— Select staff member —</option>';
-    staffList.forEach(function(s,i){var o=document.createElement('option');o.value=i;o.textContent=s.name;sel.appendChild(o);});
-  }catch(e){var err=document.getElementById('lerr');err.textContent='Could not connect: '+e.message;err.style.display='block';}
-}
-function doLogin(){
-  var ui=document.getElementById('luser').value;
-  var pin=document.getElementById('lpin').value;
-  if(ui===''){showErr('Please select your name.');return;}
-  var s=staffList[parseInt(ui)];
-  if(!s){showErr('Staff not found.');return;}
-  if(pin!==s.pin){showErr('Incorrect PIN.');return;}
-  user=s;user.isManager=(s.name===MANAGER_NAME&&pin===MANAGER_PIN);
-  document.getElementById('login-screen').style.display='none';
-  document.getElementById('app').style.display='flex';
-  if(user.isManager)document.getElementById('nav-audit').style.display='flex';
-  initApp();
-}
-function showErr(m){var e=document.getElementById('lerr');e.textContent=m;e.style.display='block';setTimeout(function(){e.style.display='none';},3000);}
-document.getElementById('lpin').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
-function doLogout(){
-  user=null;selProd=null;products=[];jobCodes=[];customRows=[];printQueue=[];
-  document.getElementById('login-screen').style.display='flex';
-  document.getElementById('app').style.display='none';
-  document.getElementById('lpin').value='';document.getElementById('luser').value='';
-  document.getElementById('nav-audit').style.display='none';
-}
-
-/* ── INIT ── */
-async function initApp(){
-  var col=user.color||COLORS[0];
-  var ini=user.initials||(user.name.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2));
-  var av=document.getElementById('sb-av');
-  av.textContent=ini;av.style.background=col+'33';av.style.color=col;
-  document.getElementById('sb-name').textContent=user.name;
-  document.getElementById('sb-role').textContent=user.isManager?'Manager ★':'Tap to sign out';
-  var h=new Date().getHours();
-  document.getElementById('dash-greet').textContent=(h<12?'Good morning':h<17?'Good afternoon':'Good evening')+', '+user.name.split(' ')[0];
-  document.getElementById('d-prep').value=new Date().toISOString().split('T')[0];
-  document.getElementById('pv-staff').textContent=user.name;
-  loadMenuCats();
-  buildChips('a-chips','main');
-  buildChips('np-chips','np');
-  initCustomRows();
-  await Promise.all([loadProducts(),loadJobCodes(),loadDash(),loadStaff()]);
-  updatePreview();
-  renderQueue();
-  setInterval(function(){
-    var ap=document.querySelector('.page.active');
-    if(ap){if(ap.id==='page-dashboard')loadDash();}
-  },15000);
-}
-
-/* ── NAV ── */
-function showPage(id){
-  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
-  document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active');});
-  document.getElementById('page-'+id).classList.add('active');
-  var nav=document.querySelector('[data-page="'+id+'"]');if(nav)nav.classList.add('active');
-  if(id==='queue')renderQueue();
-  if(id==='dashboard')loadDash();
-  if(id==='audit')loadAudit();
-  if(id==='custom')populateCustomJobSelect();
-}
-function showTab(el,id){
-  document.querySelectorAll('.tab-content').forEach(function(t){t.classList.remove('active');});
-  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
-  document.getElementById(id).classList.add('active');el.classList.add('active');
-}
-
-/* ── DATA ── */
-async function loadProducts(){
-  try{products=await supa('GET','products','','order=name.asc');document.getElementById('st-prods').textContent=products.length;filterProds('');renderAdminProds('');}
-  catch(e){toast('Could not load products','err');}
-}
-async function loadJobCodes(){
-  try{jobCodes=await supa('GET','job_codes','','order=created_at.desc');populateJCSelect();renderJC();populateCustomJobSelect();}catch(e){}
-}
-async function loadDash(){
-  try{
-    var jobs=await supa('GET','print_jobs','','order=created_at.desc&limit=10');
-    document.getElementById('st-today').textContent=jobs.length;
-    document.getElementById('dash-loading').style.display='none';
-    document.getElementById('dash-table').style.display='table';
-    var tb=document.getElementById('dash-recent');
-    if(!jobs.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:20px">No labels printed yet</td></tr>';return;}
-    tb.innerHTML=jobs.map(function(j){
-      var enc=encodeURIComponent(JSON.stringify(j));
-      return'<tr style="cursor:pointer" onclick="reprintJob(\''+enc+'\')"><td style="font-weight:500;color:var(--text)">'+j.product_name+'</td><td>'+j.staff_name+'</td><td style="font-family:DM Mono,monospace;color:var(--accent);font-size:11px">'+(j.job_code||'—')+'</td><td>'+j.quantity+'</td><td style="font-family:DM Mono,monospace;font-size:11px">'+(j.printed_at||'')+'</td><td><button class="btn btn-amber btn-sm" onclick="event.stopPropagation();reprintJob(\''+enc+'\')">Reprint</button></td></tr>';
-    }).join('');
+    var log=JSON.parse(localStorage.getItem('digby_audit')||'[]');
+    log.unshift({who:user?user.name:'?',action:action,detail:detail,when:new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})});
+    localStorage.setItem('digby_audit',JSON.stringify(log.slice(0,2000)));
   }catch(e){}
 }
-async function loadStaff(){
-  try{var list=await supa('GET','staff','','order=name.asc');staffList=list;renderStaff(list);}catch(e){}
-}
 
-/* ── QUEUE ── */
-function renderQueue(){
-  var pending=printQueue.filter(function(j){return j.status==='pending';});
-  document.getElementById('st-q').textContent=pending.length;
-  var table=document.getElementById('q-table');
-  var empty=document.getElementById('q-empty');
-  if(!pending.length){table.style.display='none';empty.style.display='block';return;}
-  empty.style.display='none';table.style.display='table';
-  document.getElementById('q-body').innerHTML=pending.map(function(j){
-    var enc=encodeURIComponent(JSON.stringify(j));
-    return'<tr><td style="font-weight:500;color:var(--text)">'+j.product_name+'</td><td>'+j.staff_name+'</td><td>'+(j.section||'—')+'</td><td style="font-family:DM Mono,monospace;color:var(--accent);font-size:11px">'+(j.job_code||'—')+'</td><td>'+j.quantity+'</td><td>'+fmtDate(j.date_useby)+'</td><td style="max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(j.notes||'—')+'</td><td style="font-family:DM Mono,monospace;font-size:11px">'+j.printed_at+'</td><td><span class="badge-pending">Pending</span></td><td style="display:flex;gap:4px;flex-wrap:wrap"><button class="btn btn-amber btn-sm" onclick="reprintJob(\''+enc+'\')">Reprint</button><button class="btn btn-danger btn-sm" onclick="cancelJob(\''+j.localId+'\')">Cancel</button></td></tr>';
+/* ══════════════════════════════════════════
+   MENU TYPES
+══════════════════════════════════════════ */
+function loadMenuTypes(){
+  var saved=localStorage.getItem('digby_menu_types');
+  menuTypes=saved?JSON.parse(saved):['Weddings','Tasting Menu','Bespoke','Wakes','Private Dining'];
+}
+function saveMenuTypes(){localStorage.setItem('digby_menu_types',JSON.stringify(menuTypes));}
+function renderMenuSelect(id){
+  var sel=document.getElementById(id);if(!sel)return;
+  var cur=sel.value;
+  sel.innerHTML='<option value="">— No menu type —</option>';
+  menuTypes.forEach(function(t){var o=document.createElement('option');o.value=t;o.textContent=t;sel.appendChild(o);});
+  if(cur)sel.value=cur;
+}
+function renderMenuTypeAdmin(){
+  var el=document.getElementById('menu-type-chips-admin');if(!el)return;
+  if(!menuTypes.length){el.innerHTML='<span style="color:var(--charcoal-faint);font-size:13px">No menu types yet</span>';return;}
+  el.innerHTML=menuTypes.map(function(t,i){
+    return'<span class="menu-type-chip">'+t+'<button onclick="removeMenuType('+i+')" title="Remove">×</button></span>';
   }).join('');
 }
-function cancelJob(localId){
-  if(!confirm('Cancel this print job and remove it from the queue?'))return;
-  printQueue=printQueue.filter(function(j){return j.localId!==localId;});
-  renderQueue();toast('Print job cancelled','ok');
+function addMenuType(){
+  var v=document.getElementById('new-menu-type').value.trim();
+  if(!v){toast('Enter a menu type name','error');return;}
+  menuTypes.push(v);saveMenuTypes();renderMenuTypeAdmin();renderMenuSelect('ap-menu');renderMenuSelect('ep-menu');
+  audit('Added menu type',v);document.getElementById('new-menu-type').value='';toast(v+' added');
+}
+function removeMenuType(i){
+  var n=menuTypes[i];menuTypes.splice(i,1);saveMenuTypes();renderMenuTypeAdmin();renderMenuSelect('ap-menu');renderMenuSelect('ep-menu');
+  audit('Removed menu type',n);toast('Removed');
 }
 
-function loadAudit(){
-  var el=document.getElementById('audit-list');var em=document.getElementById('audit-empty');
-  var log=JSON.parse(localStorage.getItem('digby_audit_v2')||'[]');
-  if(!log.length){em.style.display='block';el.innerHTML='';return;}
-  em.style.display='none';
-  el.innerHTML=log.map(function(e){return'<div class="audit-row"><div class="audit-who">'+e.who+'</div><div class="audit-what">'+e.action+' — '+e.detail+'</div><div class="audit-when">'+e.when+'</div></div>';}).join('');
-}
-function exportAudit(){
-  var log=JSON.parse(localStorage.getItem('digby_audit_v2')||'[]');
-  if(!log.length){toast('No audit entries yet','err');return;}
-  var csv='Who,Action,Detail,When\n'+log.map(function(e){return'"'+e.who+'","'+e.action+'","'+e.detail+'","'+e.when+'"';}).join('\n');
-  downloadCSV(csv,'digbys-cps-audit-'+new Date().toISOString().split('T')[0]+'.csv');toast('Exported','ok');
-}
-
-function reprintJob(enc){
-  var j=JSON.parse(decodeURIComponent(enc));
-  showPage('print');
-  var prod=null;for(var i=0;i<products.length;i++){if(products[i].name===j.product_name){prod=products[i];break;}}
-  if(prod)selectProd(prod);
-  if(j.date_prepped)document.getElementById('d-prep').value=j.date_prepped;
-  if(j.date_useby)document.getElementById('d-useby').value=j.date_useby;
-  var stn=document.getElementById('sel-stn');for(var i=0;i<stn.options.length;i++){if(stn.options[i].value===(j.section||'')){stn.selectedIndex=i;break;}}
-  var jc=document.getElementById('sel-job');for(var i=0;i<jc.options.length;i++){if(jc.options[i].value===(j.job_code||'')){jc.selectedIndex=i;break;}}
-  document.getElementById('qty').value=j.quantity||1;
-  document.getElementById('print-notes').value=j.notes||'';
-  var c=j.contains?j.contains.split(',').map(function(x){return x.trim();}).filter(Boolean):[];
-  var m=j.may_contain?j.may_contain.split(',').map(function(x){return x.trim();}).filter(Boolean):[];
-  setChips('a-chips',c,m,false,aState);updatePreview();
-  toast('Label loaded — check and print','ok');
+/* ══════════════════════════════════════════
+   LOGIN
+══════════════════════════════════════════ */
+async function loadStaffForLogin(){
+  try{
+    staffList=await db('GET','staff','','order=name.asc');
+    var sel=document.getElementById('l-user');
+    sel.innerHTML='<option value="">— Select your name —</option>';
+    staffList.forEach(function(s,i){var o=document.createElement('option');o.value=i;o.textContent=s.name;sel.appendChild(o);});
+  }catch(e){
+    var err=document.getElementById('login-err');
+    err.textContent='Cannot connect to database: '+e.message;err.style.display='block';
+  }
 }
 
-/* ── ALLERGEN CHIPS ── */
-function buildChips(cid, mode){
-  var c=document.getElementById(cid);if(!c)return;c.innerHTML='';
-  var state=mode==='main'?aState:mode==='np'?npState:editState;
-  // N/A chip first
+function doLogin(){
+  var ui=document.getElementById('l-user').value;
+  var pin=document.getElementById('l-pin').value;
+  if(!ui){showLoginErr('Please select your name.');return;}
+  var s=staffList[parseInt(ui)];
+  if(!s||pin!==s.pin){showLoginErr('Incorrect PIN. Try again.');return;}
+  user=s;
+  user.isManager=(s.name===MANAGER&&pin===MANAGER_PIN);
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').classList.add('visible');
+  if(user.isManager){document.getElementById('audit-nav').style.display='flex';}
+  initApp();
+}
+function showLoginErr(m){var e=document.getElementById('login-err');e.textContent=m;e.style.display='block';setTimeout(function(){e.style.display='none';},3000);}
+document.getElementById('l-pin').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+
+function doLogout(){
+  if(!confirm('Sign out?'))return;
+  user=null;selProd=null;printQueue=[];products=[];jobCodes=[];
+  document.getElementById('app').classList.remove('visible');
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('l-pin').value='';document.getElementById('l-user').value='';
+}
+
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
+async function initApp(){
+  loadMenuTypes();
+  // Avatar
+  var col=user.color||COLORS[0];
+  var ini=user.initials||(user.name.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2));
+  var av=document.getElementById('top-avatar');
+  av.textContent=ini;av.style.background=col+'25';av.style.color=col;av.style.border='1.5px solid '+col+'40';
+  document.getElementById('top-name').textContent=user.name.split(' ')[0];
+  // Date default
+  document.getElementById('d-prep').value=new Date().toISOString().split('T')[0];
+  document.getElementById('lbl-staff').textContent=user.name;
+  // Build print chips
+  buildChips('print-chips','print');
+  // Init custom rows
+  initCustomRows();
+  // Load data
+  await Promise.all([loadProducts(),loadJobCodes(),loadStaff()]);
+  updateLabelPreview();
+  updateQueuePill();
+  // Poll
+  setInterval(function(){updateLabelPreview();},30000);
+}
+
+/* ══════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════ */
+function switchTab(id){
+  ['print','queue','history','settings'].forEach(function(t){
+    document.getElementById('tab-'+t).classList.remove('active');
+    document.getElementById('nav-'+t).classList.remove('active');
+  });
+  document.getElementById('tab-'+id).classList.add('active');
+  document.getElementById('nav-'+id).classList.add('active');
+  if(id==='history')loadHistory();
+  if(id==='queue')renderQueue();
+  if(id==='settings'){
+    renderProductList('');renderJCList();renderStaffList();renderMenuTypeAdmin();
+    if(user.isManager)renderAuditLog();
+  }
+}
+
+function showSettingsPanel(id,el){
+  document.querySelectorAll('.settings-panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.settings-nav-item').forEach(function(n){n.classList.remove('active');});
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+  if(id==='custom')populateCustomJobSelect();
+}
+
+/* ══════════════════════════════════════════
+   ALLERGEN CHIPS
+══════════════════════════════════════════ */
+function buildChips(containerId, mode){
+  var el=document.getElementById(containerId);if(!el)return;
+  el.innerHTML='';
+  // N/A chip
   var na=document.createElement('div');
-  na.className='chip na-chip';na.textContent='N/A — No allergens';na.dataset.na='1';
+  na.className='a-chip na';na.textContent='N/A — No allergens';
   na.onclick=function(){
-    if(mode==='main'){
-      aState.na=!aState.na;
-      if(aState.na){
-        // Clear all and lock
-        aState.c=[];aState.m=[];
-        c.querySelectorAll('.chip:not(.na-chip)').forEach(function(ch){ch.dataset.state='none';ch.classList.remove('contains','may');ch.classList.add('locked');});
-        na.classList.add('active-na');
-      }else{
-        c.querySelectorAll('.chip:not(.na-chip)').forEach(function(ch){ch.classList.remove('locked');});
-        na.classList.remove('active-na');
-      }
-      updatePreview();
-    } else {
-      var st=state;
-      st.na=!st.na;
-      if(st.na){
-        ALLERGENS.forEach(function(a){st[a]='none';});
-        c.querySelectorAll('.chip:not(.na-chip)').forEach(function(ch){ch.dataset.state='none';ch.classList.remove('contains','may');ch.classList.add('locked');});
-        na.classList.add('active-na');
-      }else{
-        c.querySelectorAll('.chip:not(.na-chip)').forEach(function(ch){ch.classList.remove('locked');});
-        na.classList.remove('active-na');
-      }
+    var state=getChipState(mode);
+    state.na=!state.na;
+    if(state.na){
+      state.c=[];state.m=[];
+      el.querySelectorAll('.a-chip:not(.na)').forEach(function(c){c.classList.remove('contains','may');c.classList.add('locked');c.dataset.state='none';});
+      na.classList.add('active');
+    }else{
+      el.querySelectorAll('.a-chip:not(.na)').forEach(function(c){c.classList.remove('locked');});
+      na.classList.remove('active');
     }
+    if(mode==='print')updateLabelPreview();
   };
-  c.appendChild(na);
+  el.appendChild(na);
   ALLERGENS.forEach(function(a){
-    var ch=document.createElement('div');ch.className='chip';ch.textContent=a;ch.dataset.name=a;ch.dataset.state='none';
+    var ch=document.createElement('div');
+    ch.className='a-chip';ch.textContent=a;ch.dataset.name=a;ch.dataset.state='none';
     ch.onclick=function(){
       if(ch.classList.contains('locked'))return;
       var s=ch.dataset.state;
       if(s==='none'){ch.dataset.state='contains';ch.classList.add('contains');ch.classList.remove('may');}
       else if(s==='contains'){ch.dataset.state='may';ch.classList.remove('contains');ch.classList.add('may');}
       else{ch.dataset.state='none';ch.classList.remove('contains','may');}
-      if(mode==='main'){syncA();updatePreview();}
-      else if(mode==='np'){npState[a]=ch.dataset.state;}
-      else if(mode==='edit'){editState[a]=ch.dataset.state;}
+      syncChipState(containerId,mode);
+      if(mode==='print')updateLabelPreview();
     };
-    c.appendChild(ch);
+    el.appendChild(ch);
   });
 }
 
-function setChips(cid,contains,may,naActive,stateObj){
-  var c=document.getElementById(cid);if(!c)return;
-  var naChip=c.querySelector('.na-chip');
-  if(naActive){
-    if(naChip){naChip.classList.add('active-na');}
-    c.querySelectorAll('.chip:not(.na-chip)').forEach(function(ch){ch.dataset.state='none';ch.classList.remove('contains','may');ch.classList.add('locked');});
-    if(stateObj)stateObj.na=true;
-    return;
-  }
-  if(naChip)naChip.classList.remove('active-na');
-  c.querySelectorAll('.chip:not(.na-chip)').forEach(function(ch){
-    var n=ch.dataset.name;ch.classList.remove('contains','may','locked');ch.dataset.state='none';
+function getChipState(mode){
+  if(mode==='print')return printChipState;
+  if(mode==='ap')return apChipState;
+  if(mode==='ep')return epChipState;
+  return {};
+}
+
+function syncChipState(containerId,mode){
+  var state=getChipState(mode);
+  state.c=[];state.m=[];
+  document.querySelectorAll('#'+containerId+' .a-chip:not(.na)').forEach(function(ch){
+    if(ch.dataset.state==='contains')state.c.push(ch.dataset.name);
+    if(ch.dataset.state==='may')state.m.push(ch.dataset.name);
+  });
+}
+
+function setChipValues(containerId,mode,contains,may,naActive){
+  var state=getChipState(mode);
+  state.na=naActive||false;state.c=contains||[];state.m=may||[];
+  var el=document.getElementById(containerId);if(!el)return;
+  var na=el.querySelector('.na');
+  if(na)na.classList.toggle('active',naActive);
+  el.querySelectorAll('.a-chip:not(.na)').forEach(function(ch){
+    var n=ch.dataset.name;
+    ch.classList.remove('contains','may','locked');ch.dataset.state='none';
+    if(naActive){ch.classList.add('locked');return;}
     if(contains&&contains.indexOf(n)>=0){ch.dataset.state='contains';ch.classList.add('contains');}
     else if(may&&may.indexOf(n)>=0){ch.dataset.state='may';ch.classList.add('may');}
   });
-  if(stateObj){stateObj.na=false;}
-  syncA();
 }
 
-function syncA(){
-  aState.c=[];aState.m=[];
-  document.querySelectorAll('#a-chips .chip:not(.na-chip)').forEach(function(ch){
-    if(ch.dataset.state==='contains')aState.c.push(ch.dataset.name);
-    if(ch.dataset.state==='may')aState.m.push(ch.dataset.name);
-  });
+/* ══════════════════════════════════════════
+   PRODUCTS
+══════════════════════════════════════════ */
+async function loadProducts(){
+  try{products=await db('GET','products','','order=name.asc');}
+  catch(e){toast('Could not load products','error');}
 }
 
-/* ── PRODUCT SEARCH ── */
-function filterProds(q){
-  var el=document.getElementById('prod-results');
-  if(!products.length){el.innerHTML='<div style="color:var(--text3);font-size:12px;padding:8px">No products yet</div>';return;}
+function filterProducts(q){
+  var sl=document.getElementById('search-clear');
+  if(sl)sl.style.display=q?'block':'none';
+  var results=document.getElementById('search-results');
+  if(!q){
+    results.innerHTML='<div class="search-empty"><p>Start typing to search your products</p><small>Search by name, category or menu type</small></div>';
+    return;
+  }
+  var ql=q.toLowerCase();
   var list=products.filter(function(p){
-    var s=(q||'').toLowerCase();
-    return p.name.toLowerCase().indexOf(s)>=0||p.category.toLowerCase().indexOf(s)>=0||(p.menu_type&&p.menu_type.toLowerCase().indexOf(s)>=0);
+    return p.name.toLowerCase().indexOf(ql)>=0||p.category.toLowerCase().indexOf(ql)>=0||(p.menu_type&&p.menu_type.toLowerCase().indexOf(ql)>=0);
   });
-  el.innerHTML='';
+  if(!list.length){results.innerHTML='<div class="search-empty"><p>No products found for "'+q+'"</p><small>Try a different search or add the product in Settings</small></div>';return;}
+  results.innerHTML='';
   list.forEach(function(p){
     var d=document.createElement('div');
-    d.style.cssText='background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:9px 12px;cursor:pointer;margin-bottom:3px;transition:border-color .15s';
-    d.onmouseenter=function(){d.style.borderColor='var(--accent)';};d.onmouseleave=function(){d.style.borderColor='var(--border)';};
-    var c=p.contains?p.contains.split(',').slice(0,3).join(', '):'';
-    var menuTag=p.menu_type?'<span class="menu-badge">'+p.menu_type+'</span>':'';
-    d.innerHTML='<div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:4px"><span style="font-size:13px;font-weight:500;color:var(--text)">'+p.name+'</span><div style="display:flex;gap:4px;align-items:center"><span style="font-size:10px;color:var(--accent);font-family:DM Mono,monospace">'+p.category+'</span>'+menuTag+'</div></div><div style="font-size:10px;color:var(--text2);margin-top:2px">'+p.shelf_life_hours+'h'+(c?' · ⚠ '+c:'')+'</div>';
-    d.onclick=function(){selectProd(p);};el.appendChild(d);
+    d.className='search-result'+(selProd&&selProd.id===p.id?' selected':'');
+    var al=p.contains?p.contains.split(',').slice(0,2).join(', ')+(p.contains.split(',').length>2?'…':''):'';
+    var menuTag=p.menu_type?'<div class="result-menu-type">'+p.menu_type+'</div>':'';
+    d.innerHTML='<div><div class="result-name">'+p.name+'</div><div class="result-meta">'+(al?'⚠ '+al:'No allergens')+' · '+p.shelf_life_hours+'h</div></div><div class="result-right"><span class="result-cat">'+p.category+'</span>'+menuTag+'</div>';
+    d.onclick=function(){selectProduct(p);};
+    results.appendChild(d);
   });
 }
 
-function selectProd(p){
+function selectProduct(p){
   selProd=p;
+  // Highlight in results
+  document.querySelectorAll('.search-result').forEach(function(r){r.classList.remove('selected');});
+  // Auto use-by
   var prep=document.getElementById('d-prep').value;
-  if(prep){var d=new Date(prep+'T00:00:00');d.setHours(d.getHours()+parseInt(p.shelf_life_hours));document.getElementById('d-useby').value=d.toISOString().split('T')[0];}
+  if(prep){
+    var d=new Date(prep+'T00:00:00');d.setHours(d.getHours()+parseInt(p.shelf_life_hours));
+    document.getElementById('d-useby').value=d.toISOString().split('T')[0];
+  }
+  // Set allergens
   var c=p.contains?p.contains.split(',').map(function(x){return x.trim();}).filter(Boolean):[];
   var m=p.may_contain?p.may_contain.split(',').map(function(x){return x.trim();}).filter(Boolean):[];
-  aState.na=false;
-  setChips('a-chips',c,m,false,aState);syncA();updatePreview();toast(p.name+' selected','ok');
+  setChipValues('print-chips','print',c,m,false);
+  updateLabelPreview();
+  toast(p.name+' selected');
 }
 
-document.getElementById('d-prep').addEventListener('change',function(){
-  if(selProd){var d=new Date(this.value+'T00:00:00');d.setHours(d.getHours()+parseInt(selProd.shelf_life_hours));document.getElementById('d-useby').value=d.toISOString().split('T')[0];}updatePreview();
-});
-document.getElementById('sel-stn').addEventListener('change',updatePreview);
-document.getElementById('sel-job').addEventListener('change',updatePreview);
-document.getElementById('print-notes').addEventListener('input',updatePreview);
+function clearSearch(){
+  document.getElementById('prod-search').value='';
+  document.getElementById('search-clear').style.display='none';
+  document.getElementById('search-results').innerHTML='<div class="search-empty"><p>Start typing to search your products</p><small>Search by name, category or menu type</small></div>';
+  selProd=null;
+  setChipValues('print-chips','print',[],[],false);
+  document.getElementById('d-useby').value='';
+  updateLabelPreview();
+}
 
-function fmtDate(s){if(!s)return'—';try{var d=new Date(s+'T00:00:00');return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});}catch(e){return s;}}
+/* ══════════════════════════════════════════
+   LABEL PREVIEW
+══════════════════════════════════════════ */
+function fmtDate(s){
+  if(!s)return'—';
+  try{return new Date(s+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});}catch(e){return s;}
+}
 
-function updatePreview(){
+function updateLabelPreview(){
+  var prod=selProd;
   var prep=document.getElementById('d-prep').value;
   var useby=document.getElementById('d-useby').value;
-  var stn=document.getElementById('sel-stn').value;
-  var job=document.getElementById('sel-job').value;
+  var sec=document.getElementById('d-section').value;
+  var job=document.getElementById('d-job').value;
   var notes=document.getElementById('print-notes').value.trim();
-  document.getElementById('pv-name').textContent=selProd?selProd.name:'Select a product';
-  document.getElementById('pv-job').textContent=job||'—';
-  document.getElementById('pv-prep').textContent=fmtDate(prep);
-  document.getElementById('pv-useby').textContent=fmtDate(useby);
-  document.getElementById('pv-staff').textContent=user?user.name:'—';
-  document.getElementById('pv-stn').textContent=stn||'—';
-  document.getElementById('pv-ft-code').textContent=job||'—';
-  document.getElementById('pv-ft-time').textContent=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-  var html='';
-  if(aState.na){html='<div class="abar-none">No allergens — N/A</div>';}
-  else{
-    var c=aState.c,m=aState.m;
-    if(c.length||m.length){if(c.length)html+='<div class="abar-title">Contains:</div><div class="abar-list">'+c.join(' · ')+'</div>';if(m.length)html+='<div class="abar-may">May contain: '+m.join(', ')+'</div>';}
-    else{html='<div class="abar-none">No allergens declared</div>';}
+  // Name
+  document.getElementById('lbl-name').textContent=prod?prod.name:'Select a product to begin';
+  // Job code
+  var jcEl=document.getElementById('lbl-job');
+  if(job){jcEl.textContent=job;jcEl.style.display='block';}else{jcEl.style.display='none';}
+  // Dates
+  document.getElementById('lbl-prep').textContent=fmtDate(prep);
+  document.getElementById('lbl-useby').textContent=fmtDate(useby);
+  document.getElementById('lbl-staff').textContent=user?user.name:'—';
+  // Section
+  var secRow=document.getElementById('lbl-section-row');
+  if(sec){secRow.style.display='flex';document.getElementById('lbl-section').textContent=sec;}
+  else{secRow.style.display='none';}
+  // Allergens
+  var abar=document.getElementById('lbl-allergy-bar');
+  var c=printChipState.c,m=printChipState.m,na=printChipState.na;
+  if(na){
+    abar.className='label-allergen-bar';
+    abar.innerHTML='<div class="label-no-allergens">No allergens — N/A</div>';
+  }else if(c.length||m.length){
+    abar.className='label-allergen-bar has-allergens';
+    var html='';
+    if(c.length)html+='<div class="label-allergen-title">Contains</div><div class="label-allergen-list">'+c.join(' · ')+'</div>';
+    if(m.length)html+='<div class="label-may-contain">May contain: '+m.join(', ')+'</div>';
+    abar.innerHTML=html;
+  }else{
+    abar.className='label-allergen-bar';
+    abar.innerHTML='<div class="label-no-allergens">No allergens declared</div>';
   }
-  document.getElementById('pv-al-wrap').innerHTML=html;
-  var nb=document.getElementById('pv-notes-bar');var nt=document.getElementById('pv-notes-text');
-  if(notes){nb.style.display='block';nt.textContent=notes;}else{nb.style.display='none';}
+  // Notes
+  var nb=document.getElementById('lbl-notes-bar');
+  if(notes){nb.style.display='block';document.getElementById('lbl-notes-text').textContent=notes;}
+  else{nb.style.display='none';}
+  // Footer
+  document.getElementById('lbl-footer-code').textContent=job||'Digby\'s CPS';
+  document.getElementById('lbl-footer-time').textContent=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
 }
 
-async function sendPrint(){
-  if(!selProd){toast('Please select a product first','err');return;}
+// Live update on field changes
+['d-prep','d-section','d-job','print-notes'].forEach(function(id){
+  var el=document.getElementById(id);
+  if(el)el.addEventListener('change',updateLabelPreview);
+  if(el)el.addEventListener('input',updateLabelPreview);
+});
+document.getElementById('d-prep').addEventListener('change',function(){
+  if(selProd){
+    var d=new Date(this.value+'T00:00:00');d.setHours(d.getHours()+parseInt(selProd.shelf_life_hours));
+    document.getElementById('d-useby').value=d.toISOString().split('T')[0];
+  }
+  updateLabelPreview();
+});
+
+/* ══════════════════════════════════════════
+   QUANTITY
+══════════════════════════════════════════ */
+function changeQty(delta){
+  var el=document.getElementById('print-qty');
+  var v=parseInt(el.value)||1;
+  v=Math.max(1,Math.min(50,v+delta));
+  el.value=v;
+}
+
+/* ══════════════════════════════════════════
+   PRINT
+══════════════════════════════════════════ */
+async function doPrint(){
+  if(!selProd){toast('Select a product first','error');return;}
   var now=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
   var notes=document.getElementById('print-notes').value.trim();
-  var containsVal=aState.na?null:(aState.c.join(', ')||null);
-  var mayVal=aState.na?null:(aState.m.join(', ')||null);
+  var c=printChipState.na?null:(printChipState.c.join(', ')||null);
+  var m=printChipState.na?null:(printChipState.m.join(', ')||null);
   var job={
     localId:Date.now().toString(),status:'pending',
     product_name:selProd.name,staff_name:user.name,
-    section:document.getElementById('sel-stn').value||null,
-    job_code:document.getElementById('sel-job').value||null,
-    quantity:parseInt(document.getElementById('qty').value)||1,
+    section:document.getElementById('d-section').value||null,
+    job_code:document.getElementById('d-job').value||null,
+    quantity:parseInt(document.getElementById('print-qty').value)||1,
     date_prepped:document.getElementById('d-prep').value,
     date_useby:document.getElementById('d-useby').value,
-    contains:containsVal,may_contain:mayVal,
-    no_allergens:aState.na,
+    contains:c,may_contain:m,no_allergens:printChipState.na,
     notes:notes||null,printed_at:now
   };
   printQueue.unshift(job);
-  document.getElementById('st-q').textContent=printQueue.filter(function(j){return j.status==='pending';}).length;
-  toast('Sending to printer…');
+  updateQueuePill();
+  var btn=document.getElementById('print-btn');
+  btn.disabled=true;btn.textContent='Sending…';
   try{
-    await supa('POST','print_jobs',{product_name:job.product_name,staff_name:job.staff_name,section:job.section,job_code:job.job_code,quantity:job.quantity,date_prepped:job.date_prepped,date_useby:job.date_useby,contains:job.contains,may_contain:job.may_contain,notes:job.notes,printed_at:job.printed_at},'');
+    await db('POST','print_jobs',{product_name:job.product_name,staff_name:job.staff_name,section:job.section,job_code:job.job_code,quantity:job.quantity,date_prepped:job.date_prepped,date_useby:job.date_useby,contains:job.contains,may_contain:job.may_contain,notes:job.notes,printed_at:job.printed_at},'');
     var ok=await sendToPrinter(job);
-    if(ok){job.status='printed';toast(job.quantity+' label'+(job.quantity>1?'s':'')+' printed ✓','ok');}
+    if(ok){job.status='printed';toast(job.quantity+' label'+(job.quantity>1?'s':'')+' printed ✓','success');}
     else{job.status='failed';}
-    document.getElementById('st-q').textContent=printQueue.filter(function(j){return j.status==='pending';}).length;
-    document.getElementById('pstatus').textContent='Sent at '+now;
-    loadDash();renderQueue();
-  }catch(e){job.status='failed';toast('Error: '+e.message,'err');}
+  }catch(e){job.status='failed';toast('Error: '+e.message,'error');}
+  btn.disabled=false;
+  btn.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Print label';
+  updateQueuePill();
 }
 
-function resetForm(){
-  selProd=null;document.getElementById('psearch').value='';filterProds('');
-  aState={c:[],m:[],na:false};
-  setChips('a-chips',[],[],false,aState);
-  document.getElementById('qty').value=1;document.getElementById('d-useby').value='';
-  document.getElementById('pstatus').textContent='';document.getElementById('print-notes').value='';
-  updatePreview();
+async function sendToPrinter(job){
+  try{
+    var r=await fetch(PRINT_URL,{method:'POST',headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'true'},body:JSON.stringify(job),signal:AbortSignal.timeout(15000)});
+    var d=await r.json();return d.success;
+  }catch(e){return false;}
 }
 
-/* ── CUSTOM LABEL ── */
-function initCustomRows(){customRows=[];addCustomRow();addCustomRow();}
-function addCustomRow(){customRows.push({text:'',size:28});renderCustomRows();}
-function clearCustomRows(){customRows=[];addCustomRow();addCustomRow();}
-function renderCustomRows(){
-  var el=document.getElementById('custom-rows');el.innerHTML='';
-  customRows.forEach(function(row,i){
-    var div=document.createElement('div');div.className='custom-row';
-    div.innerHTML='<input type="text" placeholder="Type line '+(i+1)+'…" value="'+row.text.replace(/"/g,'&quot;')+'" style="flex:1;min-width:0"><input type="range" min="12" max="72" value="'+row.size+'"><span class="size-lbl">'+row.size+'pt</span><button class="btn btn-danger btn-sm" style="flex-shrink:0;padding:4px 10px">✕</button>';
-    var ti=div.querySelector('input[type=text]'),ri=div.querySelector('input[type=range]'),sl=div.querySelector('.size-lbl'),db=div.querySelector('.btn-danger');
-    ti.oninput=function(){customRows[i].text=this.value;updateCustomPreview();};
-    ri.oninput=function(){customRows[i].size=parseInt(this.value);sl.textContent=this.value+'pt';updateCustomPreview();};
-    db.onclick=function(){customRows.splice(i,1);renderCustomRows();updateCustomPreview();};
-    el.appendChild(div);
-  });updateCustomPreview();
+function clearPrintForm(){
+  selProd=null;
+  document.getElementById('prod-search').value='';
+  document.getElementById('search-clear').style.display='none';
+  document.getElementById('search-results').innerHTML='<div class="search-empty"><p>Start typing to search your products</p><small>Search by name, category or menu type</small></div>';
+  document.getElementById('d-useby').value='';
+  document.getElementById('d-section').value='';
+  document.getElementById('d-job').value='';
+  document.getElementById('print-qty').value=1;
+  document.getElementById('print-notes').value='';
+  setChipValues('print-chips','print',[],[],false);
+  updateLabelPreview();
 }
-function updateCustomPreview(){
-  var el=document.getElementById('custom-preview');if(!el)return;
-  var has=customRows.some(function(r){return r.text.trim();});
-  if(!has){el.innerHTML='<div style="font-size:12px;color:#ccc">Add text to preview…</div>';return;}
-  el.innerHTML=customRows.filter(function(r){return r.text.trim();}).map(function(r){return'<div class="custom-preview-line" style="font-size:'+r.size+'px">'+r.text+'</div>';}).join('');
-}
-function populateCustomJobSelect(){
-  var sel=document.getElementById('c-job');if(!sel)return;
-  var cur=sel.value;sel.innerHTML='<option value="">— No job code —</option>';
-  jobCodes.forEach(function(j){var o=document.createElement('option');o.value=j.code;o.textContent=j.code+' · '+j.description;sel.appendChild(o);});
-  if(cur)sel.value=cur;
-}
-async function sendCustomPrint(){
-  var has=customRows.some(function(r){return r.text.trim();});
-  if(!has){toast('Add some text first','err');return;}
-  var now=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-  var lines=customRows.filter(function(r){return r.text.trim();});
-  var customJob={custom:true,lines:lines,staff_name:user.name,section:document.getElementById('c-stn').value||null,job_code:document.getElementById('c-job').value||null,quantity:parseInt(document.getElementById('c-qty').value)||1,printed_at:now};
-  toast('Sending custom label…');
-  var ok=await sendToPrinter(customJob);
-  if(ok){
-    toast('Custom label printed ✓','ok');
-    await supa('POST','print_jobs',{product_name:'[Custom] '+lines[0].text,staff_name:user.name,section:customJob.section,job_code:customJob.job_code,quantity:customJob.quantity,date_prepped:new Date().toISOString().split('T')[0],date_useby:null,contains:null,may_contain:null,notes:'Custom label',printed_at:now},'');
-    loadDash();
+
+/* ══════════════════════════════════════════
+   QUEUE
+══════════════════════════════════════════ */
+function updateQueuePill(){
+  var pending=printQueue.filter(function(j){return j.status==='pending';});
+  var pill=document.getElementById('queue-pill');
+  var text=document.getElementById('queue-pill-text');
+  if(pending.length){
+    pill.className='queue-pill has-jobs';
+    text.textContent=pending.length+' pending';
+  }else{
+    pill.className='queue-pill';
+    text.textContent='Queue clear';
   }
 }
 
-/* ── ADMIN PRODUCTS ── */
-function renderAdminProds(q){
-  var el=document.getElementById('adm-prod-list');
-  if(!products.length){el.innerHTML='<div style="color:var(--text3);font-size:13px;padding:8px">No products yet</div>';return;}
+function renderQueue(){
+  var el=document.getElementById('queue-list');
+  var pending=printQueue.filter(function(j){return j.status==='pending';});
+  if(!pending.length){
+    el.innerHTML='<div class="queue-empty"><svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg><p>Queue is clear</p><small>Labels appear here when sent</small></div>';
+    return;
+  }
+  el.innerHTML=pending.map(function(j){
+    var enc=encodeURIComponent(JSON.stringify(j));
+    return'<div class="queue-item"><div class="queue-item-main"><div class="queue-item-name">'+j.product_name+'</div><div class="queue-item-meta"><span>👤 '+j.staff_name+'</span>'+(j.job_code?'<span class="mono">'+j.job_code+'</span>':'')+'<span>×'+j.quantity+'</span><span class="mono">'+j.printed_at+'</span>'+(j.notes?'<span style="color:var(--gold)">📝 '+j.notes+'</span>':'')+'</div></div><div class="queue-item-actions"><button class="btn btn-outline btn-sm" onclick="reprintFromQueue(\''+enc+'\')">Reprint</button><button class="btn btn-danger btn-sm" onclick="cancelJob(\''+j.localId+'\')">Cancel</button></div></div>';
+  }).join('');
+}
+
+function cancelJob(localId){
+  if(!confirm('Cancel this print job?'))return;
+  printQueue=printQueue.filter(function(j){return j.localId!==localId;});
+  renderQueue();updateQueuePill();toast('Job cancelled');
+}
+
+function reprintFromQueue(enc){
+  var j=JSON.parse(decodeURIComponent(enc));
+  switchTab('print');
+  var prod=products.find(function(p){return p.name===j.product_name;});
+  if(prod)selectProduct(prod);
+  if(j.date_prepped)document.getElementById('d-prep').value=j.date_prepped;
+  if(j.date_useby)document.getElementById('d-useby').value=j.date_useby;
+  document.getElementById('d-section').value=j.section||'';
+  document.getElementById('d-job').value=j.job_code||'';
+  document.getElementById('print-qty').value=j.quantity||1;
+  document.getElementById('print-notes').value=j.notes||'';
+  var c=j.contains?j.contains.split(',').map(function(x){return x.trim();}).filter(Boolean):[];
+  var m=j.may_contain?j.may_contain.split(',').map(function(x){return x.trim();}).filter(Boolean):[];
+  setChipValues('print-chips','print',c,m,j.no_allergens||false);
+  updateLabelPreview();toast('Label loaded — check and print');
+}
+
+/* ══════════════════════════════════════════
+   HISTORY
+══════════════════════════════════════════ */
+async function loadHistory(){
+  document.getElementById('history-loading').style.display='flex';
+  document.getElementById('history-wrap').style.display='none';
+  try{
+    var jobs=await db('GET','print_jobs','','order=created_at.desc&limit=100');
+    document.getElementById('history-loading').style.display='none';
+    if(!jobs.length){document.getElementById('history-body').innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--charcoal-faint);padding:40px">No labels printed yet</td></tr>';document.getElementById('history-wrap').style.display='block';return;}
+    document.getElementById('history-wrap').style.display='block';
+    document.getElementById('history-body').innerHTML=jobs.map(function(j){
+      return'<tr><td><strong>'+j.product_name+'</strong></td><td>'+j.staff_name+'</td><td class="mono">'+(j.job_code||'—')+'</td><td>'+j.quantity+'</td><td>'+fmtDate(j.date_useby)+'</td><td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(j.notes||'—')+'</td><td class="mono">'+(j.printed_at||'')+'</td></tr>';
+    }).join('');
+  }catch(e){toast('Could not load history','error');}
+}
+async function exportHistory(){
+  try{
+    var jobs=await db('GET','print_jobs','','order=created_at.desc');
+    if(!jobs.length){toast('No history to export','error');return;}
+    var keys=['product_name','staff_name','section','job_code','quantity','date_prepped','date_useby','contains','may_contain','notes','printed_at'];
+    var csv=keys.join(',')+'\n'+jobs.map(function(j){return keys.map(function(k){return'"'+(j[k]!=null?String(j[k]).replace(/"/g,'""'):'')+'\"';}).join(',');}).join('\n');
+    dlCSV(csv,'digbys-cps-history-'+new Date().toISOString().split('T')[0]+'.csv');toast('Exported');
+  }catch(e){toast('Export failed','error');}
+}
+
+/* ══════════════════════════════════════════
+   PRODUCTS ADMIN
+══════════════════════════════════════════ */
+function renderProductList(q){
+  var el=document.getElementById('product-list');
+  if(!products.length){el.innerHTML='<div style="color:var(--charcoal-faint);font-size:13px;padding:16px 0">No products yet — add your first one</div>';return;}
   var list=products.filter(function(p){return p.name.toLowerCase().indexOf((q||'').toLowerCase())>=0;});
   el.innerHTML=list.map(function(p){
-    var menuTag=p.menu_type?'<span class="menu-badge">'+p.menu_type+'</span>':'';
-    return'<div class="prod-row"><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--text)">'+p.name+menuTag+'</div><div style="font-size:10px;color:var(--text2);font-family:DM Mono,monospace;margin-top:2px">'+p.category+' · '+p.shelf_life_hours+'h · '+(p.contains?'⚠ '+p.contains:'No allergens')+'</div></div><div style="display:flex;gap:6px"><button class="btn btn-blue btn-sm" onclick="openEditModal(\''+p.id+'\')">Edit</button><button class="btn btn-danger btn-sm" onclick="deleteProd(\''+p.id+'\')">Delete</button></div></div>';
+    var tags='';
+    if(p.contains)tags+='<span class="tag allergen-tag">⚠ Contains allergens</span>';
+    if(p.menu_type)tags+='<span class="tag menu-tag">'+p.menu_type+'</span>';
+    tags+='<span class="tag">'+p.shelf_life_hours+'h shelf life</span>';
+    tags+='<span class="tag">'+p.category+'</span>';
+    return'<div class="prod-list-item"><div class="prod-list-item-info"><div class="prod-list-item-name">'+p.name+'</div><div class="prod-list-item-meta">'+(p.contains||'No allergens')+'</div><div class="prod-list-item-tags">'+tags+'</div></div><div style="display:flex;gap:6px;flex-shrink:0"><button class="btn btn-outline btn-xs" onclick="openEditProduct(\''+p.id+'\')">Edit</button><button class="btn btn-danger btn-xs" onclick="deleteProduct(\''+p.id+'\')">Delete</button></div></div>';
   }).join('');
 }
 
-function toggleAddProd(){
-  var w=document.getElementById('add-prod-wrap'),showing=w.style.display==='block';
-  w.style.display=showing?'none':'block';
-  if(!showing){
-    npState={na:false};ALLERGENS.forEach(function(a){npState[a]='none';});
-    buildChips('np-chips','np');
-    renderMenuCatSelect('np-menutype');
-  }
-}
-
-async function saveNewProd(){
-  var name=document.getElementById('np-name').value.trim();
-  if(!name){toast('Enter a product name','err');return;}
-  var c=[],m=[];
-  ALLERGENS.forEach(function(a){if(npState[a]==='contains')c.push(a);else if(npState[a]==='may')m.push(a);});
-  var cat=document.getElementById('np-cat').value;
-  var menuType=document.getElementById('np-menutype').value||null;
-  var shelf=parseInt(document.getElementById('np-shelf').value)||72;
-  var prod={name:name,category:cat,menu_type:menuType,shelf_life_hours:shelf,contains:c.join(', ')||null,may_contain:m.join(', ')||null};
-  try{
-    await supa('POST','products',prod,'');
-    logAudit('Added product',name+' — '+cat+(menuType?' ('+menuType+')':'')+', '+shelf+'h');
-    toast('"'+name+'" saved','ok');toggleAddProd();document.getElementById('np-name').value='';
-    await loadProducts();
-  }catch(e){toast('Could not save: '+e.message,'err');}
-}
-
-async function deleteProd(id){
-  var prod=products.find(function(p){return String(p.id)===String(id);});
-  if(!confirm('Delete '+(prod?prod.name:'this product')+'?'))return;
-  try{
-    await supa('DELETE','products','','id=eq.'+id);
-    logAudit('Deleted product',prod?prod.name:'ID '+id);
-    toast('Deleted','ok');await loadProducts();
-  }catch(e){toast('Could not delete','err');}
-}
-
-/* ── EDIT MODAL ── */
-function openEditModal(id){
-  var p=products.find(function(x){return String(x.id)===String(id);});
-  if(!p)return;
-  document.getElementById('edit-prod-id').value=p.id;
-  document.getElementById('edit-name').value=p.name;
-  document.getElementById('edit-shelf').value=p.shelf_life_hours;
-  // Set category
-  var catSel=document.getElementById('edit-cat');
-  for(var i=0;i<catSel.options.length;i++){if(catSel.options[i].value===p.category){catSel.selectedIndex=i;break;}}
-  // Set menu type
-  renderMenuCatSelect('edit-menutype');
-  var mtSel=document.getElementById('edit-menutype');
-  for(var i=0;i<mtSel.options.length;i++){if(mtSel.options[i].value===(p.menu_type||'')){mtSel.selectedIndex=i;break;}}
-  // Build edit chips
-  editState={na:false};ALLERGENS.forEach(function(a){editState[a]='none';});
-  buildChips('edit-chips','edit');
+function openEditProduct(id){
+  var p=products.find(function(x){return String(x.id)===String(id);});if(!p)return;
+  document.getElementById('ep-id').value=p.id;
+  document.getElementById('ep-name').value=p.name;
+  document.getElementById('ep-shelf').value=p.shelf_life_hours;
+  // Cat
+  var cs=document.getElementById('ep-cat');for(var i=0;i<cs.options.length;i++){if(cs.options[i].value===p.category){cs.selectedIndex=i;break;}}
+  // Menu
+  renderMenuSelect('ep-menu');
+  var ms=document.getElementById('ep-menu');for(var i=0;i<ms.options.length;i++){if(ms.options[i].value===(p.menu_type||'')){ms.selectedIndex=i;break;}}
+  // Chips
+  epChipState={c:[],m:[],na:false};
+  buildChips('ep-chips','ep');
   var c=p.contains?p.contains.split(',').map(function(x){return x.trim();}).filter(Boolean):[];
   var m=p.may_contain?p.may_contain.split(',').map(function(x){return x.trim();}).filter(Boolean):[];
-  setChipsEdit(c,m);
-  document.getElementById('edit-modal').classList.add('open');
+  setChipValues('ep-chips','ep',c,m,false);
+  openModal('edit-modal');
 }
 
-function setChipsEdit(contains,may){
-  var el=document.getElementById('edit-chips');if(!el)return;
-  el.querySelectorAll('.chip:not(.na-chip)').forEach(function(ch){
-    var n=ch.dataset.name;ch.classList.remove('contains','may','locked');ch.dataset.state='none';
-    if(contains.indexOf(n)>=0){ch.dataset.state='contains';ch.classList.add('contains');editState[n]='contains';}
-    else if(may.indexOf(n)>=0){ch.dataset.state='may';ch.classList.add('may');editState[n]='may';}
-    else{editState[n]='none';}
+async function saveEditProduct(){
+  var id=document.getElementById('ep-id').value;
+  var name=document.getElementById('ep-name').value.trim();
+  if(!name){toast('Enter a product name','error');return;}
+  var c=epChipState.c||[];var m=epChipState.m||[];
+  // Sync from chips
+  document.querySelectorAll('#ep-chips .a-chip:not(.na)').forEach(function(ch){
+    var n=ch.dataset.name;
+    if(ch.dataset.state==='contains'&&c.indexOf(n)<0)c.push(n);
+    if(ch.dataset.state==='may'&&m.indexOf(n)<0)m.push(n);
   });
+  var upd={name:name,category:document.getElementById('ep-cat').value,menu_type:document.getElementById('ep-menu').value||null,shelf_life_hours:parseInt(document.getElementById('ep-shelf').value)||72,contains:c.join(', ')||null,may_contain:m.join(', ')||null};
+  try{
+    await db('PATCH','products',upd,'id=eq.'+id);
+    audit('Edited product',name);toast(name+' updated','success');
+    closeModal('edit-modal');await loadProducts();renderProductList('');
+  }catch(e){toast('Could not save: '+e.message,'error');}
 }
 
-function closeEditModal(){document.getElementById('edit-modal').classList.remove('open');}
-
-async function saveEditProd(){
-  var id=document.getElementById('edit-prod-id').value;
-  var name=document.getElementById('edit-name').value.trim();
-  if(!name){toast('Enter a product name','err');return;}
+async function saveNewProduct(){
+  var name=document.getElementById('ap-name').value.trim();
+  if(!name){toast('Enter a product name','error');return;}
+  // Sync chips
   var c=[],m=[];
-  ALLERGENS.forEach(function(a){if(editState[a]==='contains')c.push(a);else if(editState[a]==='may')m.push(a);});
-  var cat=document.getElementById('edit-cat').value;
-  var menuType=document.getElementById('edit-menutype').value||null;
-  var shelf=parseInt(document.getElementById('edit-shelf').value)||72;
-  var upd={name:name,category:cat,menu_type:menuType,shelf_life_hours:shelf,contains:c.join(', ')||null,may_contain:m.join(', ')||null};
+  document.querySelectorAll('#ap-chips .a-chip:not(.na)').forEach(function(ch){
+    if(ch.dataset.state==='contains')c.push(ch.dataset.name);
+    if(ch.dataset.state==='may')m.push(ch.dataset.name);
+  });
+  var prod={name:name,category:document.getElementById('ap-cat').value,menu_type:document.getElementById('ap-menu').value||null,shelf_life_hours:parseInt(document.getElementById('ap-shelf').value)||72,contains:c.join(', ')||null,may_contain:m.join(', ')||null};
   try{
-    await supa('PATCH','products',upd,'id=eq.'+id);
-    logAudit('Edited product',name+' — '+cat+(menuType?' ('+menuType+')':'')+', '+shelf+'h');
-    toast('"'+name+'" updated','ok');closeEditModal();await loadProducts();
-  }catch(e){toast('Could not save: '+e.message,'err');}
+    await db('POST','products',prod,'');
+    audit('Added product',name+' — '+prod.category);
+    toast(name+' added','success');closeModal('add-modal');
+    document.getElementById('ap-name').value='';
+    await loadProducts();renderProductList('');filterProducts(document.getElementById('prod-search').value||'');
+  }catch(e){toast('Could not save: '+e.message,'error');}
 }
 
-// Close modal on overlay click
-document.getElementById('edit-modal').addEventListener('click',function(e){if(e.target===this)closeEditModal();});
-
-/* ── STAFF ── */
-function renderStaff(list){
-  var el=document.getElementById('staff-grid');
-  if(!list||!list.length){el.innerHTML='<div style="color:var(--text3);font-size:13px">No staff yet</div>';return;}
-  el.innerHTML=list.map(function(s,i){
-    var col=s.color||COLORS[i%COLORS.length];
-    var ini=s.initials||(s.name.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2));
-    return'<div class="staff-card"><div style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:11px;background:'+col+'33;color:'+col+';flex-shrink:0">'+ini+'</div><div><div style="font-weight:500;font-size:13px;color:var(--text)">'+s.name+(s.name===MANAGER_NAME?' ★':'')+'</div><div style="font-size:10px;color:var(--text3);margin-top:2px">PIN: ••••</div></div></div>';
-  }).join('');
-}
-async function addStaff(){
-  var name=document.getElementById('ns-name').value.trim(),pin=document.getElementById('ns-pin').value.trim();
-  if(!name||!pin){toast('Enter name and PIN','err');return;}
-  if(pin.length!==4||isNaN(pin)){toast('PIN must be 4 digits','err');return;}
-  var parts=name.split(' ');
-  var ini=(parts[0][0]+(parts[1]?parts[1][0]:parts[0][1]||'')).toUpperCase();
-  var col=COLORS[staffList.length%COLORS.length];
+async function deleteProduct(id){
+  var p=products.find(function(x){return String(x.id)===String(id);});
+  if(!confirm('Delete '+(p?p.name:'this product')+'?'))return;
   try{
-    await supa('POST','staff',{name:name,pin:pin,initials:ini,color:col},'');
-    logAudit('Added staff member',name);
-    toast(name+' added','ok');document.getElementById('ns-name').value='';document.getElementById('ns-pin').value='';
-    await loadStaff();await loadStaffForLogin();
-  }catch(e){toast('Could not save: '+e.message,'err');}
+    await db('DELETE','products','','id=eq.'+id);
+    audit('Deleted product',p?p.name:'ID '+id);
+    toast('Deleted');await loadProducts();renderProductList('');
+  }catch(e){toast('Could not delete','error');}
 }
 
-/* ── JOB CODES ── */
-function buildJCPreview(){
-  var c=(document.getElementById('jc-client').value||'').toUpperCase().replace(/[^A-Z]/g,'').slice(0,3);
-  var d=(document.getElementById('jc-date').value||'').replace(/[^0-9]/g,'').slice(0,6);
-  var t=document.getElementById('jc-type').value;
-  document.getElementById('jc-preview').textContent=(c||'XXX')+(d||'DDMMYY')+t;
-}
-async function addJC(){
-  var c=(document.getElementById('jc-client').value||'').toUpperCase().replace(/[^A-Z]/g,'').slice(0,3);
-  var d=(document.getElementById('jc-date').value||'').replace(/[^0-9]/g,'').slice(0,6);
-  var t=document.getElementById('jc-type').value;
-  var desc=document.getElementById('jc-desc').value.trim();
-  if(!c||!d){toast('Enter client initials and date','err');return;}
-  var code=c+d+t;
+/* ══════════════════════════════════════════
+   JOB CODES
+══════════════════════════════════════════ */
+async function loadJobCodes(){
   try{
-    await supa('POST','job_codes',{code:code,description:desc||code},'');
-    logAudit('Added job code',code+' — '+(desc||'no description'));
-    toast(code+' saved','ok');
-    document.getElementById('jc-client').value='';document.getElementById('jc-date').value='';document.getElementById('jc-desc').value='';
-    buildJCPreview();await loadJobCodes();
-  }catch(e){toast('Could not save: '+e.message,'err');}
+    jobCodes=await db('GET','job_codes','','order=created_at.desc');
+    populateJobSelect('d-job');populateCustomJobSelect();
+  }catch(e){}
 }
-async function removeJC(id){
-  var jc=jobCodes.find(function(j){return String(j.id)===String(id);});
-  try{
-    await supa('DELETE','job_codes','','id=eq.'+id);
-    logAudit('Deleted job code',jc?jc.code:'ID '+id);
-    toast('Removed','ok');await loadJobCodes();
-  }catch(e){toast('Could not delete','err');}
-}
-function renderJC(){
-  var el=document.getElementById('jc-list');
-  if(!jobCodes.length){el.innerHTML='<div style="color:var(--text3);font-size:13px;padding:8px">No job codes yet</div>';return;}
-  el.innerHTML=jobCodes.map(function(j){return'<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border);margin-bottom:5px"><span style="font-family:DM Mono,monospace;font-size:12px;color:var(--accent);min-width:130px">'+j.code+'</span><span style="font-size:12px;color:var(--text2);flex:1">'+j.description+'</span><button class="btn btn-danger btn-sm" onclick="removeJC(\''+j.id+'\')">✕</button></div>';}).join('');
-}
-function populateJCSelect(){
-  var sel=document.getElementById('sel-job');var cur=sel.value;
+
+function populateJobSelect(id){
+  var sel=document.getElementById(id);if(!sel)return;
+  var cur=sel.value;
   sel.innerHTML='<option value="">— No job code —</option>';
   jobCodes.forEach(function(j){var o=document.createElement('option');o.value=j.code;o.textContent=j.code+' · '+j.description;sel.appendChild(o);});
   if(cur)sel.value=cur;
 }
 
-/* ── PRINTER ── */
-async function checkPrinterStatus(){
-  var piDot=document.getElementById('pi-dot'),piMsg=document.getElementById('pi-msg');
-  var prDot=document.getElementById('printer-dot'),prMsg=document.getElementById('printer-msg');
-  piMsg.textContent='Checking…';prMsg.textContent='Checking…';
-  piDot.className='status-dot status-unknown';prDot.className='status-dot status-unknown';
+function buildJCPreview(){
+  var client=document.getElementById('jc-client').value.trim();
+  var date=document.getElementById('jc-date').value;
+  var type=document.getElementById('jc-type').value;
+  // Auto-generate initials from full name
+  var initials=client.split(/\s+/).filter(Boolean).map(function(w){return w[0].toUpperCase();}).join('').slice(0,3);
+  // Format date as DDMMYY
+  var datePart='DDMMYY';
+  if(date){var d=new Date(date);datePart=('0'+d.getDate()).slice(-2)+('0'+(d.getMonth()+1)).slice(-2)+(d.getFullYear()+'').slice(-2);}
+  var code=(initials||'XXX')+datePart+type;
+  document.getElementById('jc-preview').textContent=code;
+}
+
+async function saveJobCode(){
+  var client=document.getElementById('jc-client').value.trim();
+  var date=document.getElementById('jc-date').value;
+  var type=document.getElementById('jc-type').value;
+  var desc=document.getElementById('jc-desc').value.trim();
+  if(!client||!date){toast('Enter client name and date','error');return;}
+  var initials=client.split(/\s+/).filter(Boolean).map(function(w){return w[0].toUpperCase();}).join('').slice(0,3);
+  var d=new Date(date);
+  var datePart=('0'+d.getDate()).slice(-2)+('0'+(d.getMonth()+1)).slice(-2)+(d.getFullYear()+'').slice(-2);
+  var code=initials+datePart+type;
   try{
-    var r=await fetch(PRINT_STATUS_URL,{method:'GET',headers:{'ngrok-skip-browser-warning':'true'},signal:AbortSignal.timeout(5000)});
-    if(r.ok){
-      var data=await r.json();
-      piDot.className='status-dot status-online';piMsg.textContent='Online — running at 192.168.1.175:3000';
-      if(data.printer){prDot.className='status-dot status-online';prMsg.textContent='Online — Brother QL-820NWBc ready';}
-      else{prDot.className='status-dot status-offline';prMsg.textContent='Offline — check printer is on and connected to Wi-Fi';}
-    }else{throw new Error();}
+    await db('POST','job_codes',{code:code,description:desc||client+' — '+type},'');
+    audit('Added job code',code);toast(code+' saved','success');
+    document.getElementById('jc-client').value='';document.getElementById('jc-date').value='';document.getElementById('jc-desc').value='';
+    buildJCPreview();await loadJobCodes();renderJCList();
+  }catch(e){toast('Could not save: '+e.message,'error');}
+}
+
+function renderJCList(){
+  var el=document.getElementById('jc-list');if(!el)return;
+  if(!jobCodes.length){el.innerHTML='<div style="color:var(--charcoal-faint);font-size:13px">No job codes yet — build one above</div>';return;}
+  el.innerHTML=jobCodes.map(function(j){
+    return'<div class="prod-list-item" style="margin-bottom:8px"><div style="flex:1"><div style="font-family:JetBrains Mono,monospace;font-size:14px;font-weight:500;color:var(--charcoal)">'+j.code+'</div><div style="font-size:12px;color:var(--charcoal-light);margin-top:2px">'+j.description+'</div></div><button class="btn btn-danger btn-xs" onclick="deleteJobCode(\''+j.id+'\')">Remove</button></div>';
+  }).join('');
+}
+
+async function deleteJobCode(id){
+  var j=jobCodes.find(function(x){return String(x.id)===String(id);});
+  try{
+    await db('DELETE','job_codes','','id=eq.'+id);
+    audit('Deleted job code',j?j.code:'ID '+id);
+    toast('Removed');await loadJobCodes();renderJCList();
+  }catch(e){toast('Could not delete','error');}
+}
+
+/* ══════════════════════════════════════════
+   STAFF
+══════════════════════════════════════════ */
+async function loadStaff(){
+  try{staffList=await db('GET','staff','','order=name.asc');}catch(e){}
+}
+
+function renderStaffList(){
+  var el=document.getElementById('staff-list');if(!el)return;
+  if(!staffList.length){el.innerHTML='<div style="color:var(--charcoal-faint);font-size:13px">No staff yet</div>';return;}
+  el.innerHTML=staffList.map(function(s,i){
+    var col=s.color||COLORS[i%COLORS.length];
+    var ini=s.initials||(s.name.split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase());
+    return'<div class="staff-item"><div class="staff-avatar" style="background:'+col+'20;color:'+col+';border:1.5px solid '+col+'40">'+ini+'</div><div><div class="staff-name">'+s.name+(s.name===MANAGER?' ★':'')+'</div><div class="staff-role">PIN: ••••</div></div></div>';
+  }).join('');
+}
+
+async function addStaff(){
+  var name=document.getElementById('new-staff-name').value.trim();
+  var pin=document.getElementById('new-staff-pin').value.trim();
+  if(!name||!pin){toast('Enter name and PIN','error');return;}
+  if(pin.length!==4||isNaN(pin)){toast('PIN must be 4 digits','error');return;}
+  var parts=name.split(' ');
+  var ini=(parts[0][0]+(parts[1]?parts[1][0]:parts[0][1]||'')).toUpperCase();
+  var col=COLORS[staffList.length%COLORS.length];
+  try{
+    await db('POST','staff',{name:name,pin:pin,initials:ini,color:col},'');
+    audit('Added staff',name);toast(name+' added','success');
+    document.getElementById('new-staff-name').value='';document.getElementById('new-staff-pin').value='';
+    await loadStaff();renderStaffList();await loadStaffForLogin();
+  }catch(e){toast('Could not save: '+e.message,'error');}
+}
+
+/* ══════════════════════════════════════════
+   PRINTER STATUS
+══════════════════════════════════════════ */
+async function checkStatus(){
+  ['pi','pr'].forEach(function(k){document.getElementById(k+'-ind').className='status-indicator unknown';document.getElementById(k+'-msg').textContent='Checking…';});
+  try{
+    var r=await fetch(STATUS_URL,{headers:{'ngrok-skip-browser-warning':'true'},signal:AbortSignal.timeout(5000)});
+    var d=await r.json();
+    document.getElementById('pi-ind').className='status-indicator online';
+    document.getElementById('pi-msg').textContent='Online — 192.168.1.175:3000';
+    document.getElementById('pr-ind').className='status-indicator '+(d.printer?'online':'offline');
+    document.getElementById('pr-msg').textContent=d.printer?'Online — Brother QL-820NWBc ready':'Offline — check printer is on and connected to Wi-Fi';
   }catch(e){
-    piDot.className='status-dot status-offline';piMsg.textContent='Offline — check Pi is powered on and on kitchen Wi-Fi';
-    prDot.className='status-dot status-offline';prMsg.textContent='Cannot check — Pi is offline';
+    document.getElementById('pi-ind').className='status-indicator offline';
+    document.getElementById('pi-msg').textContent='Offline — check Pi is powered on';
+    document.getElementById('pr-ind').className='status-indicator offline';
+    document.getElementById('pr-msg').textContent='Cannot check — Pi is offline';
   }
 }
+
 async function sendTestPrint(){
   toast('Sending test print…');
-  var job={product_name:'TEST LABEL',staff_name:user.name,section:'Test',job_code:'TEST',quantity:1,date_prepped:new Date().toISOString().split('T')[0],date_useby:new Date().toISOString().split('T')[0],contains:null,may_contain:null,notes:'Test print from Digbys CPS',printed_at:new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})};
-  var ok=await sendToPrinter(job);if(ok)toast('Test label printed ✓','ok');
-}
-function savePrinterSettings(){
-  PRINT_SERVER=document.getElementById('pr-srv').value;
-  PRINT_STATUS_URL=PRINT_SERVER.replace('/print','/status');
-  logAudit('Updated printer settings','Server: '+PRINT_SERVER);toast('Settings saved','ok');
+  var job={product_name:'TEST LABEL',staff_name:user.name,section:'Test',job_code:'TEST',quantity:1,date_prepped:new Date().toISOString().split('T')[0],date_useby:new Date().toISOString().split('T')[0],contains:null,may_contain:null,notes:'Test from Digbys CPS',printed_at:new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})};
+  var ok=await sendToPrinter(job);
+  if(ok)toast('Test label printed ✓','success');
 }
 
-/* ── EXPORT ── */
+function savePrinterSettings(){
+  PRINT_URL=document.getElementById('set-server-url').value;
+  STATUS_URL=PRINT_URL.replace('/print','/status');
+  audit('Updated printer settings','URL: '+PRINT_URL);
+  toast('Settings saved','success');
+}
+
+/* ══════════════════════════════════════════
+   AUDIT LOG
+══════════════════════════════════════════ */
+function renderAuditLog(){
+  var el=document.getElementById('audit-log-list');
+  var em=document.getElementById('audit-empty');
+  var log=JSON.parse(localStorage.getItem('digby_audit')||'[]');
+  if(!log.length){em.style.display='block';el.innerHTML='';return;}
+  em.style.display='none';
+  el.innerHTML=log.map(function(e){
+    return'<div class="audit-row" style="padding:12px 0;border-bottom:1px solid var(--border)"><div style="font-weight:500;font-size:13px;color:var(--charcoal)">'+e.who+'</div><div style="font-size:12px;color:var(--charcoal-light);margin-top:2px">'+e.action+' — '+e.detail+'</div><div style="font-size:11px;font-family:JetBrains Mono,monospace;color:var(--charcoal-faint);margin-top:3px">'+e.when+'</div></div>';
+  }).join('');
+}
+function exportAudit(){
+  var log=JSON.parse(localStorage.getItem('digby_audit')||'[]');
+  if(!log.length){toast('No entries yet','error');return;}
+  var csv='Who,Action,Detail,When\n'+log.map(function(e){return'"'+e.who+'","'+e.action+'","'+e.detail+'","'+e.when+'"';}).join('\n');
+  dlCSV(csv,'digbys-cps-audit-'+new Date().toISOString().split('T')[0]+'.csv');toast('Exported');
+}
+
+/* ══════════════════════════════════════════
+   CUSTOM LABELS
+══════════════════════════════════════════ */
+function initCustomRows(){customRows=[];addCustomRow();addCustomRow();}
+function addCustomRow(){customRows.push({text:'',size:28});renderCustomRowList();}
+function clearCustomRows(){customRows=[];addCustomRow();addCustomRow();}
+function renderCustomRowList(){
+  var el=document.getElementById('custom-rows-list');if(!el)return;
+  el.innerHTML='';
+  customRows.forEach(function(row,i){
+    var d=document.createElement('div');d.className='custom-row-item';
+    d.innerHTML='<input class="custom-row-input" type="text" placeholder="Line '+(i+1)+'…" value="'+row.text.replace(/"/g,'&quot;')+'"><input type="range" class="custom-size-slider" min="12" max="72" value="'+row.size+'"><span class="custom-size-label">'+row.size+'pt</span><button class="btn btn-danger btn-xs" style="flex-shrink:0">✕</button>';
+    var ti=d.querySelector('.custom-row-input'),ri=d.querySelector('.custom-size-slider'),sl=d.querySelector('.custom-size-label'),del=d.querySelector('.btn-danger');
+    ti.oninput=function(){customRows[i].text=this.value;updateCustomPreview();};
+    ri.oninput=function(){customRows[i].size=parseInt(this.value);sl.textContent=this.value+'pt';updateCustomPreview();};
+    del.onclick=function(){customRows.splice(i,1);renderCustomRowList();updateCustomPreview();};
+    el.appendChild(d);
+  });updateCustomPreview();
+}
+function updateCustomPreview(){
+  var el=document.getElementById('custom-preview');if(!el)return;
+  var has=customRows.some(function(r){return r.text.trim();});
+  if(!has){el.innerHTML='<span style="font-size:13px;color:var(--charcoal-faint);font-style:italic">Add rows to see preview…</span>';return;}
+  el.innerHTML=customRows.filter(function(r){return r.text.trim();}).map(function(r){return'<div style="font-size:'+r.size+'px;font-weight:500;color:var(--charcoal);line-height:1.3;margin-bottom:6px">'+r.text+'</div>';}).join('');
+}
+function populateCustomJobSelect(){
+  var sel=document.getElementById('custom-job');if(!sel)return;
+  var cur=sel.value;sel.innerHTML='<option value="">— None —</option>';
+  jobCodes.forEach(function(j){var o=document.createElement('option');o.value=j.code;o.textContent=j.code+' · '+j.description;sel.appendChild(o);});
+  if(cur)sel.value=cur;
+}
+async function printCustomLabel(){
+  var has=customRows.some(function(r){return r.text.trim();});
+  if(!has){toast('Add some text first','error');return;}
+  var now=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  var lines=customRows.filter(function(r){return r.text.trim();});
+  var job={custom:true,lines:lines,staff_name:user.name,section:document.getElementById('custom-section').value||null,job_code:document.getElementById('custom-job').value||null,quantity:parseInt(document.getElementById('custom-qty').value)||1,printed_at:now};
+  toast('Printing…');
+  var ok=await sendToPrinter(job);
+  if(ok){
+    toast('Custom label printed ✓','success');
+    await db('POST','print_jobs',{product_name:'[Custom] '+lines[0].text,staff_name:user.name,section:job.section,job_code:job.job_code,quantity:job.quantity,date_prepped:new Date().toISOString().split('T')[0],date_useby:null,contains:null,may_contain:null,notes:'Custom label',printed_at:now},'');
+  }
+}
+
+/* ══════════════════════════════════════════
+   EXPORT
+══════════════════════════════════════════ */
 async function exportTable(t){
   try{
-    var data=await supa('GET',t,'','order=created_at.asc');
-    if(!data.length){toast('No data','err');return;}
+    var data=await db('GET',t,'','order=created_at.asc');
+    if(!data.length){toast('No data','error');return;}
     var keys=Object.keys(data[0]).filter(function(k){return k!=='pin';});
-    var csv=keys.join(',')+'\n'+data.map(function(row){return keys.map(function(k){return'"'+(row[k]!=null?row[k].toString().replace(/"/g,'""'):'')+'\"';}).join(',');}).join('\n');
-    downloadCSV(csv,'digbys-cps-'+t+'-'+new Date().toISOString().split('T')[0]+'.csv');toast(t+' exported','ok');
-  }catch(e){toast('Export failed','err');}
+    var csv=keys.join(',')+'\n'+data.map(function(row){return keys.map(function(k){return'"'+(row[k]!=null?String(row[k]).replace(/"/g,'""'):'')+'\"';}).join(',');}).join('\n');
+    dlCSV(csv,'digbys-cps-'+t+'-'+new Date().toISOString().split('T')[0]+'.csv');toast('Exported');
+  }catch(e){toast('Export failed','error');}
 }
-async function exportCSV(){
-  try{
-    var jobs=await supa('GET','print_jobs','','order=created_at.desc');
-    if(!jobs.length){toast('No print history','err');return;}
-    var keys=['product_name','staff_name','section','job_code','quantity','date_prepped','date_useby','contains','may_contain','notes','printed_at'];
-    var csv=keys.join(',')+'\n'+jobs.map(function(j){return keys.map(function(k){return'"'+(j[k]!=null?j[k].toString().replace(/"/g,'""'):'')+'\"';}).join(',');}).join('\n');
-    downloadCSV(csv,'digbys-cps-history-'+new Date().toISOString().split('T')[0]+'.csv');toast('Exported','ok');
-  }catch(e){toast('Export failed','err');}
+function dlCSV(csv,filename){var b=new Blob([csv],{type:'text/csv'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download=filename;a.click();URL.revokeObjectURL(u);}
+
+/* ══════════════════════════════════════════
+   MODALS
+══════════════════════════════════════════ */
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(function(m){m.addEventListener('click',function(e){if(e.target===m)m.classList.remove('open');});});
+
+/* ══════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════ */
+function toast(msg,type){
+  var t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast'+(type?' '+type:'');
+  t.classList.add('show');
+  clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show');},2800);
 }
-function downloadCSV(csv,filename){var blob=new Blob([csv],{type:'text/csv'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download=filename;a.click();URL.revokeObjectURL(url);}
 
-function toast(msg,type){var t=document.getElementById('toast-el');t.textContent=msg;t.className='toast'+(type?' '+type:'');t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show');},3000);}
-
+/* ══════════════════════════════════════════
+   BOOT
+══════════════════════════════════════════ */
 loadStaffForLogin();
 </script>
 </body>
