@@ -2,585 +2,675 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="theme-color" content="#111111">
 <title>Digby's CPS</title>
 <style>
-/* ── RESET & TOKENS ─────────────────────────────────── */
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased}
+/* ── RESET ───────────────────────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --black:#0a0a0a;
-  --near-black:#111;
-  --ink:#1a1a1a;
-  --ink-2:#444;
-  --ink-3:#888;
-  --ink-4:#bbb;
-  --line:#e8e8e8;
-  --line-2:#f2f2f2;
-  --bg:#f7f6f3;
-  --white:#fff;
-  --red:#c0392b;
-  --red-bg:#fef2f1;
-  --red-border:#f5c0bb;
+  /* Linen-stone palette */
+  --stone-50:#faf9f7;
+  --stone-100:#f2f0ec;
+  --stone-200:#e8e4dd;
+  --stone-300:#d4cec4;
+  --stone-400:#b8b0a4;
+  --stone-500:#8a8278;
+  --stone-600:#6b6359;
+  --stone-700:#4a443c;
+  --stone-800:#2e2a24;
+  --stone-900:#1a1714;
+
+  --ink:var(--stone-900);
+  --ink-2:var(--stone-700);
+  --ink-3:var(--stone-500);
+  --ink-4:var(--stone-400);
+  --surface:var(--stone-50);
+  --bg:var(--stone-100);
+  --border:var(--stone-200);
+  --border-2:var(--stone-300);
+
+  --red:#b91c1c;
+  --red-mid:#dc2626;
+  --red-bg:#fef2f2;
+  --red-border:#fecaca;
   --amber:#92400e;
   --amber-bg:#fffbeb;
   --amber-border:#fcd34d;
-  --green:#166534;
+  --green:#14532d;
   --green-bg:#f0fdf4;
   --green-border:#86efac;
   --blue:#1e3a8a;
   --blue-bg:#eff6ff;
-  --blue-border:#93c5fd;
-  /* spacing */
-  --nav:56px;
-  --safe:env(safe-area-inset-bottom,0px);
-  /* type */
-  --ff:'Inter',-apple-system,'Helvetica Neue',sans-serif;
+  --blue-border:#bfdbfe;
+
+  --ff:-apple-system,'Helvetica Neue',sans-serif;
   --fmono:'SF Mono','Fira Code',monospace;
+  --safe:env(safe-area-inset-bottom,0px);
+  --nav-h:58px;
+
+  --r-sm:8px;
+  --r:12px;
+  --r-lg:18px;
+  --r-xl:24px;
+
+  --shadow-sm:0 1px 2px rgba(0,0,0,.06);
+  --shadow:0 2px 8px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+  --shadow-lg:0 8px 24px rgba(0,0,0,.10),0 2px 6px rgba(0,0,0,.06);
 }
-html,body{height:100%;overflow:hidden;background:var(--black)}
-body{font-family:var(--ff);font-size:15px;line-height:1.5;color:var(--ink)}
 
-/* ── FONTS (system stack — no request needed) ───────── */
+html{height:100%;overflow:hidden}
+body{
+  font-family:var(--ff);
+  background:var(--bg);
+  color:var(--ink);
+  height:100%;overflow:hidden;
+  font-size:15px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
 
-/* ── SCROLLBAR ──────────────────────────────────────── */
-::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--line);border-radius:2px}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:2px}
 
 /* ════════════════════════════════════════════════════
-   SCREEN SYSTEM — screens stack, one visible at a time
+   SCREEN SYSTEM
 ════════════════════════════════════════════════════ */
 .screen{
   position:fixed;inset:0;
   display:flex;flex-direction:column;
   background:var(--bg);
-  transition:transform .28s cubic-bezier(.4,0,.2,1),opacity .28s;
-  will-change:transform;
+  opacity:0;pointer-events:none;
+  transition:opacity .2s ease;
   overflow:hidden;
 }
-.screen.hidden{transform:translateX(100%);pointer-events:none;opacity:0}
-.screen.slide-left.hidden{transform:translateX(-100%)}
-.screen.fade.hidden{transform:none;opacity:0}
+.screen.active{opacity:1;pointer-events:all}
 
 /* ════════════════════════════════════════════════════
-   LOGIN SCREEN
+   LOGIN
 ════════════════════════════════════════════════════ */
 #s-login{
-  background:var(--black);
-  align-items:center;justify-content:center;
-  padding:32px 24px;
+  background:var(--stone-800);
+  display:flex;align-items:center;justify-content:center;
+  padding:24px;
 }
+
+.login-wrap{
+  width:100%;max-width:900px;
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:32px;align-items:center;
+}
+
+.login-brand{color:var(--stone-50)}
 .login-logo{
-  text-align:center;margin-bottom:48px;
+  font-size:13px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;
+  color:var(--stone-400);margin-bottom:12px;
 }
-.login-logo-name{
-  font-size:13px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;
-  color:rgba(255,255,255,.35);margin-bottom:6px;
+.login-title{
+  font-size:48px;font-weight:800;letter-spacing:-.04em;line-height:1;
+  color:var(--stone-50);margin-bottom:8px;
 }
-.login-logo-title{
-  font-size:40px;font-weight:800;color:#fff;
-  letter-spacing:-.04em;line-height:1;
-}
-.login-logo-title em{color:var(--red);font-style:normal}
-.login-card{
-  width:100%;max-width:380px;
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.1);
-  border-radius:20px;padding:28px;
+.login-title em{color:#c8a96e;font-style:normal}
+.login-sub{font-size:15px;color:var(--stone-400);line-height:1.6}
+
+.login-panel{
+  background:var(--stone-700);
+  border:1px solid var(--stone-600);
+  border-radius:var(--r-xl);padding:28px;
 }
 .login-err{
-  background:rgba(192,57,43,.25);border:1px solid rgba(192,57,43,.4);
-  color:#ff8a7a;border-radius:10px;padding:10px 14px;
+  background:rgba(185,28,28,.2);border:1px solid rgba(185,28,28,.4);
+  color:#fca5a5;border-radius:var(--r-sm);padding:10px 14px;
   font-size:13px;margin-bottom:16px;display:none;
 }
-.lg{margin-bottom:18px}
-.lg-label{
-  display:block;font-size:11px;font-weight:700;letter-spacing:.12em;
-  text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:7px;
+.login-step-label{
+  font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--stone-400);margin-bottom:12px;
 }
-.lg-select,.lg-pin{
-  width:100%;background:rgba(255,255,255,.09);
-  border:1px solid rgba(255,255,255,.14);
-  border-radius:10px;padding:14px 16px;
-  color:#fff;font-family:var(--ff);font-size:15px;
-  outline:none;transition:border-color .15s;
-  -webkit-appearance:none;
+
+/* Staff grid */
+.staff-grid-login{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+  gap:8px;margin-bottom:20px;
 }
-.lg-select:focus,.lg-pin:focus{border-color:rgba(255,255,255,.4)}
-.lg-select option{background:#111;color:#fff}
-.lg-pin{letter-spacing:.4em;font-size:24px;text-align:center;font-family:var(--fmono)}
-.login-btn{
-  width:100%;background:#fff;color:var(--black);
-  border:none;border-radius:10px;padding:15px;
+.staff-card-login{
+  background:var(--stone-600);border:2px solid var(--stone-600);
+  border-radius:var(--r);padding:14px 10px;
+  text-align:center;cursor:pointer;transition:all .15s;
+}
+.staff-card-login:hover{background:var(--stone-500);border-color:var(--stone-500)}
+.staff-card-login.selected{background:transparent;border-color:#c8a96e}
+.sc-avatar{
+  width:44px;height:44px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;font-weight:800;margin:0 auto 8px;
+}
+.sc-name{font-size:13px;font-weight:600;color:var(--stone-50);line-height:1.2}
+
+/* PIN keypad */
+.pin-display{
+  display:flex;gap:10px;justify-content:center;margin-bottom:20px;
+}
+.pin-dot{
+  width:14px;height:14px;border-radius:50%;
+  background:var(--stone-600);border:2px solid var(--stone-500);
+  transition:all .15s;
+}
+.pin-dot.filled{background:#c8a96e;border-color:#c8a96e}
+
+.keypad{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;
+}
+.key{
+  background:var(--stone-600);border:none;border-radius:var(--r-sm);
+  padding:16px;font-family:var(--ff);font-size:20px;font-weight:600;
+  color:var(--stone-50);cursor:pointer;transition:all .12s;
+  aspect-ratio:1.5;display:flex;align-items:center;justify-content:center;
+}
+.key:active{background:var(--stone-500);transform:scale(.96)}
+.key.del{font-size:16px;color:var(--stone-400)}
+.key.empty{background:transparent;cursor:default}
+
+.login-submit{
+  width:100%;background:#c8a96e;color:var(--stone-900);
+  border:none;border-radius:var(--r-sm);padding:15px;
   font-family:var(--ff);font-size:16px;font-weight:700;
-  cursor:pointer;transition:opacity .15s;margin-top:4px;
+  cursor:pointer;transition:all .15s;letter-spacing:-.01em;
 }
-.login-btn:active{opacity:.85}
+.login-submit:hover{background:#d4b87a}
+.login-submit:active{transform:scale(.98)}
+
+/* Mobile login */
+@media(max-width:680px){
+  .login-wrap{grid-template-columns:1fr;gap:24px}
+  .login-brand{text-align:center}
+  .login-title{font-size:36px}
+}
 
 /* ════════════════════════════════════════════════════
-   SHARED NAV BAR (bottom)
+   APP SHELL
 ════════════════════════════════════════════════════ */
-.nav-bar{
-  flex-shrink:0;
-  background:var(--white);
-  border-top:1px solid var(--line);
-  display:flex;
-  padding-bottom:var(--safe);
+#s-app{display:flex;flex-direction:row}
+
+/* DESKTOP: sidebar + main */
+.app-sidebar{
+  width:260px;flex-shrink:0;
+  background:var(--stone-800);
+  display:flex;flex-direction:column;
+  height:100vh;overflow-y:auto;
 }
-.nav-tab{
+.app-main{
   flex:1;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  gap:3px;padding:10px 4px;
-  color:var(--ink-4);cursor:pointer;
+  overflow:hidden;height:100vh;
+}
+
+/* SIDEBAR */
+.sidebar-brand{
+  padding:28px 24px 20px;
+  border-bottom:1px solid var(--stone-700);
+}
+.sb-logo{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--stone-500);margin-bottom:4px}
+.sb-name{font-size:20px;font-weight:800;color:var(--stone-50);letter-spacing:-.02em}
+.sb-name em{color:#c8a96e;font-style:normal}
+
+.sidebar-user{
+  padding:16px 20px;border-bottom:1px solid var(--stone-700);
+  display:flex;align-items:center;gap:12px;cursor:pointer;
+  transition:background .15s;
+}
+.sidebar-user:hover{background:var(--stone-700)}
+.su-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
+.su-name{font-size:14px;font-weight:600;color:var(--stone-200)}
+.su-role{font-size:12px;color:var(--stone-500);margin-top:1px}
+
+.sidebar-nav{padding:12px 0;flex:1}
+.sn-section{
+  font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--stone-600);padding:14px 24px 6px;
+}
+.sn-item{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 24px;cursor:pointer;color:var(--stone-400);
+  font-size:14px;font-weight:500;transition:all .12s;
+  border-left:3px solid transparent;
+}
+.sn-item:hover{background:var(--stone-700);color:var(--stone-200)}
+.sn-item.on{background:rgba(200,169,110,.1);color:#c8a96e;border-left-color:#c8a96e;font-weight:600}
+.sn-item svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;opacity:.8}
+
+.sidebar-bottom{padding:16px 20px;border-top:1px solid var(--stone-700)}
+.sb-signout{
+  display:flex;align-items:center;gap:8px;color:var(--stone-500);
+  font-size:13px;cursor:pointer;transition:color .15s;
+}
+.sb-signout:hover{color:var(--stone-300)}
+.sb-signout svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* MOBILE: bottom nav */
+.mobile-nav{
+  display:none;
+  background:var(--stone-800);border-top:1px solid var(--stone-700);
+  flex-shrink:0;padding-bottom:var(--safe);
+}
+.mn-tabs{display:flex}
+.mn-tab{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  gap:3px;padding:10px 4px;cursor:pointer;
+  color:var(--stone-600);transition:color .15s;
   background:none;border:none;font-family:var(--ff);
-  position:relative;transition:color .15s;
-  min-height:56px;
+  position:relative;
 }
-.nav-tab.on{color:var(--ink)}
-.nav-tab.on::after{
-  content:'';position:absolute;top:0;left:20%;right:20%;
-  height:2px;background:var(--ink);border-radius:0 0 2px 2px;
-}
-.nav-ico{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.nav-lbl{font-size:10px;font-weight:600;letter-spacing:.04em}
-.nav-badge{
-  position:absolute;top:7px;right:calc(50% - 20px);
-  min-width:16px;height:16px;padding:0 4px;
-  border-radius:8px;background:var(--red);color:#fff;
-  font-size:9px;font-weight:800;
-  display:none;align-items:center;justify-content:center;
+.mn-tab.on{color:#c8a96e}
+.mn-tab.on::after{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;background:#c8a96e;border-radius:0 0 2px 2px}
+.mn-tab svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.mn-tab-lbl{font-size:10px;font-weight:600;letter-spacing:.03em}
+
+@media(max-width:768px){
+  .app-sidebar{display:none}
+  .mobile-nav{display:block}
+  #s-app{flex-direction:column}
+  .app-main{height:auto;flex:1}
 }
 
 /* ════════════════════════════════════════════════════
-   TOP BAR (shared)
+   MAIN CONTENT PANELS
 ════════════════════════════════════════════════════ */
+.panel{display:none;flex:1;overflow:hidden;flex-direction:column}
+.panel.on{display:flex}
+
+/* TOP BAR */
 .top-bar{
-  flex-shrink:0;height:var(--nav);
-  background:var(--white);border-bottom:1px solid var(--line);
-  display:flex;align-items:center;padding:0 16px;gap:10px;
+  flex-shrink:0;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:0 24px;height:64px;
+  display:flex;align-items:center;gap:16px;
 }
-.top-bar-title{flex:1;font-size:17px;font-weight:700;letter-spacing:-.02em}
-.top-back{
-  width:36px;height:36px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  background:var(--line-2);border:none;cursor:pointer;
-  color:var(--ink);flex-shrink:0;
-}
-.top-back svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.top-user{
-  display:flex;align-items:center;gap:6px;
-  background:var(--line-2);border:none;border-radius:20px;
-  padding:5px 10px 5px 5px;cursor:pointer;
-}
-.top-user:active{opacity:.7}
-.avatar-sm{
-  width:26px;height:26px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:10px;font-weight:800;flex-shrink:0;
-}
-.top-user-name{font-size:13px;font-weight:600;color:var(--ink-2)}
+.top-bar-title{font-size:20px;font-weight:700;letter-spacing:-.02em;color:var(--ink);flex:1}
+.top-bar-sub{font-size:13px;color:var(--ink-3);margin-top:2px}
 
 /* ════════════════════════════════════════════════════
-   CHEF SEARCH SCREEN — THE ENTRY POINT
-   This is what a chef sees when they open the app.
-   One purpose: find a product fast.
+   WIZARD PANEL (Chef mode)
 ════════════════════════════════════════════════════ */
-#s-chef{background:var(--white)}
-
-.chef-search-zone{
-  padding:12px 16px 0;
-  background:var(--white);
-  flex-shrink:0;
-}
-.chef-search-bar{
-  display:flex;align-items:center;gap:10px;
+#panel-wizard{
   background:var(--bg);
-  border:2px solid var(--line);
-  border-radius:14px;
-  padding:0 14px;
+}
+
+.wizard-layout{
+  flex:1;display:flex;overflow:hidden;
+}
+
+/* Progress sidebar */
+.wizard-steps{
+  width:220px;flex-shrink:0;
+  background:var(--surface);
+  border-right:1px solid var(--border);
+  padding:24px 0;overflow-y:auto;
+}
+.ws-item{
+  display:flex;align-items:flex-start;gap:14px;
+  padding:14px 20px;cursor:pointer;
+  transition:background .12s;
+}
+.ws-item:hover:not(.active){background:var(--bg)}
+.ws-item.active{background:var(--stone-100)}
+.ws-item.done .ws-num{background:var(--green);border-color:var(--green);color:#fff}
+.ws-item.active .ws-num{background:var(--ink);border-color:var(--ink);color:#fff}
+.ws-num{
+  width:26px;height:26px;border-radius:50%;flex-shrink:0;
+  border:2px solid var(--border-2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:var(--ink-4);
+  transition:all .15s;
+}
+.ws-body{flex:1;min-width:0}
+.ws-label{font-size:12px;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em}
+.ws-item.active .ws-label{color:var(--ink)}
+.ws-value{font-size:13px;color:var(--ink-2);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
+.ws-item.active .ws-value{color:var(--ink-3)}
+
+/* Step content area */
+.wizard-content{
+  flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding:24px;
+}
+
+.step{display:none}
+.step.on{display:block}
+
+.step-title{
+  font-size:24px;font-weight:800;letter-spacing:-.03em;color:var(--ink);
+  margin-bottom:6px;
+}
+.step-hint{font-size:14px;color:var(--ink-3);margin-bottom:24px}
+
+/* ── STEP 1: PRODUCT ── */
+.filter-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.filter-chip{
+  padding:7px 14px;border-radius:20px;
+  font-size:13px;font-weight:600;
+  background:var(--surface);border:1.5px solid var(--border-2);
+  color:var(--ink-3);cursor:pointer;transition:all .12s;
+  white-space:nowrap;
+}
+.filter-chip:hover{border-color:var(--stone-400);color:var(--ink-2)}
+.filter-chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+
+.search-bar{
+  display:flex;align-items:center;gap:12px;
+  background:var(--surface);border:2px solid var(--border-2);
+  border-radius:var(--r);padding:0 16px;margin-bottom:16px;
   transition:border-color .15s;
 }
-.chef-search-bar:focus-within{border-color:var(--ink-3);background:var(--white)}
-.chef-search-bar svg{width:18px;height:18px;stroke:var(--ink-4);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
-.chef-search-input{
-  flex:1;border:none;background:none;
-  padding:15px 0;font-family:var(--ff);
-  font-size:17px;color:var(--ink);outline:none;
+.search-bar:focus-within{border-color:var(--stone-500)}
+.search-bar svg{width:18px;height:18px;stroke:var(--ink-4);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.search-input{
+  flex:1;border:none;background:none;padding:14px 0;
+  font-family:var(--ff);font-size:16px;color:var(--ink);outline:none;
 }
-.chef-search-input::placeholder{color:var(--ink-4)}
-.chef-search-x{
-  background:none;border:none;color:var(--ink-4);
-  font-size:22px;cursor:pointer;padding:2px;display:none;line-height:1;
-}
+.search-input::placeholder{color:var(--ink-4)}
+.search-x{background:none;border:none;color:var(--ink-4);font-size:20px;cursor:pointer;padding:2px;line-height:1;display:none}
 
-.chef-section-label{
-  font-size:11px;font-weight:700;letter-spacing:.1em;
-  text-transform:uppercase;color:var(--ink-4);
-  padding:14px 16px 8px;
+.product-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:10px;
 }
+.product-card{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--r);padding:16px;cursor:pointer;
+  transition:all .12s;
+}
+.product-card:hover{border-color:var(--stone-400);box-shadow:var(--shadow)}
+.product-card:active{transform:scale(.98)}
+.pc-name{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:4px;line-height:1.3}
+.pc-cat{font-size:12px;color:var(--ink-4);font-weight:500;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.pc-tags{display:flex;gap:4px;flex-wrap:wrap}
+.pc-tag{
+  font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;
+  background:var(--bg);color:var(--ink-3);
+}
+.pc-tag.al{background:var(--red-bg);color:var(--red)}
+.pc-tag.mt{background:var(--amber-bg);color:var(--amber)}
 
-.chef-results{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+/* ── STEP 2: JOB CODE ── */
+.job-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+  gap:10px;margin-bottom:16px;
+}
+.job-card{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--r);padding:16px;cursor:pointer;
+  transition:all .12s;
+}
+.job-card:hover{border-color:var(--stone-400);box-shadow:var(--shadow)}
+.job-card:active{transform:scale(.98)}
+.job-card.selected{border-color:var(--ink);background:var(--ink)}
+.jc-code{font-size:16px;font-weight:700;color:var(--ink);font-family:var(--fmono);letter-spacing:.04em;margin-bottom:4px}
+.jc-desc{font-size:12px;color:var(--ink-3)}
+.job-card.selected .jc-code{color:#fff}
+.job-card.selected .jc-desc{color:rgba(255,255,255,.6)}
+.skip-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:10px 16px;border-radius:var(--r-sm);
+  font-size:13px;font-weight:600;color:var(--ink-3);
+  background:transparent;border:1.5px solid var(--border-2);
+  cursor:pointer;transition:all .12s;margin-top:8px;font-family:var(--ff);
+}
+.skip-btn:hover{color:var(--ink-2);border-color:var(--stone-400)}
 
-/* PRODUCT RESULT — BIG THUMB-FRIENDLY TARGETS */
-.prod-result{
-  display:flex;align-items:center;
-  padding:16px;
-  border-bottom:1px solid var(--line-2);
-  cursor:pointer;
-  transition:background .08s;
-  gap:14px;
-  min-height:72px;
+/* ── STEP 3: SECTION ── */
+.section-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:10px;
 }
-.prod-result:active{background:var(--line-2)}
-.prod-result-left{flex:1;min-width:0}
-.prod-result-name{
-  font-size:17px;font-weight:600;
-  color:var(--ink);line-height:1.2;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+.section-card{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--r);padding:20px 16px;cursor:pointer;
+  transition:all .12s;text-align:center;
 }
-.prod-result-sub{font-size:13px;color:var(--ink-3);margin-top:3px}
-.prod-result-tags{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
-.ptag{
-  font-size:11px;font-weight:600;padding:2px 8px;border-radius:5px;
-  background:var(--line-2);color:var(--ink-3);white-space:nowrap;
-}
-.ptag.al{background:var(--red-bg);color:var(--red)}
-.ptag.mt{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
-.prod-result-arrow{color:var(--ink-4);flex-shrink:0}
-.prod-result-arrow svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.section-card:hover{border-color:var(--stone-400);box-shadow:var(--shadow)}
+.section-card:active{transform:scale(.98)}
+.section-card.selected{border-color:var(--ink);background:var(--ink)}
+.sc-icon{font-size:28px;margin-bottom:8px}
+.sc-name{font-size:14px;font-weight:700;color:var(--ink)}
+.section-card.selected .sc-name{color:#fff}
 
-.chef-empty{
-  padding:60px 32px;text-align:center;
-  color:var(--ink-4);
-}
-.chef-empty h2{font-size:18px;font-weight:600;color:var(--ink-3);margin-bottom:8px}
-.chef-empty p{font-size:14px;line-height:1.6}
-
-/* RECENT (shown when no search query) */
-.recent-prod{
-  display:flex;align-items:center;
-  padding:14px 16px;border-bottom:1px solid var(--line-2);
-  cursor:pointer;transition:background .08s;gap:12px;
-}
-.recent-prod:active{background:var(--line-2)}
-.recent-prod-name{font-size:16px;font-weight:600;color:var(--ink);flex:1}
-.recent-prod-sub{font-size:12px;color:var(--ink-3)}
-
-/* ════════════════════════════════════════════════════
-   PRINT SCREEN — after selecting a product
-   Full screen. One job. Get it done.
-════════════════════════════════════════════════════ */
-#s-print{background:var(--bg)}
-#s-print .top-bar{background:var(--white)}
-
-.print-body{
-  flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
-  padding-bottom:120px; /* space for sticky print button */
-}
-
-/* PRODUCT HEADER — Big, dominant, can't miss it */
-.print-product-header{
-  background:var(--ink);
-  padding:20px 20px 18px;
-}
-.print-product-name{
-  font-size:26px;font-weight:800;color:#fff;
-  letter-spacing:-.03em;line-height:1.1;
-  margin-bottom:4px;
-}
-.print-product-meta{font-size:14px;color:rgba(255,255,255,.5)}
-
-/* FORM CARDS */
-.print-card{
-  background:var(--white);
-  margin:12px;border-radius:14px;
-  overflow:hidden;
-  box-shadow:0 1px 3px rgba(0,0,0,.06);
-}
-.print-card-header{
-  padding:12px 16px;border-bottom:1px solid var(--line-2);
-  font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--ink-3);
-}
-.print-field-row{
-  display:flex;align-items:center;
-  padding:14px 16px;border-bottom:1px solid var(--line-2);
-  gap:12px;
-}
-.print-field-row:last-child{border-bottom:none}
-.pfl{font-size:14px;font-weight:500;color:var(--ink-3);width:90px;flex-shrink:0}
-.pfv{flex:1}
-.pf-input{
-  width:100%;border:none;background:none;
-  font-family:var(--ff);font-size:15px;font-weight:500;
-  color:var(--ink);outline:none;-webkit-appearance:none;
-}
-.pf-input[readonly]{color:var(--red);font-weight:700}
-.pf-select{
-  width:100%;border:none;background:none;
-  font-family:var(--ff);font-size:15px;font-weight:500;
-  color:var(--ink);outline:none;-webkit-appearance:none;
-}
-
-/* ALLERGEN SECTION */
-.allergen-card{
-  background:var(--white);margin:0 12px 12px;
-  border-radius:14px;overflow:hidden;
-  box-shadow:0 1px 3px rgba(0,0,0,.06);
-}
-.allergen-card-top{
-  padding:12px 16px;border-bottom:1px solid var(--line-2);
-  display:flex;align-items:center;justify-content:space-between;
-}
-.allergen-card-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
-.allergen-legend{display:flex;gap:10px}
-.al-leg{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--ink-4)}
-.al-leg-dot{width:7px;height:7px;border-radius:50%}
-.allergen-chips-wrap{padding:14px 16px;display:flex;flex-wrap:wrap;gap:8px}
-
-/* CHIPS — bigger for kitchen use */
+/* ── STEP 4: ALLERGENS ── */
+.allergen-wrap{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
 .achip{
-  padding:9px 14px;border-radius:8px;
+  padding:10px 16px;border-radius:var(--r-sm);
   font-size:14px;font-weight:500;
-  border:1.5px solid var(--line);
-  color:var(--ink-3);background:var(--bg);
-  cursor:pointer;transition:all .1s;
-  user-select:none;
+  border:1.5px solid var(--border-2);
+  color:var(--ink-3);background:var(--surface);
+  cursor:pointer;transition:all .12s;user-select:none;
 }
-.achip:active{transform:scale(.95)}
+.achip:active{transform:scale(.96)}
 .achip.contains{background:var(--red-bg);border-color:var(--red-border);color:var(--red);font-weight:700}
 .achip.may{background:var(--blue-bg);border-color:var(--blue-border);color:var(--blue);font-weight:700}
-.achip.na{background:var(--green-bg);border-color:var(--green-border);color:var(--green);font-weight:700}
+.achip.na-chip{background:var(--green-bg);border-color:var(--green-border);color:var(--green);font-weight:700}
 .achip.locked{opacity:.25;pointer-events:none}
+.allergen-legend{display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap}
+.al-leg{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-3)}
+.al-leg-dot{width:8px;height:8px;border-radius:50%}
 
-/* NOTES */
-.notes-card{
-  background:var(--white);margin:0 12px 12px;
-  border-radius:14px;box-shadow:0 1px 3px rgba(0,0,0,.06);
+/* ── STEP 5: REVIEW ── */
+.review-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.review-field{display:flex;flex-direction:column;gap:6px}
+.rf-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-4)}
+.rf-input{
+  background:var(--surface);border:1.5px solid var(--border-2);
+  border-radius:var(--r-sm);padding:11px 14px;
+  font-family:var(--ff);font-size:15px;font-weight:500;
+  color:var(--ink);outline:none;transition:border-color .15s;
+  -webkit-appearance:none;
 }
-.notes-textarea{
-  width:100%;border:none;background:none;
-  padding:16px;font-family:var(--ff);font-size:15px;
-  color:var(--ink);outline:none;resize:none;min-height:80px;line-height:1.5;
-  border-radius:14px;
+.rf-input:focus{border-color:var(--stone-500)}
+.rf-input.danger{color:var(--red);font-weight:700}
+.review-full{grid-column:1/-1}
+.notes-input{
+  width:100%;background:var(--surface);border:1.5px solid var(--border-2);
+  border-radius:var(--r-sm);padding:12px 14px;
+  font-family:var(--ff);font-size:15px;color:var(--ink);
+  outline:none;resize:none;min-height:72px;line-height:1.5;
+  transition:border-color .15s;
 }
-.notes-textarea::placeholder{color:var(--ink-4)}
+.notes-input:focus{border-color:var(--stone-500)}
+.notes-input::placeholder{color:var(--ink-4)}
 
-/* QTY + PRINT BUTTON — STICKY AT BOTTOM */
-.print-sticky{
-  position:fixed;bottom:0;left:0;right:0;
-  background:var(--white);
-  border-top:1px solid var(--line);
-  padding:12px 16px;
-  padding-bottom:calc(12px + var(--safe));
-  display:flex;align-items:center;gap:10px;
-  z-index:50;
+/* Allergen summary in review */
+.al-summary{
+  padding:14px 16px;border-radius:var(--r-sm);margin-bottom:16px;
 }
-.qty-wrap{
-  display:flex;align-items:center;
-  border:1.5px solid var(--line);border-radius:10px;
-  overflow:hidden;flex-shrink:0;
-}
+.al-summary.has-al{background:var(--red-bg);border:1.5px solid var(--red-border)}
+.al-summary.no-al{background:var(--green-bg);border:1.5px solid var(--green-border)}
+.al-summary.clear{background:var(--bg);border:1.5px solid var(--border)}
+.al-sum-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.al-summary.has-al .al-sum-title{color:var(--red)}
+.al-summary.no-al .al-sum-title{color:var(--green)}
+.al-summary.clear .al-sum-title{color:var(--ink-4)}
+.al-sum-text{font-size:14px;font-weight:500}
+.al-summary.has-al .al-sum-text{color:var(--red)}
+.al-summary.no-al .al-sum-text{color:var(--green)}
+.al-summary.clear .al-sum-text{color:var(--ink-3)}
+
+/* QTY */
+.qty-row{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+.qty-label{font-size:14px;font-weight:600;color:var(--ink-2)}
+.qty-ctrl{display:flex;align-items:center;border:1.5px solid var(--border-2);border-radius:var(--r-sm);overflow:hidden}
 .qty-b{
-  width:44px;height:48px;border:none;background:var(--bg);
+  width:44px;height:44px;border:none;background:var(--bg);
   font-size:22px;cursor:pointer;color:var(--ink-2);
   display:flex;align-items:center;justify-content:center;
-  font-family:var(--ff);transition:background .1s;
+  transition:background .1s;font-family:var(--ff);
 }
-.qty-b:active{background:var(--line)}
+.qty-b:active{background:var(--border-2)}
 .qty-n{
-  width:44px;height:48px;text-align:center;border:none;
-  background:var(--white);font-size:17px;font-weight:700;
+  width:52px;height:44px;text-align:center;border:none;
+  background:var(--surface);font-size:18px;font-weight:700;
   font-family:var(--fmono);color:var(--ink);outline:none;
 }
-.big-print-btn{
-  flex:1;height:52px;background:var(--ink);color:#fff;
-  border:none;border-radius:12px;
+
+/* Print button */
+.print-btn{
+  width:100%;height:56px;background:var(--stone-900);color:#fff;
+  border:none;border-radius:var(--r);
   font-family:var(--ff);font-size:17px;font-weight:700;
-  cursor:pointer;transition:transform .1s,background .1s;
+  cursor:pointer;transition:all .15s;
   display:flex;align-items:center;justify-content:center;gap:10px;
   letter-spacing:-.01em;
 }
-.big-print-btn:active:not(:disabled){transform:scale(.98)}
-.big-print-btn:disabled{opacity:.45}
-.big-print-btn svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.print-btn:hover{background:var(--stone-700)}
+.print-btn:active:not(:disabled){transform:scale(.99)}
+.print-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.print-btn svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* Nav between steps */
+.step-nav{
+  display:flex;gap:10px;margin-top:24px;padding-top:20px;
+  border-top:1px solid var(--border);
+}
+.btn-back{
+  padding:11px 20px;border-radius:var(--r-sm);
+  font-size:14px;font-weight:600;cursor:pointer;
+  background:transparent;border:1.5px solid var(--border-2);
+  color:var(--ink-2);font-family:var(--ff);transition:all .12s;
+}
+.btn-back:hover{background:var(--surface);border-color:var(--stone-400)}
+.btn-next{
+  padding:11px 24px;border-radius:var(--r-sm);
+  font-size:14px;font-weight:700;cursor:pointer;
+  background:var(--stone-800);border:none;
+  color:#fff;font-family:var(--ff);transition:all .12s;
+}
+.btn-next:hover{background:var(--stone-700)}
 
 /* ════════════════════════════════════════════════════
-   PRINT CONFIRMATION SCREEN
-   This is what a chef sees after hitting print.
-   Large. Clear. Reassuring.
+   QUEUE PANEL
 ════════════════════════════════════════════════════ */
-#s-confirm{
-  background:var(--ink);
-  align-items:center;justify-content:center;
-  padding:32px;text-align:center;
-}
-.confirm-tick{
-  width:96px;height:96px;border-radius:50%;
-  background:var(--green-bg);border:3px solid var(--green-border);
-  display:flex;align-items:center;justify-content:center;
-  margin:0 auto 28px;
-}
-.confirm-tick svg{width:52px;height:52px;stroke:var(--green);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
-.confirm-product{
-  font-size:28px;font-weight:800;color:#fff;
-  letter-spacing:-.03em;line-height:1.1;margin-bottom:10px;
-}
-.confirm-detail{font-size:16px;color:rgba(255,255,255,.5);margin-bottom:48px;line-height:1.6}
-.confirm-actions{width:100%;max-width:340px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
-.confirm-again{
-  width:100%;background:#fff;color:var(--ink);
-  border:none;border-radius:12px;padding:16px;
-  font-family:var(--ff);font-size:16px;font-weight:700;
-  cursor:pointer;transition:opacity .1s;
-}
-.confirm-again:active{opacity:.85}
-.confirm-done{
-  width:100%;background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);
-  border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:14px;
-  font-family:var(--ff);font-size:15px;font-weight:600;
-  cursor:pointer;transition:opacity .1s;
-}
-.confirm-done:active{opacity:.7}
+.panel-scroll{flex:1;overflow-y:auto;padding:24px}
 
-/* ════════════════════════════════════════════════════
-   QUEUE SCREEN
-════════════════════════════════════════════════════ */
-#s-queue{background:var(--bg)}
-
-.queue-scroll{flex:1;overflow-y:auto;padding:12px}
-.queue-empty-wrap{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  height:60vh;color:var(--ink-4);text-align:center;padding:20px;
+.queue-empty{
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;height:50vh;color:var(--ink-4);text-align:center;
 }
-.queue-empty-icon{width:56px;height:56px;stroke:var(--line);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;margin-bottom:16px}
-.queue-empty-wrap h2{font-size:18px;font-weight:600;color:var(--ink-3);margin-bottom:6px}
-.queue-empty-wrap p{font-size:14px}
+.queue-empty svg{width:52px;height:52px;stroke:var(--border-2);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;margin-bottom:16px}
+.queue-empty h2{font-size:18px;color:var(--ink-3);font-weight:600;margin-bottom:6px}
+.queue-empty p{font-size:14px}
 
 .qcard{
-  background:var(--white);border-radius:14px;padding:16px;
-  margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.06);
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--r);padding:18px;margin-bottom:12px;
+  box-shadow:var(--shadow-sm);
 }
-.qcard-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
-.qcard-name{font-size:18px;font-weight:700;color:var(--ink);flex:1;line-height:1.2}
+.qcard-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px}
+.qcard-name{font-size:17px;font-weight:700;color:var(--ink);flex:1;line-height:1.2}
 .qbadge{
   flex-shrink:0;font-size:11px;font-weight:700;padding:4px 10px;
-  border-radius:20px;letter-spacing:.06em;text-transform:uppercase;
+  border-radius:20px;letter-spacing:.04em;text-transform:uppercase;
 }
-.qb-pending{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
-.qb-printed{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
-.qb-failed{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.qb-p{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
+.qb-ok{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+.qb-fail{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
 .qcard-meta{display:flex;flex-wrap:wrap;gap:5px 14px;font-size:13px;color:var(--ink-3);margin-bottom:12px}
-.qcard-notes{
-  background:var(--amber-bg);border-radius:8px;
-  padding:8px 12px;font-size:13px;color:var(--amber);
-  font-style:italic;margin-bottom:10px;
-}
 .qcard-actions{display:flex;gap:8px;justify-content:flex-end}
 
 /* ════════════════════════════════════════════════════
-   HISTORY SCREEN
+   HISTORY PANEL
 ════════════════════════════════════════════════════ */
-#s-history{background:var(--bg)}
-
-.history-scroll{flex:1;overflow-y:auto}
-.history-filter{
-  padding:12px 16px;background:var(--white);
-  border-bottom:1px solid var(--line);
-  display:flex;gap:8px;
+.hist-filters{
+  padding:0 24px 16px;display:flex;gap:8px;flex-wrap:wrap;
 }
-.hf-chip{
-  padding:7px 14px;border-radius:20px;font-size:13px;font-weight:600;
-  background:var(--bg);border:1.5px solid var(--line);color:var(--ink-3);
-  cursor:pointer;transition:all .12s;white-space:nowrap;
-}
-.hf-chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
-
-.hist-group-header{
+.hist-scroll{flex:1;overflow-y:auto}
+.hist-day{
   font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--ink-4);padding:14px 16px 6px;background:var(--bg);
+  color:var(--ink-4);padding:14px 24px 6px;background:var(--bg);
+  position:sticky;top:0;z-index:1;
 }
 .hist-item{
-  background:var(--white);border-bottom:1px solid var(--line-2);
-  padding:14px 16px;display:flex;gap:12px;align-items:flex-start;
+  background:var(--surface);border-bottom:1px solid var(--border);
+  padding:14px 24px;display:flex;gap:14px;align-items:flex-start;
   cursor:pointer;transition:background .08s;
 }
-.hist-item:active{background:var(--line-2)}
-.hist-item-body{flex:1;min-width:0}
-.hist-product{font-size:15px;font-weight:600;color:var(--ink)}
-.hist-sub{font-size:13px;color:var(--ink-3);margin-top:2px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hist-notes{font-size:12px;color:var(--amber);margin-top:3px;font-style:italic}
-.hist-meta-right{flex-shrink:0;text-align:right}
-.hist-qty{font-size:22px;font-weight:800;color:var(--ink);line-height:1}
-.hist-qty-label{font-size:10px;color:var(--ink-4);text-transform:uppercase;letter-spacing:.06em;margin-top:1px}
-.hist-time{font-size:11px;font-family:var(--fmono);color:var(--ink-4);margin-top:6px}
+.hist-item:hover{background:var(--stone-100)}
+.hist-body{flex:1;min-width:0}
+.hist-product{font-size:15px;font-weight:700;color:var(--ink)}
+.hist-sub{font-size:13px;color:var(--ink-3);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hist-note{font-size:12px;color:var(--amber);margin-top:3px;font-style:italic}
+.hist-right{flex-shrink:0;text-align:right}
+.hist-qty{font-size:24px;font-weight:800;color:var(--ink);line-height:1}
+.hist-ql{font-size:10px;color:var(--ink-4);text-transform:uppercase;letter-spacing:.06em}
+.hist-time{font-size:11px;font-family:var(--fmono);color:var(--ink-4);margin-top:4px}
 
 /* ════════════════════════════════════════════════════
-   MANAGER SCREEN (Settings)
+   MANAGER PANEL
 ════════════════════════════════════════════════════ */
-#s-manager{background:var(--bg)}
-
 .manager-scroll{flex:1;overflow-y:auto}
-.manager-section-header{
+.mgr-section{
   font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
-  color:var(--ink-4);padding:20px 16px 8px;
+  color:var(--ink-4);padding:20px 24px 8px;
 }
-.manager-list-item{
-  background:var(--white);border-bottom:1px solid var(--line-2);
-  display:flex;align-items:center;padding:16px;gap:12px;cursor:pointer;
-  transition:background .08s;
+.mgr-item{
+  background:var(--surface);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:16px 24px;gap:14px;
+  cursor:pointer;transition:background .08s;
 }
-.manager-list-item:first-of-type{border-top:1px solid var(--line-2)}
-.manager-list-item:active{background:var(--line-2)}
-.mli-icon{
-  width:40px;height:40px;border-radius:10px;
-  display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;
+.mgr-item:first-of-type{border-top:1px solid var(--border)}
+.mgr-item:hover{background:var(--stone-100)}
+.mgr-icon{
+  width:42px;height:42px;border-radius:var(--r-sm);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
 }
-.mli-icon svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.mli-body{flex:1}
-.mli-title{font-size:15px;font-weight:600;color:var(--ink)}
-.mli-sub{font-size:13px;color:var(--ink-3);margin-top:2px}
-.mli-arrow{color:var(--ink-4)}
-.mli-arrow svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.mgr-icon svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.mgr-body{flex:1}
+.mgr-title{font-size:15px;font-weight:600;color:var(--ink)}
+.mgr-sub{font-size:13px;color:var(--ink-3);margin-top:2px}
+.mgr-arrow svg{width:16px;height:16px;stroke:var(--ink-4);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
 /* ════════════════════════════════════════════════════
-   DETAIL SCREENS (products list, job codes, etc)
+   DETAIL SCREENS (sub-panels)
 ════════════════════════════════════════════════════ */
-#s-products,#s-product-edit,#s-jobcodes,#s-staff,#s-printer,#s-custom,#s-backup,#s-audit,#s-menu-types{background:var(--bg)}
-
-.detail-scroll{flex:1;overflow-y:auto;padding-bottom:20px}
-
-/* LIST ITEMS */
-.list-item{
-  background:var(--white);border-bottom:1px solid var(--line-2);
-  padding:14px 16px;display:flex;align-items:center;gap:12px;
+.detail-screen{
+  position:absolute;inset:0;
+  background:var(--bg);
+  display:flex;flex-direction:column;
+  opacity:0;pointer-events:none;
+  transition:opacity .2s;
+  z-index:10;
 }
-.list-item:first-of-type{border-top:1px solid var(--line-2)}
-.li-body{flex:1;min-width:0}
-.li-name{font-size:15px;font-weight:600;color:var(--ink)}
-.li-sub{font-size:13px;color:var(--ink-3);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.li-tags{display:flex;gap:4px;margin-top:5px;flex-wrap:wrap}
-.li-tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;background:var(--line-2);color:var(--ink-3)}
-.li-tag.al{background:var(--red-bg);color:var(--red)}
-.li-tag.mt{background:var(--amber-bg);color:var(--amber)}
-.li-actions{display:flex;gap:6px;flex-shrink:0}
+.detail-screen.open{opacity:1;pointer-events:all}
 
-/* FORM SECTIONS */
+.ds-top{
+  flex-shrink:0;background:var(--surface);
+  border-bottom:1px solid var(--border);
+  height:64px;display:flex;align-items:center;padding:0 24px;gap:14px;
+}
+.ds-back{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--bg);border:1.5px solid var(--border-2);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--ink-2);flex-shrink:0;
+  transition:all .12s;
+}
+.ds-back:hover{background:var(--border)}
+.ds-back svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ds-title{font-size:18px;font-weight:700;color:var(--ink);flex:1}
+.ds-scroll{flex:1;overflow-y:auto;padding:20px 24px}
+
+/* Form rows */
 .form-section{
-  background:var(--white);border-radius:14px;margin:12px;
-  overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--r);overflow:hidden;margin-bottom:16px;
+  box-shadow:var(--shadow-sm);
 }
-.form-section-header{
-  padding:12px 16px;border-bottom:1px solid var(--line-2);
-  font-size:11px;font-weight:700;letter-spacing:.1em;
-  text-transform:uppercase;color:var(--ink-3);
+.form-section-title{
+  padding:12px 16px;border-bottom:1px solid var(--border);
+  font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);
 }
 .form-row{
   display:flex;align-items:center;padding:13px 16px;
-  border-bottom:1px solid var(--line-2);gap:10px;
+  border-bottom:1px solid var(--border);gap:10px;
 }
 .form-row:last-child{border-bottom:none}
 .fr-label{font-size:14px;font-weight:500;color:var(--ink-3);width:110px;flex-shrink:0}
@@ -589,1179 +679,1148 @@ body{font-family:var(--ff);font-size:15px;line-height:1.5;color:var(--ink)}
   font-family:var(--ff);font-size:15px;font-weight:500;
   color:var(--ink);outline:none;-webkit-appearance:none;
 }
-.fr-select{width:100%}
-.fr-textarea{
-  flex:1;border:none;background:none;
-  font-family:var(--ff);font-size:15px;
-  color:var(--ink);outline:none;resize:none;
-  min-height:64px;line-height:1.5;
+
+/* Status dots */
+.status-row{
+  display:flex;align-items:center;gap:14px;
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--r);padding:14px 16px;margin-bottom:10px;
+  box-shadow:var(--shadow-sm);
+}
+.s-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.s-dot.on{background:var(--green)}
+.s-dot.off{background:var(--red)}
+.s-dot.unk{background:var(--stone-400)}
+.s-text strong{display:block;font-size:14px;font-weight:600;color:var(--ink)}
+.s-text small{font-size:12px;color:var(--ink-3)}
+
+/* Staff grid */
+.staff-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:20px}
+.s-card{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--r);padding:14px;display:flex;align-items:center;gap:10px;
+}
+.s-av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
+.s-name{font-size:14px;font-weight:600;color:var(--ink)}
+.s-role{font-size:12px;color:var(--ink-4);margin-top:1px}
+
+/* JC builder */
+.jcb{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--r);padding:20px;margin-bottom:16px;
+}
+.jcb-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.jcb-field{display:flex;flex-direction:column;gap:5px}
+.jcb-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4)}
+.jcb-input{
+  background:var(--bg);border:1.5px solid var(--border-2);border-radius:var(--r-sm);
+  padding:10px 12px;font-family:var(--ff);font-size:14px;font-weight:500;
+  color:var(--ink);outline:none;transition:border-color .15s;
+}
+.jcb-input:focus{border-color:var(--stone-500)}
+.jc-preview-box{
+  background:var(--bg);border:2px solid var(--border-2);border-radius:var(--r-sm);
+  padding:14px 16px;font-family:var(--fmono);font-size:24px;font-weight:700;
+  color:var(--ink);letter-spacing:.06em;margin-bottom:16px;
 }
 
-/* CHIPS IN FORMS */
-.chip-wrap{padding:14px 16px;display:flex;flex-wrap:wrap;gap:8px}
+/* Chips in admin */
+.chip-wrap{display:flex;flex-wrap:wrap;gap:7px;padding:14px 16px}
+.a-chip-admin{
+  padding:8px 14px;border-radius:var(--r-sm);
+  font-size:14px;font-weight:500;border:1.5px solid var(--border-2);
+  color:var(--ink-3);background:var(--bg);cursor:pointer;transition:all .12s;
+}
+.a-chip-admin:active{transform:scale(.96)}
+.a-chip-admin.contains{background:var(--red-bg);border-color:var(--red-border);color:var(--red);font-weight:700}
+.a-chip-admin.may{background:var(--blue-bg);border-color:var(--blue-border);color:var(--blue);font-weight:700}
 
-/* STATUS ROW */
-.status-item{
-  background:var(--white);border-bottom:1px solid var(--line-2);
-  padding:14px 16px;display:flex;align-items:center;gap:12px;
+/* Menu type chips */
+.mt-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 12px;border-radius:20px;
+  background:var(--amber-bg);border:1px solid var(--amber-border);
+  color:var(--amber);font-size:13px;font-weight:600;margin:3px;
 }
-.status-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.status-dot.on{background:var(--green)}
-.status-dot.off{background:var(--red)}
-.status-dot.unk{background:var(--ink-4)}
-.status-text strong{display:block;font-size:14px;font-weight:600;color:var(--ink)}
-.status-text small{font-size:12px;color:var(--ink-3)}
+.mt-remove{background:none;border:none;cursor:pointer;color:var(--amber);font-size:16px;line-height:1;opacity:.6}
+.mt-remove:hover{opacity:1}
 
-/* JC BUILDER */
-.jcb-segment{margin-bottom:14px}
-.jcb-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-4);margin-bottom:6px}
-.jcb-output{
-  background:var(--white);border-radius:14px;
-  padding:16px;margin:0 12px 12px;
-  box-shadow:0 1px 3px rgba(0,0,0,.06);
-}
-.jcb-code{
-  font-family:var(--fmono);font-size:28px;font-weight:700;
-  color:var(--ink);letter-spacing:.06em;margin-bottom:12px;
-}
-.jcb-desc{font-size:13px;color:var(--ink-3);margin-bottom:14px}
-
-/* CUSTOM LABEL ROW */
-.cl-item{
-  background:var(--white);border-bottom:1px solid var(--line-2);
-  padding:14px 16px;display:flex;align-items:center;gap:10px;
-}
-.cl-text-input{
-  flex:1;border:none;background:none;
-  font-family:var(--ff);font-size:16px;color:var(--ink);outline:none;
-}
-.cl-text-input::placeholder{color:var(--ink-4)}
-.cl-slider{width:72px;accent-color:var(--ink);flex-shrink:0}
-.cl-size-lbl{font-size:11px;font-family:var(--fmono);color:var(--ink-4);width:28px;text-align:right}
-
-/* STAFF GRID */
-.staff-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin:12px}
-.staff-card{
-  background:var(--white);border-radius:14px;padding:14px;
+/* Custom label */
+.cl-row{
   display:flex;align-items:center;gap:10px;
-  box-shadow:0 1px 3px rgba(0,0,0,.06);
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--r-sm);padding:12px 14px;margin-bottom:8px;
 }
-.staff-av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0}
-.staff-name{font-size:13px;font-weight:600;color:var(--ink)}
-.staff-role{font-size:11px;color:var(--ink-4);margin-top:1px}
+.cl-inp{flex:1;border:none;background:none;font-family:var(--ff);font-size:15px;color:var(--ink);outline:none}
+.cl-inp::placeholder{color:var(--ink-4)}
+.cl-slider{width:72px;accent-color:var(--stone-700);flex-shrink:0}
+.cl-sz{font-size:11px;font-family:var(--fmono);color:var(--ink-4);width:30px;text-align:right}
 
-/* BACKUP ITEMS */
-.backup-item{
-  background:var(--white);border-bottom:1px solid var(--line-2);
-  padding:16px;display:flex;align-items:center;gap:12px;
+/* Backup rows */
+.backup-row{
+  background:var(--surface);border-bottom:1px solid var(--border);
+  padding:16px 24px;display:flex;align-items:center;gap:14px;
 }
-.backup-item:first-of-type{border-top:1px solid var(--line-2)}
-.bi-body{flex:1}
-.bi-title{font-size:15px;font-weight:600;color:var(--ink)}
-.bi-sub{font-size:13px;color:var(--ink-3);margin-top:2px}
+.backup-row:first-of-type{border-top:1px solid var(--border)}
+.br-body{flex:1}
+.br-title{font-size:15px;font-weight:600;color:var(--ink)}
+.br-sub{font-size:13px;color:var(--ink-3);margin-top:2px}
 
-/* AUDIT */
-.audit-item{
-  background:var(--white);border-bottom:1px solid var(--line-2);
-  padding:14px 16px;
-}
-.audit-who{font-size:14px;font-weight:600;color:var(--ink)}
-.audit-what{font-size:13px;color:var(--ink-2);margin-top:2px}
-.audit-when{font-size:11px;font-family:var(--fmono);color:var(--ink-4);margin-top:3px}
+/* Audit */
+.audit-row{padding:14px 24px;border-bottom:1px solid var(--border);background:var(--surface)}
+.ar-who{font-size:14px;font-weight:700;color:var(--ink)}
+.ar-what{font-size:13px;color:var(--ink-2);margin-top:2px}
+.ar-when{font-size:11px;font-family:var(--fmono);color:var(--ink-4);margin-top:3px}
 
 /* ════════════════════════════════════════════════════
-   UNIVERSAL BUTTON SYSTEM
+   UNIVERSAL COMPONENTS
 ════════════════════════════════════════════════════ */
 .btn{
   display:inline-flex;align-items:center;gap:7px;
-  padding:10px 18px;border-radius:10px;
+  padding:10px 18px;border-radius:var(--r-sm);
   font-size:14px;font-weight:700;cursor:pointer;border:none;
-  transition:all .1s;font-family:var(--ff);white-space:nowrap;
-  letter-spacing:-.01em;
+  transition:all .12s;font-family:var(--ff);white-space:nowrap;
 }
 .btn:active{transform:scale(.97)}
-.btn-dark{background:var(--ink);color:#fff}
-.btn-outline{background:var(--white);color:var(--ink);border:1.5px solid var(--line)}
-.btn-outline:active{background:var(--line-2)}
+.btn-dark{background:var(--stone-800);color:#fff}
+.btn-dark:hover{background:var(--stone-700)}
+.btn-outline{background:var(--surface);color:var(--ink);border:1.5px solid var(--border-2)}
+.btn-outline:hover{border-color:var(--stone-400);background:var(--bg)}
 .btn-red{background:var(--red-bg);color:var(--red);border:1.5px solid var(--red-border)}
-.btn-red:active{background:var(--red);color:#fff}
+.btn-red:hover{background:var(--red);color:#fff}
 .btn-green{background:var(--green-bg);color:var(--green);border:1.5px solid var(--green-border)}
-.btn-sm{padding:7px 14px;font-size:13px;border-radius:8px}
-.btn-xs{padding:5px 10px;font-size:12px;border-radius:7px;font-weight:600}
+.btn-sm{padding:7px 14px;font-size:13px;border-radius:var(--r-sm)}
+.btn-xs{padding:5px 10px;font-size:12px;border-radius:6px}
 .btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;padding:0 12px}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
 
-/* FAB — floating action button */
-.fab{
-  position:fixed;bottom:calc(68px + var(--safe));right:16px;
-  width:54px;height:54px;border-radius:50%;
-  background:var(--ink);color:#fff;border:none;
-  font-size:26px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 4px 16px rgba(0,0,0,.25);
-  transition:transform .1s;z-index:20;
+.sec-label{
+  font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink-4);margin-bottom:10px;display:block;
 }
-.fab:active{transform:scale(.92)}
+.helper{font-size:13px;color:var(--ink-4);line-height:1.6;margin-bottom:16px}
+.divider{height:1px;background:var(--border);margin:20px 0}
 
-/* SECTION DIVIDER */
-.sec-div{height:1px;background:var(--line);margin:8px 0}
+.loading{display:flex;align-items:center;gap:10px;padding:20px 0;color:var(--ink-3);font-size:14px}
+.spin{width:16px;height:16px;border:2px solid var(--border-2);border-top-color:var(--stone-600);border-radius:50%;animation:spin .6s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-/* HELPER */
-.helper-text{
-  font-size:13px;color:var(--ink-4);
-  padding:12px 16px;line-height:1.5;
-}
-
-/* TOAST */
 .toast{
-  position:fixed;
-  bottom:calc(var(--safe) + 70px);
-  left:50%;transform:translateX(-50%) translateY(10px);
-  background:var(--ink);color:#fff;
+  position:fixed;bottom:24px;left:50%;
+  transform:translateX(-50%) translateY(10px);
+  background:var(--stone-800);color:#fff;
   padding:11px 22px;border-radius:22px;
   font-size:14px;font-weight:600;
-  opacity:0;transition:all .22s;z-index:999;
+  opacity:0;transition:all .22s;z-index:9999;
   pointer-events:none;white-space:nowrap;
-  box-shadow:0 4px 20px rgba(0,0,0,.2);
+  box-shadow:var(--shadow-lg);
 }
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.ok{background:var(--green)}
 .toast.err{background:var(--red)}
 
-/* LOADING */
-.loading-row{display:flex;align-items:center;gap:10px;padding:20px 16px;color:var(--ink-3);font-size:14px}
-.spin{width:18px;height:18px;border:2px solid var(--line);border-top-color:var(--ink);border-radius:50%;animation:spin .6s linear infinite;flex-shrink:0}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* MODAL (for desktop) */
-.overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
-.overlay.open{display:flex}
-.overlay-box{background:var(--white);border-radius:20px;padding:28px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2)}
-.overlay-box h2{font-size:22px;font-weight:800;color:var(--ink);letter-spacing:-.02em;margin-bottom:20px}
-.overlay-footer{display:flex;gap:8px;margin-top:20px;justify-content:flex-end}
-
-/* DESKTOP ADAPTATIONS */
-@media(min-width:768px){
-  .screen{max-width:480px;margin:0 auto;box-shadow:0 0 60px rgba(0,0,0,.15)}
-  html,body{background:var(--ink-2)}
-  .print-sticky{max-width:480px;left:50%;transform:translateX(-50%)}
-  .toast{bottom:80px}
-  .fab{right:calc(50% - 240px + 16px)}
+@media(max-width:768px){
+  .wizard-steps{display:none}
+  .review-grid{grid-template-columns:1fr}
+  .product-grid{grid-template-columns:1fr 1fr}
+  .job-grid{grid-template-columns:1fr 1fr}
+  .section-grid{grid-template-columns:1fr 1fr 1fr}
+  .wizard-content{padding:16px}
+  .panel-scroll{padding:16px}
+  .ds-scroll{padding:16px}
+  .toast{bottom:calc(var(--safe) + 70px)}
 }
 </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════
-     SCREEN: LOGIN
-═══════════════════════════════ -->
-<div class="screen" id="s-login">
-  <div class="login-logo">
-    <div class="login-logo-name">Digby's CPS</div>
-    <div class="login-logo-title">Kitchen<br><em>Print</em> System</div>
-  </div>
-  <div class="login-card">
-    <div id="login-err" class="login-err"></div>
-    <div class="lg">
-      <label class="lg-label">Who are you?</label>
-      <select class="lg-select" id="l-who"><option value="">— Select your name —</option></select>
+<!-- ═══════════ LOGIN ═══════════ -->
+<div class="screen active" id="s-login">
+  <div class="login-wrap">
+    <div class="login-brand">
+      <div class="login-logo">Digby's CPS</div>
+      <div class="login-title">Kitchen<br><em>Print</em><br>System</div>
+      <div class="login-sub" style="margin-top:16px">Tap your name then enter your PIN to sign in to the kitchen</div>
     </div>
-    <div class="lg">
-      <label class="lg-label">PIN</label>
-      <input type="password" class="lg-pin" id="l-pin" placeholder="••••" maxlength="4" autocomplete="off">
-    </div>
-    <button class="login-btn" onclick="login()">Sign in to kitchen</button>
-  </div>
-</div>
+    <div class="login-panel">
+      <div id="login-err" class="login-err"></div>
 
-<!-- ═══════════════════════════════
-     SCREEN: CHEF (search + home)
-═══════════════════════════════ -->
-<div class="screen hidden" id="s-chef">
-  <div class="top-bar">
-    <div class="top-bar-title">Digby's <span style="color:var(--red)">CPS</span></div>
-    <div class="top-user" onclick="logout()" id="top-user-btn">
-      <div class="avatar-sm" id="top-avatar"></div>
-      <span class="top-user-name" id="top-uname"></span>
-    </div>
-  </div>
-
-  <div class="chef-search-zone">
-    <div class="chef-search-bar">
-      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input class="chef-search-input" id="chef-search" type="search" placeholder="Find a product…" oninput="onSearch(this.value)" autocomplete="off" autocorrect="off" spellcheck="false">
-      <button class="chef-search-x" id="chef-x" onclick="clearSearch()">×</button>
-    </div>
-  </div>
-
-  <div class="chef-results" id="chef-results">
-    <!-- Populated by JS -->
-  </div>
-
-  <nav class="nav-bar">
-    <button class="nav-tab on" id="nb-print" onclick="goChef()">
-      <svg class="nav-ico" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-      <span class="nav-lbl">Print</span>
-    </button>
-    <button class="nav-tab" id="nb-queue" onclick="goQueue()">
-      <svg class="nav-ico" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-      <span class="nav-lbl">Queue</span>
-      <div class="nav-badge" id="queue-badge"></div>
-    </button>
-    <button class="nav-tab" id="nb-history" onclick="goHistory()">
-      <svg class="nav-ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      <span class="nav-lbl">History</span>
-    </button>
-    <button class="nav-tab" id="nb-manage" onclick="goManager()">
-      <svg class="nav-ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M5.93 4.93a10 10 0 0 0 0 14.14"/></svg>
-      <span class="nav-lbl">Manage</span>
-    </button>
-  </nav>
-</div>
-
-<!-- ═══════════════════════════════
-     SCREEN: PRINT (full product form)
-═══════════════════════════════ -->
-<div class="screen hidden" id="s-print">
-  <div class="top-bar">
-    <button class="top-back" onclick="goPrint_back()">
-      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-    </button>
-    <div class="top-bar-title" id="print-top-title">Print Label</div>
-  </div>
-
-  <div class="print-body" id="print-body">
-    <!-- Populated when product selected -->
-  </div>
-
-  <div class="print-sticky">
-    <div class="qty-wrap">
-      <button class="qty-b" onclick="adjQ(-1)">−</button>
-      <input class="qty-n" id="print-qty" type="number" value="1" min="1" max="50">
-      <button class="qty-b" onclick="adjQ(1)">+</button>
-    </div>
-    <button class="big-print-btn" id="big-print" onclick="doPrint()">
-      <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-      Print label
-    </button>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════
-     SCREEN: CONFIRM
-═══════════════════════════════ -->
-<div class="screen hidden fade" id="s-confirm">
-  <div class="confirm-tick">
-    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-  </div>
-  <div class="confirm-product" id="confirm-product"></div>
-  <div class="confirm-detail" id="confirm-detail"></div>
-  <div class="confirm-actions">
-    <button class="confirm-again" onclick="printAgain()">Print another label</button>
-    <button class="confirm-done" onclick="confirmDone()">Done — back to search</button>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════
-     SCREEN: QUEUE
-═══════════════════════════════ -->
-<div class="screen hidden" id="s-queue">
-  <div class="top-bar">
-    <button class="top-back" onclick="goChef()">
-      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-    </button>
-    <div class="top-bar-title">Print Queue</div>
-  </div>
-  <div class="queue-scroll" id="queue-scroll"></div>
-  <nav class="nav-bar">
-    <button class="nav-tab" onclick="goChef()"><svg class="nav-ico" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg><span class="nav-lbl">Print</span></button>
-    <button class="nav-tab on" onclick="goQueue()"><svg class="nav-ico" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg><span class="nav-lbl">Queue</span><div class="nav-badge" id="queue-badge-2"></div></button>
-    <button class="nav-tab" onclick="goHistory()"><svg class="nav-ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span class="nav-lbl">History</span></button>
-    <button class="nav-tab" onclick="goManager()"><svg class="nav-ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M5.93 4.93a10 10 0 0 0 0 14.14"/></svg><span class="nav-lbl">Manage</span></button>
-  </nav>
-</div>
-
-<!-- ═══════════════════════════════
-     SCREEN: HISTORY
-═══════════════════════════════ -->
-<div class="screen hidden" id="s-history">
-  <div class="top-bar">
-    <button class="top-back" onclick="goChef()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <div class="top-bar-title">History</div>
-    <button class="btn btn-outline btn-sm" onclick="exportHistory()">Export</button>
-  </div>
-  <div class="history-filter">
-    <div class="hf-chip on" onclick="filterHist('all',this)">All</div>
-    <div class="hf-chip" onclick="filterHist('me',this)">My labels</div>
-    <div class="hf-chip" onclick="filterHist('today',this)">Today</div>
-  </div>
-  <div class="history-scroll" id="history-scroll">
-    <div class="loading-row"><div class="spin"></div>Loading…</div>
-  </div>
-  <nav class="nav-bar">
-    <button class="nav-tab" onclick="goChef()"><svg class="nav-ico" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg><span class="nav-lbl">Print</span></button>
-    <button class="nav-tab" onclick="goQueue()"><svg class="nav-ico" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg><span class="nav-lbl">Queue</span></button>
-    <button class="nav-tab on" onclick="goHistory()"><svg class="nav-ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span class="nav-lbl">History</span></button>
-    <button class="nav-tab" onclick="goManager()"><svg class="nav-ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M5.93 4.93a10 10 0 0 0 0 14.14"/></svg><span class="nav-lbl">Manage</span></button>
-  </nav>
-</div>
-
-<!-- ═══════════════════════════════
-     SCREEN: MANAGER HOME
-═══════════════════════════════ -->
-<div class="screen hidden" id="s-manager">
-  <div class="top-bar">
-    <button class="top-back" onclick="goChef()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <div class="top-bar-title">Management</div>
-  </div>
-  <div class="manager-scroll">
-    <div class="manager-section-header">Products & Events</div>
-    <div class="manager-list-item" onclick="goProducts()">
-      <div class="mli-icon" style="background:#fff3f2;color:var(--red)"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg></div>
-      <div class="mli-body"><div class="mli-title">Products</div><div class="mli-sub">Manage allergens, shelf life and categories</div></div>
-      <div class="mli-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
-    </div>
-    <div class="manager-list-item" onclick="go('s-menu-types')">
-      <div class="mli-icon" style="background:#fffbeb;color:var(--amber)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
-      <div class="mli-body"><div class="mli-title">Menu Types</div><div class="mli-sub">Weddings, Tasting Menus, Wakes…</div></div>
-      <div class="mli-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
-    </div>
-    <div class="manager-list-item" onclick="go('s-jobcodes')">
-      <div class="mli-icon" style="background:#eff6ff;color:var(--blue)"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
-      <div class="mli-body"><div class="mli-title">Job Codes</div><div class="mli-sub">Build and manage event codes</div></div>
-      <div class="mli-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
-    </div>
-    <div class="manager-section-header">Team</div>
-    <div class="manager-list-item" onclick="go('s-staff')">
-      <div class="mli-icon" style="background:#f0fdf4;color:var(--green)"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-      <div class="mli-body"><div class="mli-title">Staff</div><div class="mli-sub">Add and manage your kitchen team</div></div>
-      <div class="mli-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
-    </div>
-    <div class="manager-section-header">System</div>
-    <div class="manager-list-item" onclick="go('s-printer')">
-      <div class="mli-icon" style="background:#f8f8f8;color:var(--ink-2)"><svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></div>
-      <div class="mli-body"><div class="mli-title">Printer & Status</div><div class="mli-sub">Brother QL · Raspberry Pi · ngrok</div></div>
-      <div class="mli-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
-    </div>
-    <div class="manager-list-item" onclick="go('s-custom')">
-      <div class="mli-icon" style="background:#f8f8f8;color:var(--ink-2)"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
-      <div class="mli-body"><div class="mli-title">Custom Labels</div><div class="mli-sub">Freeform labels for storage and dry goods</div></div>
-      <div class="mli-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
-    </div>
-    <div class="manager-list-item" onclick="go('s-backup')">
-      <div class="mli-icon" style="background:#f8f8f8;color:var(--ink-2)"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
-      <div class="mli-body"><div class="mli-title">Backup & Export</div><div class="mli-sub">Download your data as CSV</div></div>
-      <div class="mli-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
-    </div>
-    <div class="manager-list-item" id="audit-menu-item" onclick="go('s-audit')" style="display:none">
-      <div class="mli-icon" style="background:#fff3f2;color:var(--red)"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
-      <div class="mli-body"><div class="mli-title">Audit Log</div><div class="mli-sub">All admin changes — manager only</div></div>
-      <div class="mli-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
-    </div>
-    <div class="manager-list-item" onclick="logout()">
-      <div class="mli-icon" style="background:#f8f8f8;color:var(--ink-3)"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
-      <div class="mli-body"><div class="mli-title">Sign out</div><div class="mli-sub" id="manager-signed-in-as"></div></div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════
-     SCREEN: PRODUCTS LIST
-═══════════════════════════════ -->
-<div class="screen hidden" id="s-products">
-  <div class="top-bar">
-    <button class="top-back" onclick="go('s-manager')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <div class="top-bar-title">Products</div>
-    <button class="btn btn-dark btn-sm" onclick="openAddProduct()">+ Add</button>
-  </div>
-  <div style="padding:12px 16px;background:var(--white);border-bottom:1px solid var(--line)">
-    <input type="search" id="prod-admin-search" style="width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;font-family:var(--ff);font-size:15px;outline:none;background:var(--bg)" placeholder="Search products…" oninput="renderProductAdmin(this.value)">
-  </div>
-  <div class="detail-scroll" id="products-list">
-    <div class="loading-row"><div class="spin"></div>Loading…</div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════
-     SCREEN: PRODUCT EDIT / ADD
-═══════════════════════════════ -->
-<div class="screen hidden" id="s-product-edit">
-  <div class="top-bar">
-    <button class="top-back" onclick="go('s-products')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <div class="top-bar-title" id="prod-edit-title">Edit Product</div>
-    <button class="btn btn-dark btn-sm" onclick="saveProduct()">Save</button>
-  </div>
-  <div class="detail-scroll">
-    <input type="hidden" id="pe-id">
-    <div class="form-section" style="margin:12px">
-      <div class="form-section-header">Details</div>
-      <div class="form-row"><span class="fr-label">Name</span><input class="fr-input" id="pe-name" placeholder="Product name" type="text"></div>
-      <div class="form-row"><span class="fr-label">Category</span>
-        <select class="fr-select" id="pe-cat">
-          <option>Canapés</option><option>Starters</option><option>Mains</option><option>Desserts</option><option>Evening Grazing</option><option>Tasting Menu</option><option>Sauces & Dressings</option><option>Stocks & Soups</option><option>Pastry</option><option>Other</option>
-        </select>
+      <div class="login-step-label">Who are you?</div>
+      <div class="staff-grid-login" id="login-staff-grid">
+        <div class="loading"><div class="spin"></div>Loading…</div>
       </div>
-      <div class="form-row"><span class="fr-label">Menu type</span><select class="fr-select" id="pe-menu"></select></div>
-      <div class="form-row"><span class="fr-label">Shelf life</span><input class="fr-input" id="pe-shelf" type="number" min="1" placeholder="Hours" style="width:80px"></div>
-    </div>
-    <div class="form-section" style="margin:0 12px 12px">
-      <div class="form-section-header">Allergens — tap to cycle: Contains → May contain → Clear</div>
-      <div class="chip-wrap" id="pe-chips"></div>
-    </div>
-  </div>
-</div>
 
-<!-- ═══════════════════════════════
-     SCREEN: JOB CODES
-═══════════════════════════════ -->
-<div class="screen hidden" id="s-jobcodes">
-  <div class="top-bar">
-    <button class="top-back" onclick="go('s-manager')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <div class="top-bar-title">Job Codes</div>
-  </div>
-  <div class="detail-scroll">
-    <div class="helper-text">Type the full client name — initials are extracted automatically.</div>
-    <div class="form-section" style="margin:0 12px 12px">
-      <div class="form-section-header">Build a code</div>
-      <div class="form-row"><span class="fr-label">Client name</span><input class="fr-input" id="jc-client" type="text" placeholder="e.g. Douglas Faulconbridge" oninput="buildJC()"></div>
-      <div class="form-row"><span class="fr-label">Event date</span><input class="fr-input" id="jc-date" type="date" oninput="buildJC()"></div>
-      <div class="form-row"><span class="fr-label">Event type</span>
-        <select class="fr-select" id="jc-type" onchange="buildJC()">
-          <option value="TM">TM — Tasting Menu</option><option value="CAN">CAN — Canapés</option><option value="BUF">BUF — Buffet</option><option value="WED">WED — Wedding</option><option value="CORP">CORP — Corporate</option><option value="GAL">GAL — Gala Dinner</option><option value="GRZ">GRZ — Grazing</option><option value="PRIV">PRIV — Private Dining</option><option value="WAK">WAK — Wake</option>
-        </select>
+      <div class="login-step-label">PIN</div>
+      <div class="pin-display" id="pin-display">
+        <div class="pin-dot" id="pd-0"></div>
+        <div class="pin-dot" id="pd-1"></div>
+        <div class="pin-dot" id="pd-2"></div>
+        <div class="pin-dot" id="pd-3"></div>
       </div>
-      <div class="form-row"><span class="fr-label">Description</span><input class="fr-input" id="jc-desc" type="text" placeholder="e.g. Gig at The Garage"></div>
+      <div class="keypad" id="keypad">
+        <button class="key" onclick="kp('1')">1</button>
+        <button class="key" onclick="kp('2')">2</button>
+        <button class="key" onclick="kp('3')">3</button>
+        <button class="key" onclick="kp('4')">4</button>
+        <button class="key" onclick="kp('5')">5</button>
+        <button class="key" onclick="kp('6')">6</button>
+        <button class="key" onclick="kp('7')">7</button>
+        <button class="key" onclick="kp('8')">8</button>
+        <button class="key" onclick="kp('9')">9</button>
+        <button class="key empty"></button>
+        <button class="key" onclick="kp('0')">0</button>
+        <button class="key del" onclick="kpDel()">⌫</button>
+      </div>
+      <button class="login-submit" onclick="doLogin()">Sign in</button>
     </div>
-    <div class="jcb-output">
-      <div class="jcb-label">Generated code</div>
-      <div class="jcb-code" id="jc-output">———</div>
-      <button class="btn btn-dark" onclick="saveJC()">+ Save this code</button>
-    </div>
-    <div class="manager-section-header">Saved codes</div>
-    <div id="jc-list"><div class="loading-row" style="padding:16px"><div class="spin"></div>Loading…</div></div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════
-     SCREEN: STAFF
-═══════════════════════════════ -->
-<div class="screen hidden" id="s-staff">
-  <div class="top-bar">
-    <button class="top-back" onclick="go('s-manager')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <div class="top-bar-title">Staff</div>
-  </div>
-  <div class="detail-scroll">
-    <div class="staff-grid" id="staff-grid"><div class="loading-row" style="padding:16px"><div class="spin"></div>Loading…</div></div>
-    <div class="manager-section-header">Add staff member</div>
-    <div class="form-section" style="margin:0 12px 12px">
-      <div class="form-row"><span class="fr-label">Full name</span><input class="fr-input" id="ns-name" type="text" placeholder="e.g. Sarah Jones"></div>
-      <div class="form-row"><span class="fr-label">PIN</span><input class="fr-input" id="ns-pin" type="text" placeholder="4 digits" maxlength="4" style="font-family:var(--fmono);letter-spacing:.2em"></div>
-    </div>
-    <div class="btn-row"><button class="btn btn-dark" onclick="addStaff()">+ Add to team</button></div>
-  </div>
-</div>
+<!-- ═══════════ APP ═══════════ -->
+<div class="screen" id="s-app">
 
-<!-- ═══════════════════════════════
-     SCREEN: PRINTER
-═══════════════════════════════ -->
-<div class="screen hidden" id="s-printer">
-  <div class="top-bar">
-    <button class="top-back" onclick="go('s-manager')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <div class="top-bar-title">Printer & System</div>
-    <button class="btn btn-outline btn-sm" onclick="checkStatus()">↻ Check</button>
-  </div>
-  <div class="detail-scroll">
-    <div class="manager-section-header">Live status</div>
-    <div class="status-item"><div class="status-dot unk" id="pi-dot"></div><div class="status-text"><strong>Raspberry Pi print server</strong><small id="pi-msg">Tap Check to test</small></div></div>
-    <div class="status-item"><div class="status-dot unk" id="pr-dot"></div><div class="status-text"><strong>Brother QL-820NWBc</strong><small id="pr-msg">Tap Check to test</small></div></div>
-    <div class="manager-section-header">Connection settings</div>
-    <div class="form-section" style="margin:0 12px 12px">
-      <div class="form-row"><span class="fr-label">Printer IP</span><input class="fr-input" id="set-ip" value="192.168.1.127" type="text"></div>
-      <div class="form-row"><span class="fr-label">Roll</span><select class="fr-select"><option>DK-2251 — Black & red</option><option>DK-2205 — Black only</option></select></div>
-      <div class="form-row"><span class="fr-label">Server URL</span><input class="fr-input" id="set-url" value="https://palatable-shack-scallion.ngrok-free.dev/print" type="text"></div>
+  <!-- SIDEBAR (desktop) -->
+  <div class="app-sidebar">
+    <div class="sidebar-brand">
+      <div class="sb-logo">Digby's CPS</div>
+      <div class="sb-name">Kitchen <em>Print</em></div>
     </div>
-    <div class="btn-row">
-      <button class="btn btn-green" onclick="testPrint()">Send test print</button>
-      <button class="btn btn-dark" onclick="saveSettings()">Save settings</button>
+    <div class="sidebar-user" onclick="doLogout()">
+      <div class="su-avatar" id="sb-avatar"></div>
+      <div>
+        <div class="su-name" id="sb-name"></div>
+        <div class="su-role">Tap to sign out</div>
+      </div>
     </div>
-    <div class="manager-section-header">Your setup</div>
-    <div class="form-section" style="margin:0 12px 12px">
-      <div style="padding:14px 16px;font-family:var(--fmono);font-size:12px;color:var(--ink-3);line-height:2.4">
-        <div>Printer &nbsp;· 192.168.1.127</div>
-        <div>Pi &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;· 192.168.1.175:3000</div>
-        <div>Tunnel &nbsp;· palatable-shack-scallion.ngrok-free.dev</div>
-        <div>Roll &nbsp;&nbsp;&nbsp;· DK-2251 black & red</div>
+    <nav class="sidebar-nav">
+      <div class="sn-section">Kitchen</div>
+      <div class="sn-item on" id="sn-wizard" onclick="switchPanel('wizard')">
+        <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Print Label
+      </div>
+      <div class="sn-item" id="sn-queue" onclick="switchPanel('queue')">
+        <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        Print Queue
+      </div>
+      <div class="sn-item" id="sn-history" onclick="switchPanel('history')">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        History
+      </div>
+      <div class="sn-section">Management</div>
+      <div class="sn-item" id="sn-manager" onclick="switchPanel('manager')">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M5.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+        Manage
+      </div>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="sb-signout" onclick="doLogout()">
+        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign out
       </div>
     </div>
   </div>
-</div>
 
-<!-- ═══════════════════════════════
-     SCREEN: CUSTOM LABELS
-═══════════════════════════════ -->
-<div class="screen hidden" id="s-custom">
-  <div class="top-bar">
-    <button class="top-back" onclick="go('s-manager')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <div class="top-bar-title">Custom Labels</div>
-  </div>
-  <div class="detail-scroll">
-    <div class="helper-text">Type anything on each row. Drag the slider to change the text size. Perfect for labelling FLOUR, DRY GOODS, EQUIPMENT.</div>
-    <div id="cl-rows-wrap"></div>
-    <div class="btn-row">
-      <button class="btn btn-outline" onclick="addCLRow()">+ Add row</button>
-      <button class="btn btn-red" onclick="clearCL()">Clear</button>
-    </div>
-    <div class="manager-section-header">Details</div>
-    <div class="form-section" style="margin:0 12px 12px">
-      <div class="form-row"><span class="fr-label">Section</span>
-        <select class="fr-select" id="cl-section">
-          <option value="">— None —</option><option>Canapés</option><option>Starters</option><option>Mains</option><option>Dessert</option><option>Evening Grazing</option><option>Tasting Menu</option>
-        </select>
+  <!-- MAIN -->
+  <div class="app-main">
+
+    <!-- ══ WIZARD PANEL ══ -->
+    <div class="panel on" id="panel-wizard">
+      <div class="top-bar">
+        <div>
+          <div class="top-bar-title">Print a Label</div>
+          <div class="top-bar-sub" id="wizard-sub">Step through each section to build your label</div>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="resetWizard()">Start over</button>
       </div>
-      <div class="form-row"><span class="fr-label">Job code</span><select class="fr-select" id="cl-job"><option value="">— None —</option></select></div>
-      <div class="form-row"><span class="fr-label">Quantity</span><input class="fr-input" id="cl-qty" type="number" value="1" min="1" max="50" style="width:60px"></div>
-    </div>
-    <div class="btn-row">
-      <button class="btn btn-dark" onclick="printCustom()">Print custom label</button>
-    </div>
-    <div class="manager-section-header">Preview</div>
-    <div style="margin:0 12px 20px;background:var(--white);border-radius:14px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);min-height:80px" id="cl-preview">
-      <span style="color:var(--ink-4);font-size:13px;font-style:italic">Add rows above to preview…</span>
-    </div>
-  </div>
-</div>
+      <div class="wizard-layout">
 
-<!-- ═══════════════════════════════
-     SCREEN: MENU TYPES
-═══════════════════════════════ -->
-<div class="screen hidden" id="s-menu-types">
-  <div class="top-bar">
-    <button class="top-back" onclick="go('s-manager')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <div class="top-bar-title">Menu Types</div>
-  </div>
-  <div class="detail-scroll">
-    <div class="helper-text">Tag products by event type. Helps staff find the right items faster. Never prints on labels.</div>
-    <div id="mt-list"></div>
-    <div class="manager-section-header">Add menu type</div>
-    <div class="form-section" style="margin:0 12px 12px">
-      <div class="form-row"><span class="fr-label">Name</span><input class="fr-input" id="new-mt" type="text" placeholder="e.g. Corporate"></div>
+        <!-- Progress steps sidebar -->
+        <div class="wizard-steps">
+          <div class="ws-item active" id="ws-1" onclick="jumpStep(1)">
+            <div class="ws-num" id="wn-1">1</div>
+            <div class="ws-body"><div class="ws-label">Product</div><div class="ws-value" id="wv-1">Select a product</div></div>
+          </div>
+          <div class="ws-item" id="ws-2" onclick="jumpStep(2)">
+            <div class="ws-num" id="wn-2">2</div>
+            <div class="ws-body"><div class="ws-label">Job Code</div><div class="ws-value" id="wv-2">Select a job code</div></div>
+          </div>
+          <div class="ws-item" id="ws-3" onclick="jumpStep(3)">
+            <div class="ws-num" id="wn-3">3</div>
+            <div class="ws-body"><div class="ws-label">Section</div><div class="ws-value" id="wv-3">Select a section</div></div>
+          </div>
+          <div class="ws-item" id="ws-4" onclick="jumpStep(4)">
+            <div class="ws-num" id="wn-4">4</div>
+            <div class="ws-body"><div class="ws-label">Allergens</div><div class="ws-value" id="wv-4">Review allergens</div></div>
+          </div>
+          <div class="ws-item" id="ws-5" onclick="jumpStep(5)">
+            <div class="ws-num" id="wn-5">5</div>
+            <div class="ws-body"><div class="ws-label">Review & Print</div><div class="ws-value" id="wv-5">Confirm and print</div></div>
+          </div>
+        </div>
+
+        <!-- Step content -->
+        <div class="wizard-content">
+
+          <!-- STEP 1: PRODUCT -->
+          <div class="step on" id="step-1">
+            <div class="step-title">What are you labelling?</div>
+            <div class="step-hint">Filter by type or search — tap a product to continue</div>
+
+            <div class="filter-row" id="s1-filters">
+              <div class="filter-chip on" onclick="filterProducts('',this)">All</div>
+            </div>
+
+            <div class="search-bar">
+              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input class="search-input" id="s1-search" type="search" placeholder="Search products…" oninput="onProductSearch(this.value)" autocomplete="off" autocorrect="off">
+              <button class="search-x" id="s1-x" onclick="clearProductSearch()">×</button>
+            </div>
+
+            <div class="product-grid" id="s1-results">
+              <div class="loading"><div class="spin"></div>Loading…</div>
+            </div>
+          </div>
+
+          <!-- STEP 2: JOB CODE -->
+          <div class="step" id="step-2">
+            <div class="step-title">Which event is this for?</div>
+            <div class="step-hint">Select a job code or skip if not needed</div>
+
+            <div class="job-grid" id="s2-jobs"></div>
+
+            <div class="search-bar" style="margin-top:8px">
+              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input class="search-input" id="s2-search" type="search" placeholder="Search job codes…" oninput="onJobSearch(this.value)" autocomplete="off">
+            </div>
+
+            <div class="step-nav">
+              <button class="btn-back" onclick="goStep(1)">← Back</button>
+              <button class="skip-btn" onclick="skipJob()">Skip — no job code →</button>
+            </div>
+          </div>
+
+          <!-- STEP 3: SECTION -->
+          <div class="step" id="step-3">
+            <div class="step-title">Which section?</div>
+            <div class="step-hint">Tap your prep station</div>
+
+            <div class="section-grid">
+              <div class="section-card" onclick="pickSection('Canapés',this)">
+                <div class="sc-icon">🥂</div>
+                <div class="sc-name">Canapés</div>
+              </div>
+              <div class="section-card" onclick="pickSection('Starters',this)">
+                <div class="sc-icon">🥗</div>
+                <div class="sc-name">Starters</div>
+              </div>
+              <div class="section-card" onclick="pickSection('Mains',this)">
+                <div class="sc-icon">🍽️</div>
+                <div class="sc-name">Mains</div>
+              </div>
+              <div class="section-card" onclick="pickSection('Dessert',this)">
+                <div class="sc-icon">🍮</div>
+                <div class="sc-name">Dessert</div>
+              </div>
+              <div class="section-card" onclick="pickSection('Evening Grazing',this)">
+                <div class="sc-icon">🧀</div>
+                <div class="sc-name">Evening Grazing</div>
+              </div>
+              <div class="section-card" onclick="pickSection('Tasting Menu',this)">
+                <div class="sc-icon">⭐</div>
+                <div class="sc-name">Tasting Menu</div>
+              </div>
+            </div>
+
+            <div class="step-nav">
+              <button class="btn-back" onclick="goStep(2)">← Back</button>
+              <button class="skip-btn" onclick="skipSection()">Skip — no section →</button>
+            </div>
+          </div>
+
+          <!-- STEP 4: ALLERGENS -->
+          <div class="step" id="step-4">
+            <div class="step-title">Allergens</div>
+            <div class="step-hint">Auto-loaded from the product — tap to override if needed</div>
+
+            <div class="allergen-legend">
+              <span class="al-leg"><span class="al-leg-dot" style="background:var(--red)"></span>Contains</span>
+              <span class="al-leg"><span class="al-leg-dot" style="background:var(--blue)"></span>May contain</span>
+              <span class="al-leg"><span class="al-leg-dot" style="background:var(--green)"></span>N/A — None</span>
+            </div>
+
+            <div class="allergen-wrap" id="s4-chips"></div>
+
+            <div class="step-nav">
+              <button class="btn-back" onclick="goStep(3)">← Back</button>
+              <button class="btn-next" onclick="goStep(5)">Next →</button>
+            </div>
+          </div>
+
+          <!-- STEP 5: REVIEW & PRINT -->
+          <div class="step" id="step-5">
+            <div class="step-title">Review & Print</div>
+            <div class="step-hint">Check everything — edit any field before printing</div>
+
+            <!-- Allergen summary -->
+            <div class="al-summary clear" id="rv-al-summary">
+              <div class="al-sum-title">Allergens</div>
+              <div class="al-sum-text" id="rv-al-text">No allergens declared</div>
+            </div>
+
+            <!-- Fields -->
+            <div class="review-grid">
+              <div class="review-field">
+                <span class="rf-label">Prep date</span>
+                <input type="date" class="rf-input" id="rv-prep">
+              </div>
+              <div class="review-field">
+                <span class="rf-label">Use by — auto</span>
+                <input type="date" class="rf-input danger" id="rv-useby">
+              </div>
+              <div class="review-field">
+                <span class="rf-label">Prepared by</span>
+                <input type="text" class="rf-input" id="rv-prepby">
+              </div>
+              <div class="review-field">
+                <span class="rf-label">Section</span>
+                <input type="text" class="rf-input" id="rv-section" readonly style="color:var(--ink-3)">
+              </div>
+              <div class="review-field">
+                <span class="rf-label">Job code</span>
+                <input type="text" class="rf-input" id="rv-job" readonly style="color:var(--ink-3)">
+              </div>
+            </div>
+
+            <div class="review-field review-full" style="margin-bottom:20px">
+              <span class="rf-label">Notes — optional, prints on label</span>
+              <textarea class="notes-input" id="rv-notes" placeholder="e.g. Made without alliums · Client nut free…"></textarea>
+            </div>
+
+            <div class="qty-row">
+              <span class="qty-label">Quantity</span>
+              <div class="qty-ctrl">
+                <button class="qty-b" onclick="adjQty(-1)">−</button>
+                <input class="qty-n" id="rv-qty" type="number" value="1" min="1" max="50">
+                <button class="qty-b" onclick="adjQty(1)">+</button>
+              </div>
+            </div>
+
+            <button class="print-btn" id="print-btn" onclick="doPrint()">
+              <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+              Print label
+            </button>
+
+            <div class="step-nav">
+              <button class="btn-back" onclick="goStep(4)">← Back</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
     </div>
-    <div class="btn-row"><button class="btn btn-dark" onclick="addMT()">+ Add</button></div>
-  </div>
-</div>
 
-<!-- ═══════════════════════════════
-     SCREEN: BACKUP
-═══════════════════════════════ -->
-<div class="screen hidden" id="s-backup">
-  <div class="top-bar">
-    <button class="top-back" onclick="go('s-manager')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <div class="top-bar-title">Backup & Export</div>
-  </div>
-  <div class="detail-scroll">
-    <div class="helper-text">Download your data as CSV files. If anything is accidentally deleted, you can restore it via Supabase → Table Editor → Import from CSV.</div>
-    <div class="backup-item"><div class="bi-body"><div class="bi-title">Products</div><div class="bi-sub">All products, allergens and shelf life</div></div><button class="btn btn-outline btn-sm" onclick="exportTbl('products')">Download</button></div>
-    <div class="backup-item"><div class="bi-body"><div class="bi-title">Staff</div><div class="bi-sub">All staff (PINs excluded)</div></div><button class="btn btn-outline btn-sm" onclick="exportTbl('staff')">Download</button></div>
-    <div class="backup-item"><div class="bi-body"><div class="bi-title">Job codes</div><div class="bi-sub">All saved job codes</div></div><button class="btn btn-outline btn-sm" onclick="exportTbl('job_codes')">Download</button></div>
-    <div class="backup-item"><div class="bi-body"><div class="bi-title">Full print history</div><div class="bi-sub">Every label ever printed</div></div><button class="btn btn-outline btn-sm" onclick="exportHistory()">Download</button></div>
-  </div>
-</div>
+    <!-- ══ QUEUE PANEL ══ -->
+    <div class="panel" id="panel-queue">
+      <div class="top-bar">
+        <div class="top-bar-title">Print Queue</div>
+        <span id="queue-count" style="font-size:13px;color:var(--ink-3)"></span>
+      </div>
+      <div class="panel-scroll" id="queue-scroll"></div>
+    </div>
 
-<!-- ═══════════════════════════════
-     SCREEN: AUDIT LOG
-═══════════════════════════════ -->
-<div class="screen hidden" id="s-audit">
-  <div class="top-bar">
-    <button class="top-back" onclick="go('s-manager')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <div class="top-bar-title">Audit Log</div>
-    <button class="btn btn-outline btn-sm" onclick="exportAudit()">Export</button>
-  </div>
-  <div class="detail-scroll" id="audit-list">
-    <div class="helper-text" style="color:var(--ink-4)">Loading…</div>
+    <!-- ══ HISTORY PANEL ══ -->
+    <div class="panel" id="panel-history">
+      <div class="top-bar">
+        <div class="top-bar-title">Print History</div>
+        <button class="btn btn-outline btn-sm" onclick="exportHistory()">Export CSV</button>
+      </div>
+      <div class="hist-filters">
+        <div class="filter-chip on" onclick="histFilter('all',this)">All</div>
+        <div class="filter-chip" onclick="histFilter('me',this)">My labels</div>
+        <div class="filter-chip" onclick="histFilter('today',this)">Today</div>
+      </div>
+      <div class="hist-scroll" id="hist-scroll">
+        <div class="loading" style="padding:24px"><div class="spin"></div>Loading…</div>
+      </div>
+    </div>
+
+    <!-- ══ MANAGER PANEL ══ -->
+    <div class="panel" id="panel-manager" style="position:relative">
+      <div class="top-bar"><div class="top-bar-title">Management</div></div>
+      <div class="manager-scroll">
+        <div class="mgr-section">Products & Events</div>
+        <div class="mgr-item" onclick="openDS('ds-products')">
+          <div class="mgr-icon" style="background:#fef2f2;color:var(--red)"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg></div>
+          <div class="mgr-body"><div class="mgr-title">Products</div><div class="mgr-sub">Allergens, shelf life and categories</div></div>
+          <div class="mgr-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+        </div>
+        <div class="mgr-item" onclick="openDS('ds-menu-types')">
+          <div class="mgr-icon" style="background:var(--amber-bg);color:var(--amber)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+          <div class="mgr-body"><div class="mgr-title">Menu Types</div><div class="mgr-sub">Weddings, Tasting Menus, Wakes…</div></div>
+          <div class="mgr-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+        </div>
+        <div class="mgr-item" onclick="openDS('ds-jobcodes')">
+          <div class="mgr-icon" style="background:var(--blue-bg);color:var(--blue)"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
+          <div class="mgr-body"><div class="mgr-title">Job Codes</div><div class="mgr-sub">Build and manage event codes</div></div>
+          <div class="mgr-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+        </div>
+        <div class="mgr-section">Team</div>
+        <div class="mgr-item" onclick="openDS('ds-staff')">
+          <div class="mgr-icon" style="background:var(--green-bg);color:var(--green)"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <div class="mgr-body"><div class="mgr-title">Staff</div><div class="mgr-sub">Add and manage your kitchen team</div></div>
+          <div class="mgr-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+        </div>
+        <div class="mgr-section">System</div>
+        <div class="mgr-item" onclick="openDS('ds-printer')">
+          <div class="mgr-icon" style="background:var(--stone-100);color:var(--ink-2)"><svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></div>
+          <div class="mgr-body"><div class="mgr-title">Printer & Status</div><div class="mgr-sub">Brother QL · Raspberry Pi · ngrok</div></div>
+          <div class="mgr-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+        </div>
+        <div class="mgr-item" onclick="openDS('ds-custom')">
+          <div class="mgr-icon" style="background:var(--stone-100);color:var(--ink-2)"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+          <div class="mgr-body"><div class="mgr-title">Custom Labels</div><div class="mgr-sub">Freeform labels for storage</div></div>
+          <div class="mgr-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+        </div>
+        <div class="mgr-item" onclick="openDS('ds-backup')">
+          <div class="mgr-icon" style="background:var(--stone-100);color:var(--ink-2)"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+          <div class="mgr-body"><div class="mgr-title">Backup & Export</div><div class="mgr-sub">Download your data as CSV</div></div>
+          <div class="mgr-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+        </div>
+        <div class="mgr-item" id="audit-mgr-item" onclick="openDS('ds-audit')" style="display:none">
+          <div class="mgr-icon" style="background:var(--red-bg);color:var(--red)"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+          <div class="mgr-body"><div class="mgr-title">Audit Log</div><div class="mgr-sub">All admin changes — manager only</div></div>
+          <div class="mgr-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+        </div>
+      </div>
+
+      <!-- DETAIL SCREENS inside manager -->
+      <div class="detail-screen" id="ds-products">
+        <div class="ds-top">
+          <div class="ds-back" onclick="closeDS('ds-products')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div>
+          <div class="ds-title">Products</div>
+          <button class="btn btn-dark btn-sm" onclick="openAddProduct()">+ Add</button>
+        </div>
+        <div style="padding:12px 24px;background:var(--surface);border-bottom:1px solid var(--border)">
+          <input type="search" id="prod-search-admin" style="width:100%;background:var(--bg);border:1.5px solid var(--border-2);border-radius:var(--r-sm);padding:10px 14px;font-family:var(--ff);font-size:15px;outline:none" placeholder="Search products…" oninput="renderProdAdmin(this.value)">
+        </div>
+        <div class="ds-scroll" style="padding:0" id="prod-admin-list"><div class="loading" style="padding:24px"><div class="spin"></div>Loading…</div></div>
+      </div>
+
+      <div class="detail-screen" id="ds-product-edit">
+        <div class="ds-top">
+          <div class="ds-back" onclick="closeDS('ds-product-edit')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div>
+          <div class="ds-title" id="pe-ds-title">Edit Product</div>
+          <button class="btn btn-dark btn-sm" onclick="saveProd()">Save</button>
+        </div>
+        <div class="ds-scroll">
+          <input type="hidden" id="pe-id">
+          <div class="form-section">
+            <div class="form-section-title">Details</div>
+            <div class="form-row"><span class="fr-label">Name</span><input class="fr-input" id="pe-name" type="text"></div>
+            <div class="form-row"><span class="fr-label">Category</span><select class="fr-select" id="pe-cat"><option>Canapés</option><option>Starters</option><option>Mains</option><option>Desserts</option><option>Evening Grazing</option><option>Tasting Menu</option><option>Sauces & Dressings</option><option>Stocks & Soups</option><option>Pastry</option><option>Other</option></select></div>
+            <div class="form-row"><span class="fr-label">Menu type</span><select class="fr-select" id="pe-menu"></select></div>
+            <div class="form-row"><span class="fr-label">Shelf life</span><input class="fr-input" id="pe-shelf" type="number" min="1" style="width:80px"> hours</div>
+          </div>
+          <div class="form-section">
+            <div class="form-section-title">Allergens — tap: Contains → May contain → Clear</div>
+            <div class="chip-wrap" id="pe-chips"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-screen" id="ds-menu-types">
+        <div class="ds-top"><div class="ds-back" onclick="closeDS('ds-menu-types')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div><div class="ds-title">Menu Types</div></div>
+        <div class="ds-scroll">
+          <p class="helper">Tag products by event type. Shows in search filters — never prints on labels.</p>
+          <div id="mt-list-admin" style="margin-bottom:16px"></div>
+          <div class="form-section">
+            <div class="form-section-title">Add menu type</div>
+            <div class="form-row"><span class="fr-label">Name</span><input class="fr-input" id="new-mt" type="text" placeholder="e.g. Corporate"></div>
+          </div>
+          <div class="btn-row"><button class="btn btn-dark" onclick="addMT()">+ Add</button></div>
+        </div>
+      </div>
+
+      <div class="detail-screen" id="ds-jobcodes">
+        <div class="ds-top"><div class="ds-back" onclick="closeDS('ds-jobcodes')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div><div class="ds-title">Job Codes</div></div>
+        <div class="ds-scroll">
+          <p class="helper">Type the client's full name — initials are generated automatically.</p>
+          <div class="jcb">
+            <div class="jcb-row">
+              <div class="jcb-field"><span class="jcb-label">Client full name</span><input class="jcb-input" id="jc-client" type="text" placeholder="e.g. Douglas Faulconbridge" oninput="buildJC()"></div>
+              <div class="jcb-field"><span class="jcb-label">Event date</span><input class="jcb-input" id="jc-date" type="date" oninput="buildJC()"></div>
+            </div>
+            <div class="jcb-row">
+              <div class="jcb-field"><span class="jcb-label">Event type</span>
+                <select class="jcb-input" id="jc-type" onchange="buildJC()">
+                  <option value="TM">TM — Tasting Menu</option><option value="CAN">CAN — Canapés</option><option value="BUF">BUF — Buffet</option><option value="WED">WED — Wedding</option><option value="CORP">CORP — Corporate</option><option value="GAL">GAL — Gala Dinner</option><option value="GRZ">GRZ — Grazing</option><option value="PRIV">PRIV — Private Dining</option><option value="WAK">WAK — Wake</option>
+                </select>
+              </div>
+              <div class="jcb-field"><span class="jcb-label">Description</span><input class="jcb-input" id="jc-desc" type="text" placeholder="e.g. Gig at The Garage"></div>
+            </div>
+            <div class="jcb-label" style="margin-bottom:6px">Generated code</div>
+            <div class="jc-preview-box" id="jc-out">———</div>
+            <button class="btn btn-dark btn-sm" onclick="saveJC()">+ Save code</button>
+          </div>
+          <span class="sec-label">Saved codes</span>
+          <div id="jc-list"><div class="loading"><div class="spin"></div>Loading…</div></div>
+        </div>
+      </div>
+
+      <div class="detail-screen" id="ds-staff">
+        <div class="ds-top"><div class="ds-back" onclick="closeDS('ds-staff')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div><div class="ds-title">Staff</div></div>
+        <div class="ds-scroll">
+          <div class="staff-grid" id="staff-grid-admin"><div class="loading"><div class="spin"></div>Loading…</div></div>
+          <div class="divider"></div>
+          <span class="sec-label">Add staff member</span>
+          <div class="form-section">
+            <div class="form-row"><span class="fr-label">Full name</span><input class="fr-input" id="ns-name" type="text" placeholder="e.g. Sarah Jones"></div>
+            <div class="form-row"><span class="fr-label">PIN</span><input class="fr-input" id="ns-pin" type="text" placeholder="4 digits" maxlength="4" style="font-family:var(--fmono);letter-spacing:.2em"></div>
+          </div>
+          <div class="btn-row"><button class="btn btn-dark" onclick="addStaff()">+ Add to team</button></div>
+        </div>
+      </div>
+
+      <div class="detail-screen" id="ds-printer">
+        <div class="ds-top"><div class="ds-back" onclick="closeDS('ds-printer')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div><div class="ds-title">Printer & System</div><button class="btn btn-outline btn-sm" onclick="checkStatus()">↻ Check</button></div>
+        <div class="ds-scroll">
+          <span class="sec-label">Live status</span>
+          <div class="status-row"><div class="s-dot unk" id="pi-dot"></div><div class="s-text"><strong>Raspberry Pi print server</strong><small id="pi-msg">Tap Check to test</small></div></div>
+          <div class="status-row"><div class="s-dot unk" id="pr-dot"></div><div class="s-text"><strong>Brother QL-820NWBc</strong><small id="pr-msg">Tap Check to test</small></div></div>
+          <div class="divider"></div>
+          <span class="sec-label">Settings</span>
+          <div class="form-section">
+            <div class="form-row"><span class="fr-label">Printer IP</span><input class="fr-input" id="set-ip" value="192.168.1.127"></div>
+            <div class="form-row"><span class="fr-label">Roll</span><select class="fr-select"><option>DK-2251 — Black & red</option><option>DK-2205 — Black only</option></select></div>
+            <div class="form-row"><span class="fr-label">Server URL</span><input class="fr-input" id="set-url" value="https://palatable-shack-scallion.ngrok-free.dev/print"></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-green" onclick="testPrint()">Send test print</button>
+            <button class="btn btn-dark" onclick="saveSettings()">Save settings</button>
+          </div>
+          <div class="divider"></div>
+          <div class="form-section"><div style="padding:14px 16px;font-family:var(--fmono);font-size:12px;color:var(--ink-3);line-height:2.4"><div>Printer · 192.168.1.127</div><div>Pi &nbsp;&nbsp;&nbsp;&nbsp;· 192.168.1.175:3000</div><div>Tunnel · palatable-shack-scallion.ngrok-free.dev</div><div>Roll &nbsp;&nbsp;· DK-2251 black & red</div></div></div>
+        </div>
+      </div>
+
+      <div class="detail-screen" id="ds-custom">
+        <div class="ds-top"><div class="ds-back" onclick="closeDS('ds-custom')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div><div class="ds-title">Custom Labels</div></div>
+        <div class="ds-scroll">
+          <p class="helper">Type anything on each row. Drag the slider to change the text size.</p>
+          <div id="cl-rows"></div>
+          <div class="btn-row">
+            <button class="btn btn-outline btn-sm" onclick="addCLRow()">+ Add row</button>
+            <button class="btn btn-red btn-sm" onclick="clearCL()">Clear all</button>
+          </div>
+          <div class="divider"></div>
+          <div class="form-section">
+            <div class="form-row"><span class="fr-label">Section</span><select class="fr-select" id="cl-sec"><option value="">—</option><option>Canapés</option><option>Starters</option><option>Mains</option><option>Dessert</option><option>Evening Grazing</option><option>Tasting Menu</option></select></div>
+            <div class="form-row"><span class="fr-label">Job code</span><select class="fr-select" id="cl-job"><option value="">—</option></select></div>
+            <div class="form-row"><span class="fr-label">Quantity</span><input class="fr-input" id="cl-qty" type="number" value="1" min="1" max="50" style="width:70px"></div>
+          </div>
+          <div class="btn-row"><button class="btn btn-dark" onclick="printCustom()">Print custom label</button></div>
+          <div class="divider"></div>
+          <span class="sec-label">Preview</span>
+          <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:16px;min-height:80px" id="cl-preview"><span style="color:var(--ink-4);font-size:13px;font-style:italic">Add rows to preview…</span></div>
+        </div>
+      </div>
+
+      <div class="detail-screen" id="ds-backup">
+        <div class="ds-top"><div class="ds-back" onclick="closeDS('ds-backup')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div><div class="ds-title">Backup & Export</div></div>
+        <div class="ds-scroll" style="padding:0">
+          <p class="helper" style="padding:16px 24px 8px">Download your data as CSV. Restore via Supabase → Table Editor → Import from CSV.</p>
+          <div class="backup-row"><div class="br-body"><div class="br-title">Products</div><div class="br-sub">All products, allergens and shelf life</div></div><button class="btn btn-outline btn-sm" onclick="exportTbl('products')">Download</button></div>
+          <div class="backup-row"><div class="br-body"><div class="br-title">Staff</div><div class="br-sub">All staff (PINs excluded)</div></div><button class="btn btn-outline btn-sm" onclick="exportTbl('staff')">Download</button></div>
+          <div class="backup-row"><div class="br-body"><div class="br-title">Job codes</div><div class="br-sub">All saved job codes</div></div><button class="btn btn-outline btn-sm" onclick="exportTbl('job_codes')">Download</button></div>
+          <div class="backup-row"><div class="br-body"><div class="br-title">Print history</div><div class="br-sub">Every label ever printed</div></div><button class="btn btn-outline btn-sm" onclick="exportHistory()">Download</button></div>
+        </div>
+      </div>
+
+      <div class="detail-screen" id="ds-audit">
+        <div class="ds-top"><div class="ds-back" onclick="closeDS('ds-audit')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div><div class="ds-title">Audit Log</div><button class="btn btn-outline btn-sm" onclick="exportAudit()">Export</button></div>
+        <div class="ds-scroll" style="padding:0" id="audit-log"></div>
+      </div>
+
+    </div>
+
+    <!-- MOBILE NAV -->
+    <nav class="mobile-nav">
+      <div class="mn-tabs">
+        <button class="mn-tab on" id="mn-wizard" onclick="switchPanel('wizard')">
+          <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          <span class="mn-tab-lbl">Print</span>
+        </button>
+        <button class="mn-tab" id="mn-queue" onclick="switchPanel('queue')">
+          <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          <span class="mn-tab-lbl">Queue</span>
+        </button>
+        <button class="mn-tab" id="mn-history" onclick="switchPanel('history')">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span class="mn-tab-lbl">History</span>
+        </button>
+        <button class="mn-tab" id="mn-manager" onclick="switchPanel('manager')">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M5.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+          <span class="mn-tab-lbl">Manage</span>
+        </button>
+      </div>
+    </nav>
+
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-/* ══════════════════════════════════════
-   CONFIG
-══════════════════════════════════════ */
+/* ═══════════ CONFIG ═══════════ */
 var DB='https://jaajrllkozknilvmdezt.supabase.co';
 var AK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImphYWpybGxrb3prbmlsdm1kZXp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwMjQxNDAsImV4cCI6MjA5MjYwMDE0MH0.09U5cba3JxRmysrn2X3TxPqr-q6jJE4QhyeKQwEK03M';
-var PRINT='https://palatable-shack-scallion.ngrok-free.dev/print';
-var STATUS='https://palatable-shack-scallion.ngrok-free.dev/status';
+var PRINT_URL='https://palatable-shack-scallion.ngrok-free.dev/print';
+var STATUS_URL='https://palatable-shack-scallion.ngrok-free.dev/status';
 var AL=['Gluten','Crustaceans','Eggs','Fish','Peanuts','Soya','Milk','Nuts','Celery','Mustard','Sesame','Sulphites','Lupin','Molluscs'];
-var COLS=['#7c1d0d','#1e40af','#065f46','#6b21a8','#b45309','#1e3a5f','#7f1d1d','#14532d'];
+var COLS=['#7c1d0d','#1e40af','#065f46','#6b21a8','#b45309','#064e3b','#7f1d1d','#1e3a5f'];
 var MGR='James Brierley',MPIN='1810';
 
-/* ══════════════════════════════════════
-   STATE
-══════════════════════════════════════ */
+/* ═══════════ STATE ═══════════ */
 var U=null,prods=[],jobs=[],staff=[],mts=[],pQueue=[];
-var selProd=null; // currently selected product for printing
-var printCS={c:[],m:[],na:false};
-var peCS={c:[],m:[],na:false}; // product edit chip state
-var clRows=[]; // custom label rows
-var histAll=[],histFilter='all';
-var recentProds=[]; // recently printed products for quick access
+var histAll=[],histMode='all';
+var clRows=[];
+var pinStr='';
+var selStaffIdx=null;
+var peCS={c:[],m:[]};
 
-/* ══════════════════════════════════════
-   SUPABASE
-══════════════════════════════════════ */
+/* Wizard state */
+var W={prod:null,job:null,section:null,al:{c:[],m:[],na:false},step:1};
+
+/* ═══════════ SUPABASE ═══════════ */
 async function sb(method,table,body,qs){
   var r=await fetch(DB+'/rest/v1/'+table+(qs?'?'+qs:''),{
-    method,
-    headers:{'apikey':AK,'Authorization':'Bearer '+AK,'Content-Type':'application/json','Prefer':'return=representation'},
+    method,headers:{'apikey':AK,'Authorization':'Bearer '+AK,'Content-Type':'application/json','Prefer':'return=representation'},
     body:body?JSON.stringify(body):undefined
   });
   if(!r.ok)throw new Error(await r.text());
   try{return await r.json();}catch(e){return[];}
 }
 
-/* ══════════════════════════════════════
-   AUDIT
-══════════════════════════════════════ */
-function alog(action,detail){
-  try{
-    var l=JSON.parse(localStorage.getItem('_a')||'[]');
-    l.unshift({who:U?U.name:'?',action,detail,when:new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})});
-    localStorage.setItem('_a',JSON.stringify(l.slice(0,2000)));
-  }catch(e){}
+/* ═══════════ AUDIT ═══════════ */
+function alog(a,d){
+  try{var l=JSON.parse(localStorage.getItem('_dcps_a')||'[]');l.unshift({who:U?U.name:'?',action:a,detail:d,when:new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})});localStorage.setItem('_dcps_a',JSON.stringify(l.slice(0,2000)));}catch(e){}
 }
 
-/* ══════════════════════════════════════
-   MENU TYPES
-══════════════════════════════════════ */
-function loadMTs(){var s=localStorage.getItem('_mts');mts=s?JSON.parse(s):['Weddings','Tasting Menu','Bespoke','Wakes','Private Dining'];}
-function saveMTs(){localStorage.setItem('_mts',JSON.stringify(mts));}
-function renderMTSel(id){
-  var el=document.getElementById(id);if(!el)return;var c=el.value;
-  el.innerHTML='<option value="">— No menu type —</option>';
-  mts.forEach(t=>{var o=document.createElement('option');o.value=t;o.textContent=t;el.appendChild(o);});
-  el.value=c||'';
+/* ═══════════ MENU TYPES ═══════════ */
+function loadMTs(){var s=localStorage.getItem('_dcps_mts');mts=s?JSON.parse(s):['Weddings','Tasting Menu','Bespoke','Wakes','Private Dining'];}
+function saveMTs(){localStorage.setItem('_dcps_mts',JSON.stringify(mts));}
+function renderMTSel(id){var el=document.getElementById(id);if(!el)return;var c=el.value;el.innerHTML='<option value="">— No menu type —</option>';mts.forEach(t=>{var o=document.createElement('option');o.value=t;o.textContent=t;el.appendChild(o);});el.value=c||'';}
+function renderMTAdmin(){
+  var el=document.getElementById('mt-list-admin');if(!el)return;
+  el.innerHTML=mts.length?mts.map((t,i)=>`<div style="display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-sm);margin-bottom:8px"><span style="flex:1;font-size:15px;font-weight:500">${t}</span><button class="btn btn-red btn-xs" onclick="removeMT(${i})">Remove</button></div>`).join(''):'<p class="helper">No menu types yet</p>';
 }
-function renderMTList(){
-  var el=document.getElementById('mt-list');if(!el)return;
-  el.innerHTML=mts.length?mts.map((t,i)=>`
-    <div class="list-item">
-      <div class="li-body"><div class="li-name">${t}</div></div>
-      <button class="btn btn-red btn-xs" onclick="removeMT(${i})">Remove</button>
-    </div>`).join(''):'<div class="helper-text">No menu types yet</div>';
-}
-function addMT(){
-  var v=document.getElementById('new-mt').value.trim();if(!v){toast('Enter a name','err');return;}
-  mts.push(v);saveMTs();renderMTList();renderMTSel('pe-menu');renderMTSel('print-menu-sel');
-  alog('Added menu type',v);document.getElementById('new-mt').value='';toast(v+' added');
-}
-function removeMT(i){var n=mts[i];mts.splice(i,1);saveMTs();renderMTList();renderMTSel('pe-menu');alog('Removed menu type',n);toast('Removed');}
+function addMT(){var v=document.getElementById('new-mt').value.trim();if(!v){toast('Enter a name','err');return;}mts.push(v);saveMTs();renderMTAdmin();renderMTSel('pe-menu');buildStep1Filters();alog('Added menu type',v);document.getElementById('new-mt').value='';toast(v+' added');}
+function removeMT(i){var n=mts[i];mts.splice(i,1);saveMTs();renderMTAdmin();renderMTSel('pe-menu');buildStep1Filters();alog('Removed menu type',n);toast('Removed');}
 
-/* ══════════════════════════════════════
-   SCREEN NAVIGATION
-══════════════════════════════════════ */
-var _cur='s-login';
-function go(to,back){
-  var from=document.getElementById(_cur);
-  var toEl=document.getElementById(to);
-  if(!toEl)return;
-  from.classList.add('hidden');
-  toEl.classList.remove('hidden');
-  _cur=to;
-  // Side effects
-  if(to==='s-products')renderProductAdmin('');
-  if(to==='s-jobcodes'){renderJCList();buildJC();}
-  if(to==='s-staff')renderStaffGrid();
-  if(to==='s-menu-types')renderMTList();
-  if(to==='s-audit')renderAudit();
-  if(to==='s-custom'){initCLIfNeeded();populateCLJob();}
-}
-function goChef(){go('s-chef');}
-function goQueue(){go('s-queue');renderQueue();}
-function goHistory(){go('s-history');loadHistory();}
-function goManager(){
-  document.getElementById('manager-signed-in-as').textContent='Signed in as '+U.name;
-  go('s-manager');
-}
-function goProducts(){go('s-products');}
-function goPrint_back(){go('s-chef');}
-
-/* ══════════════════════════════════════
-   LOGIN
-══════════════════════════════════════ */
+/* ═══════════ LOGIN ═══════════ */
 async function loadLoginStaff(){
   try{
     staff=await sb('GET','staff','','order=name.asc');
-    var sel=document.getElementById('l-who');
-    sel.innerHTML='<option value="">— Select your name —</option>';
-    staff.forEach((s,i)=>{var o=document.createElement('option');o.value=i;o.textContent=s.name;sel.appendChild(o);});
-  }catch(e){
-    var er=document.getElementById('login-err');
-    er.textContent='Cannot connect to database: '+e.message;er.style.display='block';
-  }
+    var g=document.getElementById('login-staff-grid');
+    g.innerHTML=staff.map((s,i)=>{
+      var col=s.color||COLS[i%COLS.length];
+      var ini=s.initials||(s.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase());
+      return`<div class="staff-card-login" onclick="selectStaff(${i})" id="slc-${i}">
+        <div class="sc-avatar" style="background:${col}30;color:${col}">${ini}</div>
+        <div class="sc-name">${s.name.split(' ')[0]}</div>
+      </div>`;
+    }).join('');
+  }catch(e){showLE('Cannot connect: '+e.message);}
 }
-function login(){
-  var ui=document.getElementById('l-who').value;
-  var pin=document.getElementById('l-pin').value;
-  if(!ui){showLE('Select your name.');return;}
-  var s=staff[+ui];
-  if(!s||pin!==s.pin){showLE('Incorrect PIN. Try again.');return;}
-  U=s;U.isManager=(s.name===MGR&&pin===MPIN);
-  if(U.isManager)document.getElementById('audit-menu-item').style.display='flex';
-  go('s-chef');
+
+function selectStaff(i){
+  selStaffIdx=i;pinStr='';updatePinDisplay();
+  document.querySelectorAll('.staff-card-login').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('slc-'+i).classList.add('selected');
+}
+
+var pinBuf='';
+function kp(v){
+  if(pinBuf.length>=4)return;
+  pinBuf+=v;updatePinDisplay();
+  if(pinBuf.length===4)setTimeout(doLogin,120);
+}
+function kpDel(){pinBuf=pinBuf.slice(0,-1);updatePinDisplay();}
+function updatePinDisplay(){
+  for(var i=0;i<4;i++){var d=document.getElementById('pd-'+i);if(d)d.className='pin-dot'+(i<pinBuf.length?' filled':'');}
+}
+
+// Also accept keyboard input
+document.addEventListener('keydown',function(e){
+  if(document.getElementById('s-login').classList.contains('active')){
+    if(e.key>='0'&&e.key<='9')kp(e.key);
+    else if(e.key==='Backspace')kpDel();
+    else if(e.key==='Enter')doLogin();
+  }
+});
+
+function doLogin(){
+  if(selStaffIdx===null){showLE('Tap your name first.');pinBuf='';updatePinDisplay();return;}
+  var s=staff[selStaffIdx];
+  if(pinBuf!==s.pin){showLE('Incorrect PIN.');pinBuf='';updatePinDisplay();return;}
+  U=s;U.isManager=(s.name===MGR&&pinBuf===MPIN);
+  if(U.isManager){document.getElementById('audit-mgr-item').style.display='flex';}
+  document.getElementById('s-login').classList.remove('active');
+  document.getElementById('s-app').classList.add('active');
   boot();
 }
 function showLE(m){var e=document.getElementById('login-err');e.textContent=m;e.style.display='block';setTimeout(()=>e.style.display='none',3000);}
-document.getElementById('l-pin').addEventListener('keydown',e=>{if(e.key==='Enter')login();});
-function logout(){if(!confirm('Sign out?'))return;location.reload();}
+function doLogout(){if(!confirm('Sign out?'))return;location.reload();}
 
-/* ══════════════════════════════════════
-   BOOT
-══════════════════════════════════════ */
+/* ═══════════ BOOT ═══════════ */
 async function boot(){
   loadMTs();
-  // Set avatar
   var col=U.color||COLS[0];
   var ini=U.initials||(U.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase());
-  var av=document.getElementById('top-avatar');
-  av.textContent=ini;av.style.background=col+'22';av.style.color=col;av.style.border='2px solid '+col+'44';
-  document.getElementById('top-uname').textContent=U.name.split(' ')[0];
-  // Load data
+  var av=document.getElementById('sb-avatar');
+  av.textContent=ini;av.style.background=col+'30';av.style.color=col;av.style.border='2px solid '+col+'60';
+  document.getElementById('sb-name').textContent=U.name;
   await Promise.all([loadProds(),loadJobs()]);
-  // Show home
-  showHome();
+  buildStep1Filters();
+  renderStep1('');
+  renderStep2Jobs('');
 }
 
-/* ══════════════════════════════════════
-   HOME (CHEF SEARCH)
-══════════════════════════════════════ */
-function showHome(){
-  renderHome('');
+/* ═══════════ PANEL NAVIGATION ═══════════ */
+function switchPanel(id){
+  ['wizard','queue','history','manager'].forEach(p=>{
+    document.getElementById('panel-'+p).classList.toggle('on',p===id);
+    var sn=document.getElementById('sn-'+p);if(sn)sn.classList.toggle('on',p===id);
+    var mn=document.getElementById('mn-'+p);if(mn)mn.classList.toggle('on',p===id);
+  });
+  if(id==='queue')renderQueue();
+  if(id==='history')loadHistory();
 }
-function renderHome(q){
-  var el=document.getElementById('chef-results');
-  if(!q){
-    // Show recently printed + categories
-    var html='';
-    if(recentProds.length){
-      html+='<div class="chef-section-label">Recently printed</div>';
-      recentProds.slice(0,5).forEach(p=>{
-        html+=`<div class="recent-prod" onclick="selectProd(${p.id})">
-          <div style="flex:1">
-            <div class="recent-prod-name">${p.name}</div>
-            <div class="recent-prod-sub">${p.category}${p.menu_type?' · '+p.menu_type:''}</div>
-          </div>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--ink-4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </div>`;
-      });
-    }
-    html+='<div class="chef-section-label">All products</div>';
-    prods.forEach(p=>{
-      var al=p.contains?p.contains.split(',').slice(0,2).map(x=>x.trim()).join(', '):'';
-      html+=`<div class="prod-result" onclick="selectProd(${p.id})">
-        <div class="prod-result-left">
-          <div class="prod-result-name">${p.name}</div>
-          <div class="prod-result-sub">${al||'No allergens'} · ${p.shelf_life_hours}h shelf life</div>
-          <div class="prod-result-tags">
-            <span class="ptag">${p.category}</span>
-            ${p.menu_type?`<span class="ptag mt">${p.menu_type}</span>`:''}
-            ${p.contains?`<span class="ptag al">⚠ Allergens</span>`:''}
-          </div>
-        </div>
-        <div class="prod-result-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
-      </div>`;
-    });
-    if(!prods.length)html='<div class="chef-empty"><h2>No products loaded</h2><p>Go to Manage → Products to add your menu items</p></div>';
-    el.innerHTML=html;
-    return;
+
+/* ═══════════ DETAIL SCREENS ═══════════ */
+function openDS(id){
+  document.getElementById(id).classList.add('open');
+  if(id==='ds-products')renderProdAdmin('');
+  if(id==='ds-staff')renderStaffAdmin();
+  if(id==='ds-jobcodes'){renderJCList();buildJC();}
+  if(id==='ds-menu-types')renderMTAdmin();
+  if(id==='ds-audit')renderAudit();
+  if(id==='ds-custom'){initCLIfNeeded();populateCLJob();}
+}
+function closeDS(id){document.getElementById(id).classList.remove('open');}
+
+/* ═══════════ WIZARD ═══════════ */
+function goStep(n){
+  // Validate going forward
+  if(n>1&&!W.prod){toast('Select a product first','err');return;}
+  W.step=n;
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('on'));
+  document.getElementById('step-'+n).classList.add('on');
+  // Update sidebar
+  for(var i=1;i<=5;i++){
+    var ws=document.getElementById('ws-'+i);
+    ws.classList.toggle('active',i===n);
+    ws.classList.toggle('done',i<n);
+    document.getElementById('wn-'+i).textContent=i<n?'✓':i;
   }
-  var ql=q.toLowerCase();
-  var list=prods.filter(p=>p.name.toLowerCase().includes(ql)||p.category.toLowerCase().includes(ql)||(p.menu_type&&p.menu_type.toLowerCase().includes(ql)));
-  if(!list.length){el.innerHTML='<div class="chef-empty"><h2>Nothing found</h2><p>Try a different search, or add this product in Manage → Products</p></div>';return;}
+  if(n===5)buildReview();
+  document.querySelector('.wizard-content').scrollTop=0;
+}
+
+function jumpStep(n){if(n<=W.step||W.prod)goStep(n);}
+
+function resetWizard(){
+  W={prod:null,job:null,section:null,al:{c:[],m:[],na:false},step:1};
+  document.querySelectorAll('#step-2 .job-card').forEach(c=>c.classList.remove('selected'));
+  document.querySelectorAll('#step-3 .section-card').forEach(c=>c.classList.remove('selected'));
+  for(var i=1;i<=5;i++){
+    document.getElementById('wv-'+i).textContent=['Select a product','Select a job code','Select a section','Review allergens','Confirm and print'][i-1];
+    document.getElementById('ws-'+i).classList.remove('done');
+    document.getElementById('wn-'+i).textContent=i;
+  }
+  clearProductSearch();
+  goStep(1);
+}
+
+/* STEP 1 */
+function buildStep1Filters(){
+  var el=document.getElementById('s1-filters');if(!el)return;
+  var all=['All',...new Set([...mts,...prods.map(p=>p.category)])].filter(Boolean);
+  el.innerHTML=all.map((f,i)=>`<div class="filter-chip${i===0?' on':''}" onclick="filterProducts('${f==='All'?'':f}',this)">${f}</div>`).join('');
+}
+function filterProducts(filter,el){
+  document.querySelectorAll('#s1-filters .filter-chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('s1-search').value='';
+  document.getElementById('s1-x').style.display='none';
+  renderStep1('',filter);
+}
+function onProductSearch(v){
+  document.getElementById('s1-x').style.display=v?'block':'none';
+  renderStep1(v,'');
+  if(v){document.querySelectorAll('#s1-filters .filter-chip').forEach(c=>c.classList.remove('on'));document.querySelector('#s1-filters .filter-chip').classList.add('on');}
+}
+function clearProductSearch(){
+  document.getElementById('s1-search').value='';
+  document.getElementById('s1-x').style.display='none';
+  renderStep1('','');
+  document.querySelectorAll('#s1-filters .filter-chip').forEach((c,i)=>c.classList.toggle('on',i===0));
+}
+function renderStep1(q,filter){
+  var el=document.getElementById('s1-results');if(!el)return;
+  var list=prods;
+  if(filter)list=list.filter(p=>p.category===filter||p.menu_type===filter);
+  if(q)list=list.filter(p=>p.name.toLowerCase().includes(q.toLowerCase())||p.category.toLowerCase().includes(q.toLowerCase())||(p.menu_type&&p.menu_type.toLowerCase().includes(q.toLowerCase())));
+  if(!list.length){el.innerHTML='<div style="grid-column:1/-1;color:var(--ink-4);padding:20px;font-size:14px">No products found</div>';return;}
   el.innerHTML=list.map(p=>{
-    var al=p.contains?p.contains.split(',').slice(0,3).map(x=>x.trim()).join(', ')+'':'';
-    return`<div class="prod-result" onclick="selectProd(${p.id})">
-      <div class="prod-result-left">
-        <div class="prod-result-name">${p.name}</div>
-        <div class="prod-result-sub">${al||'No allergens'} · ${p.shelf_life_hours}h</div>
-        <div class="prod-result-tags">
-          <span class="ptag">${p.category}</span>
-          ${p.menu_type?`<span class="ptag mt">${p.menu_type}</span>`:''}
-          ${p.contains?`<span class="ptag al">⚠ Allergens</span>`:''}
-        </div>
+    var al=p.contains?p.contains.split(',').slice(0,2).map(x=>x.trim()).join(', '):'';
+    return`<div class="product-card" onclick="pickProduct(${p.id})">
+      <div class="pc-cat">${p.category}</div>
+      <div class="pc-name">${p.name}</div>
+      <div class="pc-tags">
+        ${p.menu_type?`<span class="pc-tag mt">${p.menu_type}</span>`:''}
+        ${p.contains?`<span class="pc-tag al">⚠ Allergens</span>`:''}
+        <span class="pc-tag">${p.shelf_life_hours}h</span>
       </div>
-      <div class="prod-result-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
     </div>`;
   }).join('');
 }
-function onSearch(v){
-  document.getElementById('chef-x').style.display=v?'block':'none';
-  renderHome(v);
-}
-function clearSearch(){
-  document.getElementById('chef-search').value='';
-  document.getElementById('chef-x').style.display='none';
-  renderHome('');
+
+function pickProduct(id){
+  W.prod=prods.find(p=>p.id==id);if(!W.prod)return;
+  // Load allergens from product
+  var c=W.prod.contains?W.prod.contains.split(',').map(x=>x.trim()).filter(Boolean):[];
+  var m=W.prod.may_contain?W.prod.may_contain.split(',').map(x=>x.trim()).filter(Boolean):[];
+  W.al={c:[...c],m:[...m],na:false};
+  document.getElementById('wv-1').textContent=W.prod.name;
+  buildAllergenChips();
+  goStep(2);
 }
 
-/* ══════════════════════════════════════
-   SELECT PRODUCT → PRINT SCREEN
-══════════════════════════════════════ */
-function selectProd(id){
-  selProd=prods.find(p=>p.id==id);
-  if(!selProd)return;
-  buildPrintScreen();
-  go('s-print');
+/* STEP 2 */
+function renderStep2Jobs(q){
+  var el=document.getElementById('s2-jobs');if(!el)return;
+  var list=q?jobs.filter(j=>j.code.toLowerCase().includes(q)||j.description.toLowerCase().includes(q)):jobs.slice(0,8);
+  if(!list.length){el.innerHTML='<div style="grid-column:1/-1;color:var(--ink-4);font-size:14px">No job codes found</div>';return;}
+  el.innerHTML=list.map(j=>`<div class="job-card${W.job&&W.job.code===j.code?' selected':''}" onclick="pickJob('${j.code}','${j.description.replace(/'/g,"\\'")}')">
+    <div class="jc-code">${j.code}</div>
+    <div class="jc-desc">${j.description}</div>
+  </div>`).join('');
 }
-function buildPrintScreen(){
-  var p=selProd;
-  var today=new Date().toISOString().split('T')[0];
-  var useby='';
-  try{var d=new Date(today+'T00:00:00');d.setHours(d.getHours()+parseInt(p.shelf_life_hours));useby=d.toISOString().split('T')[0];}catch(e){}
-  // Allergens
-  var c=p.contains?p.contains.split(',').map(x=>x.trim()).filter(Boolean):[];
-  var m=p.may_contain?p.may_contain.split(',').map(x=>x.trim()).filter(Boolean):[];
-  printCS={c:[...c],m:[...m],na:false};
-  document.getElementById('print-top-title').textContent=p.name;
-  document.getElementById('print-qty').value=1;
-  // Build sections for job selects
-  var secOpts=['','Canapés','Starters','Mains','Dessert','Evening Grazing','Tasting Menu'].map(s=>`<option value="${s}">${s||'— No section —'}</option>`).join('');
-  var jobOpts='<option value="">— No job code —</option>'+jobs.map(j=>`<option value="${j.code}">${j.code} · ${j.description}</option>`).join('');
-  document.getElementById('print-body').innerHTML=`
-    <div class="print-product-header">
-      <div class="print-product-name">${p.name}</div>
-      <div class="print-product-meta">${p.category}${p.menu_type?' · '+p.menu_type:''} · ${p.shelf_life_hours}h shelf life</div>
-    </div>
-    <div class="print-card">
-      <div class="print-card-header">Dates</div>
-      <div class="print-field-row">
-        <span class="pfl">Prep date</span>
-        <div class="pfv"><input class="pf-input" id="pf-prep" type="date" value="${today}" onchange="calcUseby()"></div>
-      </div>
-      <div class="print-field-row">
-        <span class="pfl">Use by</span>
-        <div class="pfv"><input class="pf-input" id="pf-useby" type="date" value="${useby}" readonly></div>
-      </div>
-    </div>
-    <div class="print-card">
-      <div class="print-card-header">Details</div>
-      <div class="print-field-row">
-        <span class="pfl">Section</span>
-        <div class="pfv"><select class="pf-select" id="pf-section">${secOpts}</select></div>
-      </div>
-      <div class="print-field-row">
-        <span class="pfl">Job code</span>
-        <div class="pfv"><select class="pf-select" id="pf-job">${jobOpts}</select></div>
-      </div>
-      <div class="print-field-row">
-        <span class="pfl">Prep by</span>
-        <div class="pfv"><input class="pf-input" type="text" value="${U.name}" readonly style="color:var(--ink-3)"></div>
-      </div>
-    </div>
-    <div class="allergen-card">
-      <div class="allergen-card-top">
-        <span class="allergen-card-title">Allergens</span>
-        <div class="allergen-legend">
-          <span class="al-leg"><span class="al-leg-dot" style="background:var(--red)"></span>Contains</span>
-          <span class="al-leg"><span class="al-leg-dot" style="background:var(--blue)"></span>May contain</span>
-        </div>
-      </div>
-      <div class="allergen-chips-wrap" id="print-achips"></div>
-    </div>
-    <div class="notes-card">
-      <textarea class="notes-textarea" id="pf-notes" placeholder="Notes — optional, prints on label. e.g. Made without alliums · Client nut free…" rows="3"></textarea>
-    </div>
-  `;
-  buildAChips('print-achips','print',c,m,false);
+function onJobSearch(v){renderStep2Jobs(v.toLowerCase());}
+function pickJob(code,desc){
+  W.job={code,description:desc};
+  document.querySelectorAll('.job-card').forEach(c=>c.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  document.getElementById('wv-2').textContent=code;
+  setTimeout(()=>goStep(3),200);
 }
-function calcUseby(){
-  if(!selProd)return;
-  var prep=document.getElementById('pf-prep').value;
-  if(prep){var d=new Date(prep+'T00:00:00');d.setHours(d.getHours()+parseInt(selProd.shelf_life_hours));document.getElementById('pf-useby').value=d.toISOString().split('T')[0];}
-}
+function skipJob(){W.job=null;document.getElementById('wv-2').textContent='No job code';goStep(3);}
 
-/* ══════════════════════════════════════
-   ALLERGEN CHIPS
-══════════════════════════════════════ */
-function buildAChips(cid,mode,contains,may,naOn){
-  var el=document.getElementById(cid);if(!el)return;el.innerHTML='';
-  var state=mode==='print'?printCS:peCS;
-  // N/A
+/* STEP 3 */
+function pickSection(name,el){
+  W.section=name;
+  document.querySelectorAll('.section-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('wv-3').textContent=name;
+  setTimeout(()=>goStep(4),200);
+}
+function skipSection(){W.section=null;document.getElementById('wv-4').textContent='No section';goStep(4);}
+
+/* STEP 4 ALLERGENS */
+function buildAllergenChips(){
+  var el=document.getElementById('s4-chips');if(!el)return;el.innerHTML='';
+  // N/A chip
   var na=document.createElement('div');
-  na.className='achip na'+(naOn?' na':'');na.textContent='N/A — No allergens';
-  if(naOn)na.classList.add('na');
+  na.className='achip na-chip'+(W.al.na?' na':'');
+  na.textContent='N/A — No allergens';
   na.onclick=function(){
-    state.na=!state.na;
-    if(state.na){
-      state.c=[];state.m=[];
-      el.querySelectorAll('.achip:not(.na-chip)').forEach(c=>{c.classList.remove('contains','may');c.classList.add('locked');c.dataset.s='none';});
-      na.classList.add('na');
-    }else{
-      el.querySelectorAll('.achip:not(.na-chip)').forEach(c=>c.classList.remove('locked'));
-      na.classList.remove('na');
-    }
+    W.al.na=!W.al.na;
+    if(W.al.na){W.al.c=[];W.al.m=[];el.querySelectorAll('.achip:not(.na-chip)').forEach(c=>{c.classList.remove('contains','may');c.classList.add('locked');c.dataset.s='none';});}
+    else{el.querySelectorAll('.achip:not(.na-chip)').forEach(c=>c.classList.remove('locked'));}
+    na.classList.toggle('na-chip',true);
+    na.style.background=W.al.na?'var(--green)':'';
+    na.style.color=W.al.na?'#fff':'';
+    na.style.borderColor=W.al.na?'var(--green)':'';
   };
-  na.dataset.naChip='1';
+  if(W.al.na){na.style.background='var(--green)';na.style.color='#fff';na.style.borderColor='var(--green)';}
   el.appendChild(na);
   AL.forEach(a=>{
     var ch=document.createElement('div');ch.className='achip';ch.textContent=a;ch.dataset.s='none';
-    if(naOn){ch.classList.add('locked');}
-    else if(contains&&contains.includes(a)){ch.dataset.s='contains';ch.classList.add('contains');}
-    else if(may&&may.includes(a)){ch.dataset.s='may';ch.classList.add('may');}
+    if(W.al.na)ch.classList.add('locked');
+    else if(W.al.c.includes(a)){ch.dataset.s='contains';ch.classList.add('contains');}
+    else if(W.al.m.includes(a)){ch.dataset.s='may';ch.classList.add('may');}
     ch.onclick=function(){
       if(ch.classList.contains('locked'))return;
       var s=ch.dataset.s;
       if(s==='none'){ch.dataset.s='contains';ch.classList.add('contains');ch.classList.remove('may');}
       else if(s==='contains'){ch.dataset.s='may';ch.classList.remove('contains');ch.classList.add('may');}
       else{ch.dataset.s='none';ch.classList.remove('contains','may');}
-      syncAC(cid,mode);
+      W.al.c=[];W.al.m=[];
+      el.querySelectorAll('.achip:not(.na-chip)').forEach(c=>{if(c.dataset.s==='contains')W.al.c.push(c.textContent);if(c.dataset.s==='may')W.al.m.push(c.textContent);});
     };
     el.appendChild(ch);
   });
-}
-function syncAC(cid,mode){
-  var state=mode==='print'?printCS:peCS;
-  state.c=[];state.m=[];
-  document.querySelectorAll('#'+cid+' .achip:not([data-na-chip])').forEach(ch=>{
-    if(ch.dataset.s==='contains')state.c.push(ch.textContent);
-    if(ch.dataset.s==='may')state.m.push(ch.textContent);
-  });
+  document.getElementById('wv-4').textContent=W.al.na?'N/A':(W.al.c.length||W.al.m.length)?W.al.c.slice(0,2).join(', '):'No allergens';
 }
 
-/* ══════════════════════════════════════
-   PRINT
-══════════════════════════════════════ */
-function adjQ(d){var el=document.getElementById('print-qty');el.value=Math.max(1,Math.min(50,(parseInt(el.value)||1)+d));}
+/* STEP 5 REVIEW */
+function buildReview(){
+  var today=new Date().toISOString().split('T')[0];
+  document.getElementById('rv-prep').value=today;
+  var useby='';
+  if(W.prod){try{var d=new Date(today+'T00:00:00');d.setHours(d.getHours()+parseInt(W.prod.shelf_life_hours));useby=d.toISOString().split('T')[0];}catch(e){}}
+  document.getElementById('rv-useby').value=useby;
+  document.getElementById('rv-prepby').value=U.name;
+  document.getElementById('rv-section').value=W.section||'';
+  document.getElementById('rv-job').value=W.job?W.job.code:'';
+  document.getElementById('rv-notes').value='';
+  document.getElementById('rv-qty').value=1;
+  // Allergen summary
+  var sum=document.getElementById('rv-al-summary');
+  var txt=document.getElementById('rv-al-text');
+  if(W.al.na){sum.className='al-summary no-al';txt.textContent='No allergens — N/A';}
+  else if(W.al.c.length||W.al.m.length){
+    sum.className='al-summary has-al';
+    var t='';if(W.al.c.length)t+='Contains: '+W.al.c.join(', ');
+    if(W.al.m.length)t+=(t?'\n':'')+'May contain: '+W.al.m.join(', ');
+    txt.textContent=t;txt.style.whiteSpace='pre-line';
+  }else{sum.className='al-summary clear';txt.textContent='No allergens declared';}
+  document.getElementById('wv-5').textContent='Ready to print';
+}
 
+function adjQty(d){var el=document.getElementById('rv-qty');el.value=Math.max(1,Math.min(50,(parseInt(el.value)||1)+d));}
+
+/* ═══════════ PRINT ═══════════ */
 async function doPrint(){
-  var btn=document.getElementById('big-print');
-  btn.disabled=true;btn.textContent='Sending…';
-  syncAC('print-achips','print');
+  var btn=document.getElementById('print-btn');
+  btn.disabled=true;
+  btn.innerHTML='<div class="spin" style="border-top-color:#fff;width:18px;height:18px;border-width:2px"></div> Sending…';
+
   var now=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-  var notes=document.getElementById('pf-notes')?.value.trim()||'';
+  var notes=document.getElementById('rv-notes').value.trim();
   var job={
     localId:Date.now().toString(),status:'pending',
-    product_name:selProd.name,staff_name:U.name,
-    section:document.getElementById('pf-section')?.value||null,
-    job_code:document.getElementById('pf-job')?.value||null,
-    quantity:parseInt(document.getElementById('print-qty').value)||1,
-    date_prepped:document.getElementById('pf-prep')?.value,
-    date_useby:document.getElementById('pf-useby')?.value,
-    contains:printCS.na?null:(printCS.c.join(', ')||null),
-    may_contain:printCS.na?null:(printCS.m.join(', ')||null),
-    no_allergens:printCS.na,
+    product_name:W.prod.name,
+    staff_name:document.getElementById('rv-prepby').value||U.name,
+    section:W.section||null,
+    job_code:W.job?W.job.code:null,
+    quantity:parseInt(document.getElementById('rv-qty').value)||1,
+    date_prepped:document.getElementById('rv-prep').value,
+    date_useby:document.getElementById('rv-useby').value,
+    contains:W.al.na?null:(W.al.c.join(', ')||null),
+    may_contain:W.al.na?null:(W.al.m.join(', ')||null),
+    no_allergens:W.al.na,
     notes:notes||null,printed_at:now
   };
-  pQueue.unshift(job);updateQueueBadge();
+
+  pQueue.unshift(job);
+
   try{
-    await sb('POST','print_jobs',{product_name:job.product_name,staff_name:job.staff_name,section:job.section,job_code:job.job_code,quantity:job.quantity,date_prepped:job.date_prepped,date_useby:job.date_useby,contains:job.contains,may_contain:job.may_contain,notes:job.notes,printed_at:job.printed_at},'');
+    await sb('POST','print_jobs',{
+      product_name:job.product_name,staff_name:job.staff_name,
+      section:job.section,job_code:job.job_code,quantity:job.quantity,
+      date_prepped:job.date_prepped,date_useby:job.date_useby,
+      contains:job.contains,may_contain:job.may_contain,
+      notes:job.notes,printed_at:job.printed_at
+    },'');
     var ok=await sendToPI(job);
     job.status=ok?'printed':'failed';
-    updateQueueBadge();
-    // Add to recent
-    if(!recentProds.find(p=>p.id===selProd.id))recentProds.unshift(selProd);
-    if(recentProds.length>8)recentProds=recentProds.slice(0,8);
-    // Show confirm screen
-    showConfirm(job,ok);
+    toast(ok?(job.quantity+' label'+(job.quantity>1?'s':'')+' printed ✓'):'Saved — check printer connection',ok?'ok':'err');
   }catch(e){
     job.status='failed';
-    updateQueueBadge();
     toast('Error: '+e.message,'err');
-    btn.disabled=false;
-    btn.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Print label';
   }
+
+  // Reset button and wizard for next label
+  btn.disabled=false;
+  btn.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Print label';
+  resetWizard();
 }
 
 async function sendToPI(job){
-  try{
-    var r=await fetch(PRINT,{method:'POST',headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'true'},body:JSON.stringify(job),signal:AbortSignal.timeout(15000)});
-    var d=await r.json();return d.success;
-  }catch(e){return false;}
+  try{var r=await fetch(PRINT_URL,{method:'POST',headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'true'},body:JSON.stringify(job),signal:AbortSignal.timeout(15000)});var d=await r.json();return d.success;}
+  catch(e){return false;}
 }
 
-function showConfirm(job,ok){
-  var sc=document.getElementById('s-confirm');
-  document.getElementById('confirm-product').textContent=job.product_name;
-  var qty=job.quantity;
-  if(ok){
-    document.getElementById('confirm-detail').textContent=qty+' label'+(qty>1?'s':'')+' printed\nPrepared by '+job.staff_name+' · '+job.printed_at;
-    sc.querySelector('.confirm-tick').style.background='var(--green-bg)';
-    sc.querySelector('.confirm-tick').style.borderColor='var(--green-border)';
-    sc.querySelector('.confirm-tick svg').style.stroke='var(--green)';
-  }else{
-    document.getElementById('confirm-detail').textContent='Saved to queue — printer may be offline\nCheck System Status in Manage';
-    sc.querySelector('.confirm-tick').style.background='var(--amber-bg)';
-    sc.querySelector('.confirm-tick').style.borderColor='var(--amber-border)';
-    sc.querySelector('.confirm-tick svg').style.stroke='var(--amber)';
-  }
-  go('s-confirm');
-}
-function printAgain(){go('s-print');}
-function confirmDone(){clearSearch();go('s-chef');}
-
-/* ══════════════════════════════════════
-   QUEUE
-══════════════════════════════════════ */
-function updateQueueBadge(){
-  var n=pQueue.filter(j=>j.status==='pending').length;
-  ['queue-badge','queue-badge-2'].forEach(id=>{
-    var el=document.getElementById(id);if(!el)return;
-    el.textContent=n||'';el.style.display=n?'flex':'none';
-  });
-}
+/* ═══════════ QUEUE ═══════════ */
 function renderQueue(){
   var el=document.getElementById('queue-scroll');
   var pending=pQueue.filter(j=>j.status==='pending');
-  if(!pending.length){
-    el.innerHTML='<div class="queue-empty-wrap"><svg class="queue-empty-icon" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg><h2>Queue is clear</h2><p>Print jobs appear here when sent</p></div>';
-    return;
-  }
-  el.innerHTML=pending.map(j=>`
-    <div class="qcard">
-      <div class="qcard-top">
-        <span class="qcard-name">${j.product_name}</span>
-        <span class="qbadge qb-pending">Pending</span>
-      </div>
-      <div class="qcard-meta">
-        <span>👤 ${j.staff_name}</span>
-        ${j.job_code?`<span style="font-family:var(--fmono);font-size:12px">${j.job_code}</span>`:''}
-        <span>×${j.quantity}</span>
-        ${j.date_useby?`<span>Use by: ${fd(j.date_useby)}</span>`:''}
-        <span style="font-family:var(--fmono);font-size:11px">${j.printed_at}</span>
-      </div>
-      ${j.notes?`<div class="qcard-notes">📝 ${j.notes}</div>`:''}
-      <div class="qcard-actions">
-        <button class="btn btn-outline btn-sm" onclick="reprQueue('${j.localId}')">Reprint</button>
-        <button class="btn btn-red btn-sm" onclick="cancelQ('${j.localId}')">Cancel</button>
-      </div>
-    </div>`).join('');
+  document.getElementById('queue-count').textContent=pending.length?pending.length+' pending':'';
+  if(!pending.length){el.innerHTML='<div class="queue-empty"><svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg><h2>Queue is clear</h2><p>Jobs appear here when sent to the printer</p></div>';return;}
+  el.innerHTML=pending.map(j=>`<div class="qcard">
+    <div class="qcard-top"><span class="qcard-name">${j.product_name}</span><span class="qbadge qb-p">Pending</span></div>
+    <div class="qcard-meta"><span>👤 ${j.staff_name}</span>${j.job_code?`<span style="font-family:var(--fmono);font-size:12px">${j.job_code}</span>`:''}<span>×${j.quantity}</span><span style="font-family:var(--fmono);font-size:11px">${j.printed_at}</span></div>
+    ${j.notes?`<div style="font-size:13px;color:var(--amber);background:var(--amber-bg);border-radius:6px;padding:6px 10px;margin-bottom:10px;font-style:italic">📝 ${j.notes}</div>`:''}
+    <div class="qcard-actions">
+      <button class="btn btn-red btn-sm" onclick="cancelQ('${j.localId}')">Cancel</button>
+    </div>
+  </div>`).join('');
 }
-function cancelQ(lid){
-  if(!confirm('Cancel this job?'))return;
-  pQueue=pQueue.filter(j=>j.localId!==lid);
-  updateQueueBadge();renderQueue();toast('Cancelled');
-}
-function reprQueue(lid){
-  var j=pQueue.find(x=>x.localId===lid);if(!j)return;
-  var p=prods.find(x=>x.name===j.product_name);
-  if(p)selectProd(p.id);
-  setTimeout(()=>{
-    if(j.date_prepped&&document.getElementById('pf-prep'))document.getElementById('pf-prep').value=j.date_prepped;
-    if(j.date_useby&&document.getElementById('pf-useby'))document.getElementById('pf-useby').value=j.date_useby;
-    if(document.getElementById('pf-section'))document.getElementById('pf-section').value=j.section||'';
-    if(document.getElementById('pf-job'))document.getElementById('pf-job').value=j.job_code||'';
-    if(document.getElementById('print-qty'))document.getElementById('print-qty').value=j.quantity||1;
-    if(document.getElementById('pf-notes'))document.getElementById('pf-notes').value=j.notes||'';
-    var c=j.contains?j.contains.split(',').map(x=>x.trim()).filter(Boolean):[];
-    var m=j.may_contain?j.may_contain.split(',').map(x=>x.trim()).filter(Boolean):[];
-    buildAChips('print-achips','print',c,m,j.no_allergens||false);
-    toast('Loaded — check and print');
-  },100);
-}
+function cancelQ(lid){if(!confirm('Cancel this job?'))return;pQueue=pQueue.filter(j=>j.localId!==lid);renderQueue();toast('Cancelled');}
 
-/* ══════════════════════════════════════
-   HISTORY
-══════════════════════════════════════ */
+/* ═══════════ HISTORY ═══════════ */
 function fd(s){if(!s)return'—';try{return new Date(s+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});}catch(e){return s;}}
-function fdt(s){if(!s)return'';try{return new Date(s+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short'});}catch(e){return s;}}
-
 async function loadHistory(){
-  var el=document.getElementById('history-scroll');
-  el.innerHTML='<div class="loading-row"><div class="spin"></div>Loading…</div>';
-  try{
-    histAll=await sb('GET','print_jobs','','order=created_at.desc&limit=200');
-    renderHistory();
-  }catch(e){el.innerHTML='<div class="helper-text" style="color:var(--red)">Could not load history</div>';}
+  var el=document.getElementById('hist-scroll');el.innerHTML='<div class="loading" style="padding:24px"><div class="spin"></div>Loading…</div>';
+  try{histAll=await sb('GET','print_jobs','','order=created_at.desc&limit=200');renderHistory();}
+  catch(e){el.innerHTML='<p style="padding:24px;color:var(--red)">Could not load</p>';}
 }
-function filterHist(f,el){
-  histFilter=f;
-  document.querySelectorAll('.hf-chip').forEach(c=>c.classList.remove('on'));
-  el.classList.add('on');
-  renderHistory();
-}
+function histFilter(f,el){histMode=f;document.querySelectorAll('#panel-history .filter-chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');renderHistory();}
 function renderHistory(){
-  var el=document.getElementById('history-scroll');
+  var el=document.getElementById('hist-scroll');
   var list=histAll;
-  if(histFilter==='me')list=list.filter(j=>j.staff_name===U.name);
-  if(histFilter==='today'){var today=new Date().toISOString().split('T')[0];list=list.filter(j=>j.date_prepped===today);}
-  if(!list.length){el.innerHTML='<div class="chef-empty"><h2>Nothing here</h2><p>No labels match this filter</p></div>';return;}
-  // Group by date
-  var groups={};
-  list.forEach(j=>{var k=j.date_prepped||'Unknown';(groups[k]=groups[k]||[]).push(j);});
+  var today=new Date().toISOString().split('T')[0];
+  if(histMode==='me')list=list.filter(j=>j.staff_name===U.name);
+  if(histMode==='today')list=list.filter(j=>j.date_prepped===today);
+  if(!list.length){el.innerHTML='<p style="padding:24px;color:var(--ink-4);font-size:14px">Nothing to show</p>';return;}
+  var groups={};list.forEach(j=>{var k=j.date_prepped||'Unknown';(groups[k]=groups[k]||[]).push(j);});
   el.innerHTML=Object.keys(groups).map(date=>`
-    <div class="hist-group-header">${fd(date)}</div>
-    ${groups[date].map(j=>`
-      <div class="hist-item" onclick="reprHistItem(${JSON.stringify(j).replace(/"/g,'&quot;')})">
-        <div class="hist-item-body">
-          <div class="hist-product">${j.product_name}</div>
-          <div class="hist-sub">${j.staff_name}${j.section?' · '+j.section:''}${j.job_code?' · '+j.job_code:''}</div>
-          ${j.notes?`<div class="hist-notes">📝 ${j.notes}</div>`:''}
-        </div>
-        <div class="hist-meta-right">
-          <div class="hist-qty">×${j.quantity}</div>
-          <div class="hist-qty-label">labels</div>
-          <div class="hist-time">${j.printed_at||''}</div>
-        </div>
-      </div>`).join('')}
-  `).join('');
-}
-function reprHistItem(j){
-  var p=prods.find(x=>x.name===j.product_name);
-  if(p){selectProd(p.id);}
-  setTimeout(()=>{
-    if(j.date_prepped&&document.getElementById('pf-prep'))document.getElementById('pf-prep').value=j.date_prepped;
-    if(j.date_useby&&document.getElementById('pf-useby'))document.getElementById('pf-useby').value=j.date_useby;
-    if(document.getElementById('pf-section'))document.getElementById('pf-section').value=j.section||'';
-    if(document.getElementById('pf-job'))document.getElementById('pf-job').value=j.job_code||'';
-    if(document.getElementById('print-qty'))document.getElementById('print-qty').value=j.quantity||1;
-    if(document.getElementById('pf-notes'))document.getElementById('pf-notes').value=j.notes||'';
-    var c=j.contains?j.contains.split(',').map(x=>x.trim()).filter(Boolean):[];
-    var m=j.may_contain?j.may_contain.split(',').map(x=>x.trim()).filter(Boolean):[];
-    buildAChips('print-achips','print',c,m,j.no_allergens||false);
-    toast('Loaded — check and print');
-  },100);
+    <div class="hist-day">${fd(date)}</div>
+    ${groups[date].map(j=>`<div class="hist-item">
+      <div class="hist-body">
+        <div class="hist-product">${j.product_name}</div>
+        <div class="hist-sub">${j.staff_name}${j.section?' · '+j.section:''}${j.job_code?' · '+j.job_code:''}</div>
+        ${j.notes?`<div class="hist-note">📝 ${j.notes}</div>`:''}
+      </div>
+      <div class="hist-right">
+        <div class="hist-qty">×${j.quantity}</div>
+        <div class="hist-ql">labels</div>
+        <div class="hist-time">${j.printed_at||''}</div>
+      </div>
+    </div>`).join('')}`).join('');
 }
 
-/* ══════════════════════════════════════
-   DATA LOADING
-══════════════════════════════════════ */
+/* ═══════════ DATA LOADING ═══════════ */
 async function loadProds(){try{prods=await sb('GET','products','','order=name.asc');}catch(e){toast('Could not load products','err');}}
-async function loadJobs(){try{jobs=await sb('GET','job_codes','','order=created_at.desc');}catch(e){}}
+async function loadJobs(){try{jobs=await sb('GET','job_codes','','order=created_at.desc');renderStep2Jobs('');}catch(e){}}
 
-/* ══════════════════════════════════════
-   PRODUCTS ADMIN
-══════════════════════════════════════ */
-function renderProductAdmin(q){
-  var el=document.getElementById('products-list');if(!el)return;
+/* ═══════════ PRODUCTS ADMIN ═══════════ */
+function renderProdAdmin(q){
+  var el=document.getElementById('prod-admin-list');if(!el)return;
   var list=prods.filter(p=>p.name.toLowerCase().includes((q||'').toLowerCase()));
-  if(!list.length){el.innerHTML='<div class="helper-text">No products yet — tap + Add to create your first one</div>';return;}
-  el.innerHTML=list.map(p=>`
-    <div class="list-item">
-      <div class="li-body">
-        <div class="li-name">${p.name}</div>
-        <div class="li-sub">${p.contains||'No allergens'}</div>
-        <div class="li-tags">
-          <span class="li-tag">${p.category}</span>
-          ${p.menu_type?`<span class="li-tag mt">${p.menu_type}</span>`:''}
-          <span class="li-tag">${p.shelf_life_hours}h</span>
-          ${p.contains?`<span class="li-tag al">⚠ Allergens</span>`:''}
-        </div>
-      </div>
-      <div class="li-actions">
-        <button class="btn btn-outline btn-xs" onclick="editProd('${p.id}')">Edit</button>
-        <button class="btn btn-red btn-xs" onclick="delProd('${p.id}')">Del</button>
-      </div>
-    </div>`).join('');
+  if(!list.length){el.innerHTML='<p style="padding:20px;color:var(--ink-4)">No products yet</p>';return;}
+  el.innerHTML=list.map(p=>`<div style="background:var(--surface);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;gap:12px">
+    <div style="flex:1;min-width:0">
+      <div style="font-size:15px;font-weight:600;color:var(--ink)">${p.name}</div>
+      <div style="font-size:13px;color:var(--ink-3);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.category}${p.menu_type?' · '+p.menu_type:''} · ${p.shelf_life_hours}h${p.contains?' · ⚠ '+p.contains:''}</div>
+    </div>
+    <button class="btn btn-outline btn-xs" onclick="editProd('${p.id}')">Edit</button>
+    <button class="btn btn-red btn-xs" onclick="delProd('${p.id}')">Del</button>
+  </div>`).join('');
 }
+
 function openAddProduct(){
   document.getElementById('pe-id').value='';
   document.getElementById('pe-name').value='';
   document.getElementById('pe-shelf').value=72;
   document.getElementById('pe-cat').selectedIndex=0;
   renderMTSel('pe-menu');
-  peCS={c:[],m:[],na:false};
-  buildAChips('pe-chips','edit',[],[],false);
-  document.getElementById('prod-edit-title').textContent='Add Product';
-  go('s-product-edit');
+  peCS={c:[],m:[]};
+  buildAdminChips([],[]);
+  document.getElementById('pe-ds-title').textContent='Add Product';
+  openDS('ds-product-edit');
 }
 function editProd(id){
   var p=prods.find(x=>String(x.id)===String(id));if(!p)return;
@@ -1773,223 +1832,136 @@ function editProd(id){
   var ms=document.getElementById('pe-menu');for(var i=0;i<ms.options.length;i++)if(ms.options[i].value===(p.menu_type||'')){ms.selectedIndex=i;break;}
   var c=p.contains?p.contains.split(',').map(x=>x.trim()).filter(Boolean):[];
   var m=p.may_contain?p.may_contain.split(',').map(x=>x.trim()).filter(Boolean):[];
-  peCS={c:[...c],m:[...m],na:false};
-  buildAChips('pe-chips','edit',c,m,false);
-  document.getElementById('prod-edit-title').textContent='Edit Product';
-  go('s-product-edit');
+  peCS={c:[...c],m:[...m]};
+  buildAdminChips(c,m);
+  document.getElementById('pe-ds-title').textContent='Edit Product';
+  openDS('ds-product-edit');
 }
-async function saveProduct(){
+function buildAdminChips(contains,may){
+  var el=document.getElementById('pe-chips');if(!el)return;el.innerHTML='';
+  AL.forEach(a=>{
+    var ch=document.createElement('div');ch.className='a-chip-admin';ch.textContent=a;ch.dataset.s='none';
+    if(contains.includes(a)){ch.dataset.s='contains';ch.classList.add('contains');}
+    else if(may.includes(a)){ch.dataset.s='may';ch.classList.add('may');}
+    ch.onclick=function(){
+      var s=ch.dataset.s;
+      if(s==='none'){ch.dataset.s='contains';ch.classList.add('contains');ch.classList.remove('may');}
+      else if(s==='contains'){ch.dataset.s='may';ch.classList.remove('contains');ch.classList.add('may');}
+      else{ch.dataset.s='none';ch.classList.remove('contains','may');}
+      peCS.c=[];peCS.m=[];
+      el.querySelectorAll('.a-chip-admin').forEach(c=>{if(c.dataset.s==='contains')peCS.c.push(c.textContent);if(c.dataset.s==='may')peCS.m.push(c.textContent);});
+    };
+    el.appendChild(ch);
+  });
+}
+async function saveProd(){
   var id=document.getElementById('pe-id').value;
   var name=document.getElementById('pe-name').value.trim();
-  if(!name){toast('Enter a product name','err');return;}
-  syncAC('pe-chips','edit');
+  if(!name){toast('Enter a name','err');return;}
   var body={name,category:document.getElementById('pe-cat').value,menu_type:document.getElementById('pe-menu').value||null,shelf_life_hours:parseInt(document.getElementById('pe-shelf').value)||72,contains:peCS.c.join(', ')||null,may_contain:peCS.m.join(', ')||null};
   try{
     if(id){await sb('PATCH','products',body,'id=eq.'+id);alog('Edited product',name);}
     else{await sb('POST','products',body,'');alog('Added product',name);}
-    toast(name+(id?' updated':' added'),'ok');await loadProds();renderProductAdmin('');go('s-products');
+    toast(name+(id?' updated':' added'),'ok');closeDS('ds-product-edit');
+    await loadProds();renderProdAdmin('');buildStep1Filters();renderStep1('','');
   }catch(e){toast('Save failed: '+e.message,'err');}
 }
 async function delProd(id){
   var p=prods.find(x=>String(x.id)===String(id));
   if(!confirm('Delete '+(p?p.name:'this product')+'?'))return;
-  try{await sb('DELETE','products','','id=eq.'+id);alog('Deleted product',p?p.name:'');toast('Deleted');await loadProds();renderProductAdmin('');}
+  try{await sb('DELETE','products','','id=eq.'+id);alog('Deleted product',p?p.name:'');toast('Deleted');await loadProds();renderProdAdmin('');buildStep1Filters();}
   catch(e){toast('Delete failed','err');}
 }
 
-/* ══════════════════════════════════════
-   JOB CODES
-══════════════════════════════════════ */
+/* ═══════════ JOB CODES ═══════════ */
 function buildJC(){
   var client=document.getElementById('jc-client')?.value.trim()||'';
   var date=document.getElementById('jc-date')?.value||'';
   var type=document.getElementById('jc-type')?.value||'TM';
   var ini=client.split(/\s+/).filter(Boolean).map(w=>w[0].toUpperCase()).join('').slice(0,3)||'XXX';
-  var dp='DDMMYY';
-  if(date){var d=new Date(date);dp=('0'+d.getDate()).slice(-2)+('0'+(d.getMonth()+1)).slice(-2)+String(d.getFullYear()).slice(-2);}
-  document.getElementById('jc-output').textContent=ini+dp+type;
+  var dp='DDMMYY';if(date){var d=new Date(date);dp=('0'+d.getDate()).slice(-2)+('0'+(d.getMonth()+1)).slice(-2)+String(d.getFullYear()).slice(-2);}
+  document.getElementById('jc-out').textContent=ini+dp+type;
 }
 async function saveJC(){
-  var client=document.getElementById('jc-client').value.trim();
-  var date=document.getElementById('jc-date').value;
-  if(!client||!date){toast('Enter client name and date','err');return;}
+  var client=document.getElementById('jc-client').value.trim();var date=document.getElementById('jc-date').value;
+  if(!client||!date){toast('Enter client and date','err');return;}
   var ini=client.split(/\s+/).filter(Boolean).map(w=>w[0].toUpperCase()).join('').slice(0,3);
   var d=new Date(date);var dp=('0'+d.getDate()).slice(-2)+('0'+(d.getMonth()+1)).slice(-2)+String(d.getFullYear()).slice(-2);
   var code=ini+dp+document.getElementById('jc-type').value;
   var desc=document.getElementById('jc-desc').value.trim()||client;
-  try{
-    await sb('POST','job_codes',{code,description:desc},'');
-    alog('Added job code',code+' — '+desc);toast(code+' saved','ok');
-    document.getElementById('jc-client').value='';document.getElementById('jc-date').value='';document.getElementById('jc-desc').value='';
-    buildJC();await loadJobs();renderJCList();
-  }catch(e){toast('Save failed','err');}
+  try{await sb('POST','job_codes',{code,description:desc},'');alog('Added job code',code);toast(code+' saved','ok');document.getElementById('jc-client').value='';document.getElementById('jc-date').value='';document.getElementById('jc-desc').value='';buildJC();await loadJobs();renderJCList();}
+  catch(e){toast('Save failed','err');}
 }
 function renderJCList(){
   var el=document.getElementById('jc-list');if(!el)return;
-  if(!jobs.length){el.innerHTML='<div class="helper-text">No job codes yet</div>';return;}
-  el.innerHTML=jobs.map(j=>`
-    <div class="list-item">
-      <div class="li-body">
-        <div class="li-name" style="font-family:var(--fmono)">${j.code}</div>
-        <div class="li-sub">${j.description}</div>
-      </div>
-      <button class="btn btn-red btn-xs" onclick="delJC('${j.id}')">Remove</button>
-    </div>`).join('');
+  if(!jobs.length){el.innerHTML='<p class="helper">No job codes yet</p>';return;}
+  el.innerHTML=jobs.map(j=>`<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-sm);margin-bottom:8px"><div style="flex:1"><div style="font-family:var(--fmono);font-size:15px;font-weight:700">${j.code}</div><div style="font-size:13px;color:var(--ink-3);margin-top:2px">${j.description}</div></div><button class="btn btn-red btn-xs" onclick="delJC('${j.id}')">Remove</button></div>`).join('');
 }
-async function delJC(id){
-  var j=jobs.find(x=>String(x.id)===String(id));
-  try{await sb('DELETE','job_codes','','id=eq.'+id);alog('Deleted job code',j?j.code:'');toast('Removed');await loadJobs();renderJCList();}
-  catch(e){toast('Delete failed','err');}
-}
+async function delJC(id){var j=jobs.find(x=>String(x.id)===String(id));try{await sb('DELETE','job_codes','','id=eq.'+id);alog('Deleted job code',j?j.code:'');toast('Removed');await loadJobs();renderJCList();}catch(e){toast('Delete failed','err');}}
 
-/* ══════════════════════════════════════
-   STAFF
-══════════════════════════════════════ */
-function renderStaffGrid(){
-  var el=document.getElementById('staff-grid');if(!el)return;
-  if(!staff.length){el.innerHTML='<div class="helper-text">No staff yet</div>';return;}
-  el.innerHTML=staff.map((s,i)=>{
-    var col=s.color||COLS[i%COLS.length];
-    var ini=s.initials||(s.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase());
-    return`<div class="staff-card"><div class="staff-av" style="background:${col}20;color:${col};border:2px solid ${col}40">${ini}</div><div><div class="staff-name">${s.name}${s.name===MGR?' ★':''}</div><div class="staff-role">PIN: ••••</div></div></div>`;
-  }).join('');
+/* ═══════════ STAFF ═══════════ */
+function renderStaffAdmin(){
+  var el=document.getElementById('staff-grid-admin');if(!el)return;
+  if(!staff.length){el.innerHTML='<p class="helper">No staff yet</p>';return;}
+  el.innerHTML=staff.map((s,i)=>{var col=s.color||COLS[i%COLS.length];var ini=s.initials||(s.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase());return`<div class="s-card"><div class="s-av" style="background:${col}25;color:${col};border:2px solid ${col}50">${ini}</div><div><div class="s-name">${s.name}${s.name===MGR?' ★':''}</div><div class="s-role">PIN: ••••</div></div></div>`;}).join('');
 }
 async function addStaff(){
-  var name=document.getElementById('ns-name').value.trim();
-  var pin=document.getElementById('ns-pin').value.trim();
+  var name=document.getElementById('ns-name').value.trim();var pin=document.getElementById('ns-pin').value.trim();
   if(!name||!pin){toast('Enter name and PIN','err');return;}
   if(pin.length!==4||isNaN(pin)){toast('PIN must be 4 digits','err');return;}
-  var parts=name.split(' ');
-  var ini=(parts[0][0]+(parts[1]?parts[1][0]:parts[0][1]||'')).toUpperCase();
-  var col=COLS[staff.length%COLS.length];
-  try{
-    await sb('POST','staff',{name,pin,initials:ini,color:col},'');
-    alog('Added staff',name);toast(name+' added','ok');
-    document.getElementById('ns-name').value='';document.getElementById('ns-pin').value='';
-    staff=await sb('GET','staff','','order=name.asc');renderStaffGrid();
-    // Refresh login list
-    var sel=document.getElementById('l-who');sel.innerHTML='<option value="">— Select your name —</option>';
-    staff.forEach((s,i)=>{var o=document.createElement('option');o.value=i;o.textContent=s.name;sel.appendChild(o);});
-  }catch(e){toast('Save failed','err');}
+  var parts=name.split(' ');var ini=(parts[0][0]+(parts[1]?parts[1][0]:parts[0][1]||'')).toUpperCase();var col=COLS[staff.length%COLS.length];
+  try{await sb('POST','staff',{name,pin,initials:ini,color:col},'');alog('Added staff',name);toast(name+' added','ok');document.getElementById('ns-name').value='';document.getElementById('ns-pin').value='';staff=await sb('GET','staff','','order=name.asc');renderStaffAdmin();await loadLoginStaff();}
+  catch(e){toast('Save failed','err');}
 }
 
-/* ══════════════════════════════════════
-   PRINTER STATUS
-══════════════════════════════════════ */
+/* ═══════════ PRINTER ═══════════ */
 async function checkStatus(){
-  ['pi','pr'].forEach(k=>{document.getElementById(k+'-dot').className='status-dot unk';document.getElementById(k+'-msg').textContent='Checking…';});
-  try{
-    var r=await fetch(STATUS,{headers:{'ngrok-skip-browser-warning':'true'},signal:AbortSignal.timeout(5000)});
-    var d=await r.json();
-    document.getElementById('pi-dot').className='status-dot on';document.getElementById('pi-msg').textContent='Online — 192.168.1.175:3000';
-    document.getElementById('pr-dot').className='status-dot '+(d.printer?'on':'off');
-    document.getElementById('pr-msg').textContent=d.printer?'Online — Brother QL-820NWBc ready':'Offline — check printer is on and on the kitchen Wi-Fi';
-  }catch(e){
-    document.getElementById('pi-dot').className='status-dot off';document.getElementById('pi-msg').textContent='Offline — check Pi is powered on';
-    document.getElementById('pr-dot').className='status-dot off';document.getElementById('pr-msg').textContent='Cannot check — Pi unreachable';
-  }
+  ['pi','pr'].forEach(k=>{document.getElementById(k+'-dot').className='s-dot unk';document.getElementById(k+'-msg').textContent='Checking…';});
+  try{var r=await fetch(STATUS_URL,{headers:{'ngrok-skip-browser-warning':'true'},signal:AbortSignal.timeout(5000)});var d=await r.json();document.getElementById('pi-dot').className='s-dot on';document.getElementById('pi-msg').textContent='Online — 192.168.1.175:3000';document.getElementById('pr-dot').className='s-dot '+(d.printer?'on':'off');document.getElementById('pr-msg').textContent=d.printer?'Online — Brother QL-820NWBc ready':'Offline — check printer is on and on Wi-Fi';}
+  catch(e){document.getElementById('pi-dot').className='s-dot off';document.getElementById('pi-msg').textContent='Offline — check Pi is powered on';document.getElementById('pr-dot').className='s-dot off';document.getElementById('pr-msg').textContent='Cannot check — Pi unreachable';}
 }
-async function testPrint(){
-  toast('Sending test…');
-  var ok=await sendToPI({product_name:'TEST',staff_name:U.name,section:'Test',job_code:'TEST',quantity:1,date_prepped:new Date().toISOString().split('T')[0],date_useby:new Date().toISOString().split('T')[0],contains:null,may_contain:null,notes:'Test from Digbys CPS',printed_at:new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})});
-  if(ok)toast('Test label printed ✓','ok');
-}
-function saveSettings(){
-  PRINT=document.getElementById('set-url').value;
-  STATUS=PRINT.replace('/print','/status');
-  alog('Updated printer settings','URL: '+PRINT);toast('Saved','ok');
-}
+async function testPrint(){toast('Sending test…');var ok=await sendToPI({product_name:'TEST',staff_name:U.name,section:'Test',job_code:'TEST',quantity:1,date_prepped:new Date().toISOString().split('T')[0],date_useby:new Date().toISOString().split('T')[0],contains:null,may_contain:null,notes:'Test print from Digbys CPS',printed_at:new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})});if(ok)toast('Test printed ✓','ok');}
+function saveSettings(){PRINT_URL=document.getElementById('set-url').value;STATUS_URL=PRINT_URL.replace('/print','/status');alog('Updated printer settings','URL: '+PRINT_URL);toast('Saved','ok');}
 
-/* ══════════════════════════════════════
-   CUSTOM LABELS
-══════════════════════════════════════ */
+/* ═══════════ CUSTOM LABELS ═══════════ */
 var clInit=false;
 function initCLIfNeeded(){if(!clInit){clRows=[];addCLRow();addCLRow();clInit=true;}renderCLRows();}
 function addCLRow(){clRows.push({text:'',size:28});renderCLRows();}
 function clearCL(){clRows=[];addCLRow();addCLRow();}
 function renderCLRows(){
-  var wrap=document.getElementById('cl-rows-wrap');if(!wrap)return;wrap.innerHTML='';
+  var wrap=document.getElementById('cl-rows');if(!wrap)return;wrap.innerHTML='';
   clRows.forEach((row,i)=>{
-    var d=document.createElement('div');d.className='cl-item';
-    d.innerHTML=`<input class="cl-text-input" type="text" placeholder="Line ${i+1}…" value="${row.text.replace(/"/g,'&quot;')}"><input type="range" class="cl-slider" min="12" max="72" value="${row.size}"><span class="cl-size-lbl">${row.size}pt</span><button class="btn btn-red btn-xs" style="flex-shrink:0">✕</button>`;
-    var ti=d.querySelector('.cl-text-input'),ri=d.querySelector('.cl-slider'),sl=d.querySelector('.cl-size-lbl'),del=d.querySelector('.btn');
+    var d=document.createElement('div');d.className='cl-row';
+    d.innerHTML=`<input class="cl-inp" type="text" placeholder="Line ${i+1}…" value="${row.text.replace(/"/g,'&quot;')}"><input type="range" class="cl-slider" min="12" max="72" value="${row.size}"><span class="cl-sz">${row.size}pt</span><button class="btn btn-red btn-xs" style="flex-shrink:0">✕</button>`;
+    var ti=d.querySelector('.cl-inp'),ri=d.querySelector('.cl-slider'),sl=d.querySelector('.cl-sz'),del=d.querySelector('.btn');
     ti.oninput=()=>{clRows[i].text=ti.value;renderCLPreview();};
     ri.oninput=()=>{clRows[i].size=parseInt(ri.value);sl.textContent=ri.value+'pt';renderCLPreview();};
     del.onclick=()=>{clRows.splice(i,1);renderCLRows();};
     wrap.appendChild(d);
   });renderCLPreview();
 }
-function renderCLPreview(){
-  var el=document.getElementById('cl-preview');if(!el)return;
-  var has=clRows.some(r=>r.text.trim());
-  if(!has){el.innerHTML='<span style="color:var(--ink-4);font-size:13px;font-style:italic">Add rows above to preview…</span>';return;}
-  el.innerHTML=clRows.filter(r=>r.text.trim()).map(r=>`<div style="font-size:${r.size}px;font-weight:700;color:var(--ink);line-height:1.2;margin-bottom:6px">${r.text}</div>`).join('');
-}
-function populateCLJob(){
-  var sel=document.getElementById('cl-job');if(!sel)return;var c=sel.value;
-  sel.innerHTML='<option value="">— None —</option>'+jobs.map(j=>`<option value="${j.code}">${j.code} · ${j.description}</option>`).join('');
-  sel.value=c||'';
-}
+function renderCLPreview(){var el=document.getElementById('cl-preview');if(!el)return;var has=clRows.some(r=>r.text.trim());if(!has){el.innerHTML='<span style="color:var(--ink-4);font-size:13px;font-style:italic">Add rows to preview…</span>';return;}el.innerHTML=clRows.filter(r=>r.text.trim()).map(r=>`<div style="font-size:${r.size}px;font-weight:700;color:var(--ink);line-height:1.2;margin-bottom:6px">${r.text}</div>`).join('');}
+function populateCLJob(){var sel=document.getElementById('cl-job');if(!sel)return;var c=sel.value;sel.innerHTML='<option value="">—</option>'+jobs.map(j=>`<option value="${j.code}">${j.code}</option>`).join('');sel.value=c||'';}
 async function printCustom(){
   var has=clRows.some(r=>r.text.trim());if(!has){toast('Add some text first','err');return;}
   var now=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
   var lines=clRows.filter(r=>r.text.trim());
-  var job={custom:true,lines,staff_name:U.name,section:document.getElementById('cl-section').value||null,job_code:document.getElementById('cl-job').value||null,quantity:parseInt(document.getElementById('cl-qty').value)||1,printed_at:now};
-  toast('Printing…');
-  var ok=await sendToPI(job);
-  if(ok){
-    toast('Custom label printed ✓','ok');
-    await sb('POST','print_jobs',{product_name:'[Custom] '+lines[0].text,staff_name:U.name,section:job.section,job_code:job.job_code,quantity:job.quantity,date_prepped:new Date().toISOString().split('T')[0],date_useby:null,contains:null,may_contain:null,notes:'Custom label',printed_at:now},'');
-  }
+  var job={custom:true,lines,staff_name:U.name,section:document.getElementById('cl-sec').value||null,job_code:document.getElementById('cl-job').value||null,quantity:parseInt(document.getElementById('cl-qty').value)||1,printed_at:now};
+  toast('Printing…');var ok=await sendToPI(job);
+  if(ok){toast('Custom label printed ✓','ok');await sb('POST','print_jobs',{product_name:'[Custom] '+lines[0].text,staff_name:U.name,section:job.section,job_code:job.job_code,quantity:job.quantity,date_prepped:new Date().toISOString().split('T')[0],date_useby:null,contains:null,may_contain:null,notes:'Custom label',printed_at:now},'');}
 }
 
-/* ══════════════════════════════════════
-   AUDIT
-══════════════════════════════════════ */
-function renderAudit(){
-  var el=document.getElementById('audit-list');if(!el)return;
-  var l=JSON.parse(localStorage.getItem('_a')||'[]');
-  if(!l.length){el.innerHTML='<div class="helper-text">No admin changes logged yet</div>';return;}
-  el.innerHTML=l.map(e=>`<div class="audit-item"><div class="audit-who">${e.who}</div><div class="audit-what">${e.action} — ${e.detail}</div><div class="audit-when">${e.when}</div></div>`).join('');
-}
-function exportAudit(){
-  var l=JSON.parse(localStorage.getItem('_a')||'[]');
-  if(!l.length){toast('No entries yet','err');return;}
-  dlCSV('Who,Action,Detail,When\n'+l.map(e=>`"${e.who}","${e.action}","${e.detail}","${e.when}"`).join('\n'),'digbys-audit.csv');toast('Exported');
-}
+/* ═══════════ AUDIT ═══════════ */
+function renderAudit(){var el=document.getElementById('audit-log');if(!el)return;var l=JSON.parse(localStorage.getItem('_dcps_a')||'[]');if(!l.length){el.innerHTML='<p style="padding:20px;color:var(--ink-4)">No entries yet</p>';return;}el.innerHTML=l.map(e=>`<div class="audit-row"><div class="ar-who">${e.who}</div><div class="ar-what">${e.action} — ${e.detail}</div><div class="ar-when">${e.when}</div></div>`).join('');}
+function exportAudit(){var l=JSON.parse(localStorage.getItem('_dcps_a')||'[]');if(!l.length){toast('No entries','err');return;}dlCSV('Who,Action,Detail,When\n'+l.map(e=>`"${e.who}","${e.action}","${e.detail}","${e.when}"`).join('\n'),'digbys-audit.csv');toast('Exported');}
 
-/* ══════════════════════════════════════
-   EXPORT
-══════════════════════════════════════ */
-async function exportTbl(t){
-  try{
-    var data=await sb('GET',t,'','order=created_at.asc');
-    if(!data.length){toast('No data','err');return;}
-    var keys=Object.keys(data[0]).filter(k=>k!=='pin');
-    dlCSV(keys.join(',')+'\n'+data.map(row=>keys.map(k=>`"${(row[k]??'').toString().replace(/"/g,'""')}"`).join(',')).join('\n'),'digbys-'+t+'.csv');
-    toast('Exported');
-  }catch(e){toast('Export failed','err');}
-}
-async function exportHistory(){
-  try{
-    var data=await sb('GET','print_jobs','','order=created_at.desc');
-    if(!data.length){toast('No history','err');return;}
-    var keys=['product_name','staff_name','section','job_code','quantity','date_prepped','date_useby','contains','may_contain','notes','printed_at'];
-    dlCSV(keys.join(',')+'\n'+data.map(j=>keys.map(k=>`"${(j[k]??'').toString().replace(/"/g,'""')}"`).join(',')).join('\n'),'digbys-history.csv');
-    toast('Exported');
-  }catch(e){toast('Export failed','err');}
-}
+/* ═══════════ EXPORT ═══════════ */
+async function exportTbl(t){try{var data=await sb('GET',t,'','order=created_at.asc');if(!data.length){toast('No data','err');return;}var keys=Object.keys(data[0]).filter(k=>k!=='pin');dlCSV(keys.join(',')+'\n'+data.map(row=>keys.map(k=>`"${(row[k]??'').toString().replace(/"/g,'""')}"`).join(',')).join('\n'),'digbys-'+t+'.csv');toast('Exported');}catch(e){toast('Export failed','err');}}
+async function exportHistory(){try{var data=await sb('GET','print_jobs','','order=created_at.desc');if(!data.length){toast('No history','err');return;}var keys=['product_name','staff_name','section','job_code','quantity','date_prepped','date_useby','contains','may_contain','notes','printed_at'];dlCSV(keys.join(',')+'\n'+data.map(j=>keys.map(k=>`"${(j[k]??'').toString().replace(/"/g,'""')}"`).join(',')).join('\n'),'digbys-history.csv');toast('Exported');}catch(e){toast('Export failed','err');}}
 function dlCSV(csv,name){var b=new Blob([csv],{type:'text/csv'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download=name;a.click();URL.revokeObjectURL(u);}
 
-/* ══════════════════════════════════════
-   TOAST
-══════════════════════════════════════ */
-function toast(msg,type=''){
-  var t=document.getElementById('toast');t.textContent=msg;
-  t.className='toast'+(type==='ok'?' ok':type==='err'?' err':'');
-  t.classList.add('show');clearTimeout(t._t);
-  t._t=setTimeout(()=>t.classList.remove('show'),2500);
-}
+/* ═══════════ TOAST ═══════════ */
+function toast(msg,type=''){var t=document.getElementById('toast');t.textContent=msg;t.className='toast'+(type==='ok'?' ok':type==='err'?' err':'');t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2600);}
 
 /* BOOT */
 loadLoginStaff();
