@@ -1076,12 +1076,12 @@ body{
 
             <!-- Fields -->
             <div class="review-grid">
-              <div class="review-field">
+              <div class="review-field" id="rv-prep-row">
                 <span class="rf-label">Prep date</span>
                 <input type="date" class="rf-input" id="rv-prep">
               </div>
               <div class="review-field">
-                <span class="rf-label">Use by — auto</span>
+                <span class="rf-label" id="rv-useby-label">Use by — auto</span>
                 <input type="date" class="rf-input danger" id="rv-useby">
               </div>
               <div class="review-field">
@@ -1697,9 +1697,10 @@ function buildReview(){
   // Populate job select
   var jobSel=document.getElementById('rv-job');
   if(jobSel){jobSel.innerHTML='<option value="">— No job code —</option>';jobs.forEach(j=>{var o=document.createElement('option');o.value=j.code;o.textContent=j.code+' · '+j.description;jobSel.appendChild(o);});if(W.job)jobSel.value=W.job.code;}
-  // Reset status
-  W.labelStatus='';
-  document.querySelectorAll('.status-opt').forEach(o=>{o.classList.toggle('on',o.dataset.val==='');});
+  // Restore status (may have been set by reprFromHistory before buildReview is called)
+  document.querySelectorAll('.status-opt').forEach(o=>{o.classList.toggle('on',o.dataset.val===(W.labelStatus||''));});
+  // If status is set, recalculate use-by after a tick
+  if(W.labelStatus){setTimeout(()=>setLabelStatus(W.labelStatus),60);}
   document.getElementById('rv-notes').value='';
   document.getElementById('rv-qty').value=1;
   // Allergen summary
@@ -1721,6 +1722,40 @@ function adjQty(d){var el=document.getElementById('rv-qty');el.value=Math.max(1,
 function setLabelStatus(val){
   W.labelStatus=val;
   document.querySelectorAll('.status-opt').forEach(o=>o.classList.toggle('on',o.dataset.val===val));
+  var today=new Date().toISOString().split('T')[0];
+  var prepRow=document.getElementById('rv-prep-row');
+  var prepLbl=document.getElementById('rv-useby-label');
+  var useby=document.getElementById('rv-useby');
+  var prep=document.getElementById('rv-prep');
+  if(!useby)return;
+  if(val==='THAWED'){
+    // Hide prep date row, set use by to today + 3 days
+    if(prepRow)prepRow.style.display='none';
+    if(prepLbl)prepLbl.textContent='Use by (thaw + 3 days)';
+    var d=new Date();d.setDate(d.getDate()+3);
+    useby.value=d.toISOString().split('T')[0];
+    useby.classList.add('danger');
+    // Set prep date to today as the thaw date
+    if(prep)prep.value=today;
+  } else if(val==='FROZEN'){
+    // Hide prep date row, set use by to 3 months
+    if(prepRow)prepRow.style.display='none';
+    if(prepLbl)prepLbl.textContent='Defrost by (3 months)';
+    var d=new Date();d.setMonth(d.getMonth()+3);
+    useby.value=d.toISOString().split('T')[0];
+    useby.classList.add('danger');
+    if(prep)prep.value=today;
+  } else {
+    // Fresh — show prep date, recalculate normally
+    if(prepRow)prepRow.style.display='';
+    if(prepLbl)prepLbl.textContent='Use by — auto';
+    if(W.prod&&prep&&prep.value){
+      var d=new Date(prep.value+'T00:00:00');
+      d.setHours(d.getHours()+parseInt(W.prod.shelf_life_hours||72));
+      useby.value=d.toISOString().split('T')[0];
+    }
+    useby.classList.add('danger');
+  }
 }
 async function doPrint(){
   var btn=document.getElementById('print-btn');
@@ -1753,7 +1788,8 @@ async function doPrint(){
       section:job.section,job_code:job.job_code,quantity:job.quantity,
       date_prepped:job.date_prepped,date_useby:job.date_useby,
       contains:job.contains,may_contain:job.may_contain,
-      notes:job.notes,printed_at:job.printed_at
+      notes:job.notes,printed_at:job.printed_at,
+      label_status:job.status||null
     },'');
     var ok=await sendToPI(job);
     job.status=ok?'printed':'failed';
@@ -1851,6 +1887,8 @@ function reprFromHistory(j){
   W.job=j.job_code?{code:j.job_code,description:j.job_code}:null;
   W.section=j.section||null;
   W.labelStatus='';
+  // Restore label status
+  W.labelStatus=j.label_status||j.status_label||'';
   // Switch to wizard
   switchPanel('wizard');
   // Go to step 5
