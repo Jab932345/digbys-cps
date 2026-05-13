@@ -1733,8 +1733,8 @@ async function doPrint(){
     localId:Date.now().toString(),status:'pending',
     product_name:W.prod.name,
     staff_name:document.getElementById('rv-prepby').value||U.name,
-    section:W.section||null,
-    job_code:W.job?W.job.code:null,
+    section:document.getElementById('rv-section').value||null,
+    job_code:document.getElementById('rv-job').value||null,
     quantity:parseInt(document.getElementById('rv-qty').value)||1,
     date_prepped:document.getElementById('rv-prep').value,
     date_useby:document.getElementById('rv-useby').value,
@@ -1809,22 +1809,30 @@ function renderHistory(){
   var groups={};list.forEach(j=>{var k=j.date_prepped||'Unknown';(groups[k]=groups[k]||[]).push(j);});
   el.innerHTML=Object.keys(groups).map(date=>`
     <div class="hist-day">${fd(date)}</div>
-    ${groups[date].map(j=>`<div class="hist-item" onclick="reprFromHistory(${JSON.stringify(j).replace(/"/g,'&quot;')})" title="Tap to reprint">
-      <div class="hist-body">
-        <div class="hist-product">${j.product_name}</div>
-        <div class="hist-sub">${j.staff_name}${j.section?' · '+j.section:''}${j.job_code?' · '+j.job_code:''}</div>
-        ${j.notes?`<div class="hist-note">📝 ${j.notes}</div>`:''}
-      </div>
-      <div class="hist-right">
-        <div class="hist-qty">×${j.quantity}</div>
-        <div class="hist-ql">labels</div>
-        <div class="hist-time">${j.printed_at||''}</div>
-        <div style="font-size:11px;color:var(--stone-400);margin-top:4px">Tap to reprint</div>
-      </div>
-    </div>`).join('')}`).join('');
+    ${groups[date].map((j,ji)=>{
+      var idx=histAll.indexOf(j);
+      return `<div class="hist-item" onclick="reprFromHistIdx(${idx})" style="cursor:pointer" title="Tap to reprint">
+        <div class="hist-body">
+          <div class="hist-product">${j.product_name}</div>
+          <div class="hist-sub">${j.staff_name}${j.section?' · '+j.section:''}${j.job_code?' · '+j.job_code:''}</div>
+          ${j.notes?`<div class="hist-note">📝 ${j.notes}</div>`:''}
+        </div>
+        <div class="hist-right">
+          <div class="hist-qty">×${j.quantity}</div>
+          <div class="hist-ql">labels</div>
+          <div class="hist-time">${j.printed_at||''}</div>
+          <div style="font-size:11px;color:var(--stone-400);margin-top:4px">Tap to reprint</div>
+        </div>
+      </div>`;
+    }).join('')}`).join('');
 }
 
 /* ═══════════ REPRINT FROM HISTORY ═══════════ */
+function reprFromHistIdx(idx){
+  var j=histAll[idx];
+  if(!j)return;
+  reprFromHistory(j);
+}
 function reprFromHistory(j){
   // Find product
   var p=prods.find(x=>x.name===j.product_name);
