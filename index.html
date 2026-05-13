@@ -1080,7 +1080,11 @@ body{
                 <span class="rf-label">Prep date</span>
                 <input type="date" class="rf-input" id="rv-prep">
               </div>
-              <div class="review-field">
+              <div class="review-field" id="rv-status-date-row" style="display:none">
+                <span class="rf-label" id="rv-status-date-label">Frozen on</span>
+                <input type="date" class="rf-input" id="rv-status-date">
+              </div>
+              <div class="review-field review-full">
                 <span class="rf-label" id="rv-useby-label">Use by — auto</span>
                 <input type="date" class="rf-input danger" id="rv-useby">
               </div>
@@ -1107,10 +1111,6 @@ body{
                   <div class="status-opt" onclick="setLabelStatus('FROZEN')" data-val="FROZEN">❄️ Frozen</div>
                   <div class="status-opt" onclick="setLabelStatus('THAWED')" data-val="THAWED">💧 Thawed</div>
                 </div>
-              </div>
-              <div class="review-field" id="rv-status-date-row" style="display:none">
-                <span class="rf-label" id="rv-status-date-label">Frozen on</span>
-                <input type="date" class="rf-input" id="rv-status-date">
               </div>
             </div>
 
