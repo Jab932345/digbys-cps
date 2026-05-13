@@ -1108,6 +1108,10 @@ body{
                   <div class="status-opt" onclick="setLabelStatus('THAWED')" data-val="THAWED">💧 Thawed</div>
                 </div>
               </div>
+              <div class="review-field" id="rv-status-date-row" style="display:none">
+                <span class="rf-label" id="rv-status-date-label">Frozen on</span>
+                <input type="date" class="rf-input" id="rv-status-date">
+              </div>
             </div>
 
             <div class="review-field review-full" style="margin-bottom:20px">
@@ -1731,7 +1735,7 @@ function setLabelStatus(val){
   if(val==='THAWED'){
     // Hide prep date row, set use by to today + 3 days
     if(prepRow)prepRow.style.display='none';
-    if(prepLbl)prepLbl.textContent='Use by (thaw + 3 days)';
+    if(prepLbl)prepLbl.textContent='Use by';
     var d=new Date();d.setDate(d.getDate()+3);
     useby.value=d.toISOString().split('T')[0];
     useby.classList.add('danger');
@@ -1740,7 +1744,7 @@ function setLabelStatus(val){
   } else if(val==='FROZEN'){
     // Hide prep date row, set use by to 3 months
     if(prepRow)prepRow.style.display='none';
-    if(prepLbl)prepLbl.textContent='Defrost by (3 months)';
+    if(prepLbl)prepLbl.textContent='Use by';
     var d=new Date();d.setMonth(d.getMonth()+3);
     useby.value=d.toISOString().split('T')[0];
     useby.classList.add('danger');
@@ -1777,6 +1781,7 @@ async function doPrint(){
     may_contain:W.al.na?null:(W.al.m.join(', ')||null),
     no_allergens:W.al.na,
     status:W.labelStatus||null,
+    status_date:document.getElementById('rv-status-date')?document.getElementById('rv-status-date').value||null:null,
     notes:notes||null,printed_at:now
   };
 
