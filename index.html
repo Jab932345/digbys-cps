@@ -524,6 +524,13 @@ body{
 .print-btn:hover{background:var(--stone-700)}
 .print-btn:active:not(:disabled){transform:scale(.99)}
 .print-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.status-opt{
+  padding:10px 18px;border-radius:var(--r-sm);font-size:14px;font-weight:600;
+  border:1.5px solid var(--border-2);color:var(--ink-3);background:var(--surface);
+  cursor:pointer;transition:all .12s;user-select:none;
+}
+.status-opt:hover{border-color:var(--stone-400);color:var(--ink-2)}
+.status-opt.on{background:var(--stone-800);border-color:var(--stone-800);color:#fff}
 .print-btn svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
 /* Nav between steps */
@@ -1083,11 +1090,23 @@ body{
               </div>
               <div class="review-field">
                 <span class="rf-label">Section</span>
-                <input type="text" class="rf-input" id="rv-section" readonly style="color:var(--ink-3)">
+                <select class="rf-input" id="rv-section">
+                  <option value="">— No section —</option>
+                  <option>Canapés</option><option>Starters</option><option>Mains</option>
+                  <option>Dessert</option><option>Evening Grazing</option><option>Tasting Menu</option>
+                </select>
               </div>
               <div class="review-field">
                 <span class="rf-label">Job code</span>
-                <input type="text" class="rf-input" id="rv-job" readonly style="color:var(--ink-3)">
+                <select class="rf-input" id="rv-job"><option value="">— No job code —</option></select>
+              </div>
+              <div class="review-field review-full">
+                <span class="rf-label">Label status</span>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+                  <div class="status-opt on" onclick="setLabelStatus('')" data-val="">Fresh</div>
+                  <div class="status-opt" onclick="setLabelStatus('FROZEN')" data-val="FROZEN">❄️ Frozen</div>
+                  <div class="status-opt" onclick="setLabelStatus('THAWED')" data-val="THAWED">💧 Thawed</div>
+                </div>
               </div>
             </div>
 
@@ -1389,7 +1408,7 @@ var selStaffIdx=null;
 var peCS={c:[],m:[]};
 
 /* Wizard state */
-var W={prod:null,job:null,section:null,al:{c:[],m:[],na:false},step:1};
+var W={prod:null,job:null,section:null,al:{c:[],m:[],na:false},step:1,labelStatus:''};
 
 /* ═══════════ SUPABASE ═══════════ */
 async function sb(method,table,body,qs){
@@ -1530,7 +1549,7 @@ function goStep(n){
 function jumpStep(n){if(n<=W.step||W.prod)goStep(n);}
 
 function resetWizard(){
-  W={prod:null,job:null,section:null,al:{c:[],m:[],na:false},step:1};
+  W={prod:null,job:null,section:null,al:{c:[],m:[],na:false},step:1,labelStatus:''};
   document.querySelectorAll('#step-2 .job-card').forEach(c=>c.classList.remove('selected'));
   document.querySelectorAll('#step-3 .section-card').forEach(c=>c.classList.remove('selected'));
   for(var i=1;i<=5;i++){
@@ -1672,8 +1691,15 @@ function buildReview(){
   if(W.prod){try{var d=new Date(today+'T00:00:00');d.setHours(d.getHours()+parseInt(W.prod.shelf_life_hours));useby=d.toISOString().split('T')[0];}catch(e){}}
   document.getElementById('rv-useby').value=useby;
   document.getElementById('rv-prepby').value=U.name;
-  document.getElementById('rv-section').value=W.section||'';
-  document.getElementById('rv-job').value=W.job?W.job.code:'';
+  // Populate section select
+  var secSel=document.getElementById('rv-section');
+  if(secSel){for(var i=0;i<secSel.options.length;i++){if(secSel.options[i].value===(W.section||'')){secSel.selectedIndex=i;break;}}}
+  // Populate job select
+  var jobSel=document.getElementById('rv-job');
+  if(jobSel){jobSel.innerHTML='<option value="">— No job code —</option>';jobs.forEach(j=>{var o=document.createElement('option');o.value=j.code;o.textContent=j.code+' · '+j.description;jobSel.appendChild(o);});if(W.job)jobSel.value=W.job.code;}
+  // Reset status
+  W.labelStatus='';
+  document.querySelectorAll('.status-opt').forEach(o=>{o.classList.toggle('on',o.dataset.val==='');});
   document.getElementById('rv-notes').value='';
   document.getElementById('rv-qty').value=1;
   // Allergen summary
@@ -1692,6 +1718,10 @@ function buildReview(){
 function adjQty(d){var el=document.getElementById('rv-qty');el.value=Math.max(1,Math.min(50,(parseInt(el.value)||1)+d));}
 
 /* ═══════════ PRINT ═══════════ */
+function setLabelStatus(val){
+  W.labelStatus=val;
+  document.querySelectorAll('.status-opt').forEach(o=>o.classList.toggle('on',o.dataset.val===val));
+}
 async function doPrint(){
   var btn=document.getElementById('print-btn');
   btn.disabled=true;
@@ -1711,6 +1741,7 @@ async function doPrint(){
     contains:W.al.na?null:(W.al.c.join(', ')||null),
     may_contain:W.al.na?null:(W.al.m.join(', ')||null),
     no_allergens:W.al.na,
+    status:W.labelStatus||null,
     notes:notes||null,printed_at:now
   };
 
