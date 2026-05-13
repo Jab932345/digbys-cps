@@ -1731,34 +1731,36 @@ function setLabelStatus(val){
   var prepLbl=document.getElementById('rv-useby-label');
   var useby=document.getElementById('rv-useby');
   var prep=document.getElementById('rv-prep');
+  var sdRow=document.getElementById('rv-status-date-row');
+  var sdLbl=document.getElementById('rv-status-date-label');
+  var sd=document.getElementById('rv-status-date');
   if(!useby)return;
   if(val==='THAWED'){
-    // Hide prep date row, set use by to today + 3 days
     if(prepRow)prepRow.style.display='none';
     if(prepLbl)prepLbl.textContent='Use by';
+    if(sdRow)sdRow.style.display='';
+    if(sdLbl)sdLbl.textContent='Thawed on';
+    if(sd&&!sd.value)sd.value=today;
     var d=new Date();d.setDate(d.getDate()+3);
     useby.value=d.toISOString().split('T')[0];
-    useby.classList.add('danger');
-    // Set prep date to today as the thaw date
-    if(prep)prep.value=today;
   } else if(val==='FROZEN'){
-    // Hide prep date row, set use by to 3 months
     if(prepRow)prepRow.style.display='none';
     if(prepLbl)prepLbl.textContent='Use by';
+    if(sdRow)sdRow.style.display='';
+    if(sdLbl)sdLbl.textContent='Frozen on';
+    if(sd&&!sd.value)sd.value=today;
     var d=new Date();d.setMonth(d.getMonth()+3);
     useby.value=d.toISOString().split('T')[0];
-    useby.classList.add('danger');
-    if(prep)prep.value=today;
   } else {
-    // Fresh — show prep date, recalculate normally
     if(prepRow)prepRow.style.display='';
     if(prepLbl)prepLbl.textContent='Use by — auto';
+    if(sdRow)sdRow.style.display='none';
+    if(sd)sd.value='';
     if(W.prod&&prep&&prep.value){
       var d=new Date(prep.value+'T00:00:00');
       d.setHours(d.getHours()+parseInt(W.prod.shelf_life_hours||72));
       useby.value=d.toISOString().split('T')[0];
     }
-    useby.classList.add('danger');
   }
 }
 async function doPrint(){
