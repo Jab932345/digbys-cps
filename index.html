@@ -1809,7 +1809,7 @@ function renderHistory(){
   var groups={};list.forEach(j=>{var k=j.date_prepped||'Unknown';(groups[k]=groups[k]||[]).push(j);});
   el.innerHTML=Object.keys(groups).map(date=>`
     <div class="hist-day">${fd(date)}</div>
-    ${groups[date].map(j=>`<div class="hist-item">
+    ${groups[date].map(j=>`<div class="hist-item" onclick="reprFromHistory(${JSON.stringify(j).replace(/"/g,'&quot;')})" title="Tap to reprint">
       <div class="hist-body">
         <div class="hist-product">${j.product_name}</div>
         <div class="hist-sub">${j.staff_name}${j.section?' · '+j.section:''}${j.job_code?' · '+j.job_code:''}</div>
@@ -1819,8 +1819,56 @@ function renderHistory(){
         <div class="hist-qty">×${j.quantity}</div>
         <div class="hist-ql">labels</div>
         <div class="hist-time">${j.printed_at||''}</div>
+        <div style="font-size:11px;color:var(--stone-400);margin-top:4px">Tap to reprint</div>
       </div>
     </div>`).join('')}`).join('');
+}
+
+/* ═══════════ REPRINT FROM HISTORY ═══════════ */
+function reprFromHistory(j){
+  // Find product
+  var p=prods.find(x=>x.name===j.product_name);
+  // Go to wizard step 5 directly with all data pre-filled
+  if(p){
+    W.prod=p;
+    var c=p.contains?p.contains.split(',').map(x=>x.trim()).filter(Boolean):[];
+    var m=p.may_contain?p.may_contain.split(',').map(x=>x.trim()).filter(Boolean):[];
+    W.al={c:[...c],m:[...m],na:j.no_allergens||false};
+  }else{
+    W.prod={name:j.product_name,shelf_life_hours:72,contains:j.contains||'',may_contain:j.may_contain||''};
+    var c=j.contains?j.contains.split(',').map(x=>x.trim()).filter(Boolean):[];
+    var m=j.may_contain?j.may_contain.split(',').map(x=>x.trim()).filter(Boolean):[];
+    W.al={c:[...c],m:[...m],na:j.no_allergens||false};
+  }
+  W.job=j.job_code?{code:j.job_code,description:j.job_code}:null;
+  W.section=j.section||null;
+  W.labelStatus='';
+  // Switch to wizard
+  switchPanel('wizard');
+  // Go to step 5
+  for(var i=1;i<=5;i++){
+    var ws=document.getElementById('ws-'+i);
+    ws.classList.toggle('active',i===5);
+    ws.classList.toggle('done',i<5);
+    document.getElementById('wn-'+i).textContent=i<5?'✓':5;
+  }
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('on'));
+  document.getElementById('step-5').classList.add('on');
+  W.step=5;
+  buildAllergenChips();
+  buildReview();
+  // Override dates with history values
+  setTimeout(()=>{
+    if(j.date_prepped)document.getElementById('rv-prep').value=j.date_prepped;
+    if(j.date_useby)document.getElementById('rv-useby').value=j.date_useby;
+    if(j.staff_name)document.getElementById('rv-prepby').value=j.staff_name;
+    if(j.notes)document.getElementById('rv-notes').value=j.notes;
+    if(j.quantity)document.getElementById('rv-qty').value=j.quantity;
+    document.getElementById('wv-1').textContent=j.product_name;
+    document.getElementById('wv-2').textContent=j.job_code||'No job code';
+    document.getElementById('wv-3').textContent=j.section||'No section';
+  },50);
+  toast('Loaded — check details and print');
 }
 
 /* ═══════════ DATA LOADING ═══════════ */
