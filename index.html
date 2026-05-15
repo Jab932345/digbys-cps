@@ -961,7 +961,11 @@ body{
           </div>
           <div class="ws-item" id="ws-5" onclick="jumpStep(5)">
             <div class="ws-num" id="wn-5">5</div>
-            <div class="ws-body"><div class="ws-label">Review & Print</div><div class="ws-value" id="wv-5">Confirm and print</div></div>
+            <div class="ws-body"><div class="ws-label">Weight & Portions</div><div class="ws-value" id="wv-5">Skip or add weight</div></div>
+          </div>
+          <div class="ws-item" id="ws-6" onclick="jumpStep(6)">
+            <div class="ws-num" id="wn-6">6</div>
+            <div class="ws-body"><div class="ws-label">Review & Print</div><div class="ws-value" id="wv-6">Confirm and print</div></div>
           </div>
         </div>
 
@@ -1063,8 +1067,64 @@ body{
             </div>
           </div>
 
-          <!-- STEP 5: REVIEW & PRINT -->
+          <!-- STEP 5: WEIGHT & PORTIONS -->
           <div class="step" id="step-5">
+            <div class="step-title">Weight & Portions</div>
+            <div class="step-hint">Optional — select a mode or skip</div>
+
+            <div style="display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap">
+              <div class="status-opt on" onclick="setWeightMode('none',this)" data-wm="none">Skip</div>
+              <div class="status-opt" onclick="setWeightMode('weight',this)" data-wm="weight">⚖️ Weight</div>
+              <div class="status-opt" onclick="setWeightMode('portions',this)" data-wm="portions">🍽️ Portions</div>
+            </div>
+
+            <!-- WEIGHT MODE -->
+            <div id="wm-weight" style="display:none">
+              <div class="review-grid">
+                <div class="review-field">
+                  <span class="rf-label">Total weight</span>
+                  <input type="number" class="rf-input" id="w-total" placeholder="e.g. 2.5" step="0.001" min="0">
+                </div>
+                <div class="review-field">
+                  <span class="rf-label">Unit</span>
+                  <select class="rf-input" id="w-unit">
+                    <option value="kg">kg</option>
+                    <option value="g">g</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- PORTIONS MODE -->
+            <div id="wm-portions" style="display:none">
+              <div class="review-grid">
+                <div class="review-field">
+                  <span class="rf-label">Number of portions</span>
+                  <input type="number" class="rf-input" id="w-portions" placeholder="e.g. 14" min="1" step="1">
+                </div>
+                <div class="review-field">
+                  <span class="rf-label">Portion weight — optional</span>
+                  <div style="display:flex;gap:8px;align-items:center">
+                    <input type="number" class="rf-input" id="w-portion-size" placeholder="e.g. 180" min="0" step="1" style="flex:1">
+                    <select class="rf-input" id="w-portion-unit" style="width:70px">
+                      <option value="g">g</option>
+                      <option value="kg">kg</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <!-- Live preview -->
+              <div id="w-preview" style="margin-top:12px;padding:14px 16px;background:var(--surface);border:1.5px solid var(--border-2);border-radius:var(--r-sm);font-size:15px;font-weight:600;color:var(--ink);min-height:48px"></div>
+            </div>
+
+            <div class="step-nav">
+              <button class="btn-back" onclick="goStep(4)">← Back</button>
+              <button class="btn-next" onclick="goStep(6)">Next →</button>
+            </div>
+          </div>
+
+          <!-- STEP 6: REVIEW & PRINT -->
+          <div class="step" id="step-6">
             <div class="step-title">Review & Print</div>
             <div class="step-hint">Check everything — edit any field before printing</div>
 
@@ -1412,7 +1472,7 @@ var selStaffIdx=null;
 var peCS={c:[],m:[]};
 
 /* Wizard state */
-var W={prod:null,job:null,section:null,al:{c:[],m:[],na:false},step:1,labelStatus:''};
+var W={prod:null,job:null,section:null,al:{c:[],m:[],na:false},step:1,labelStatus:'',weightMode:'none',weightData:{}};
 
 /* ═══════════ SUPABASE ═══════════ */
 async function sb(method,table,body,qs){
@@ -1534,33 +1594,43 @@ function closeDS(id){document.getElementById(id).classList.remove('open');}
 
 /* ═══════════ WIZARD ═══════════ */
 function goStep(n){
-  // Validate going forward
   if(n>1&&!W.prod){toast('Select a product first','err');return;}
   W.step=n;
   document.querySelectorAll('.step').forEach(s=>s.classList.remove('on'));
   document.getElementById('step-'+n).classList.add('on');
-  // Update sidebar
-  for(var i=1;i<=5;i++){
-    var ws=document.getElementById('ws-'+i);
+  for(var i=1;i<=6;i++){
+    var ws=document.getElementById('ws-'+i);if(!ws)continue;
     ws.classList.toggle('active',i===n);
     ws.classList.toggle('done',i<n);
     document.getElementById('wn-'+i).textContent=i<n?'✓':i;
   }
-  if(n===5)buildReview();
+  if(n===5)updateWeightPreview();
+  if(n===6)buildReview();
   document.querySelector('.wizard-content').scrollTop=0;
 }
 
 function jumpStep(n){if(n<=W.step||W.prod)goStep(n);}
 
 function resetWizard(){
-  W={prod:null,job:null,section:null,al:{c:[],m:[],na:false},step:1,labelStatus:''};
+  W={prod:null,job:null,section:null,al:{c:[],m:[],na:false},step:1,labelStatus:'',weightMode:'none',weightData:{}};
   document.querySelectorAll('#step-2 .job-card').forEach(c=>c.classList.remove('selected'));
   document.querySelectorAll('#step-3 .section-card').forEach(c=>c.classList.remove('selected'));
-  for(var i=1;i<=5;i++){
-    document.getElementById('wv-'+i).textContent=['Select a product','Select a job code','Select a section','Review allergens','Confirm and print'][i-1];
-    document.getElementById('ws-'+i).classList.remove('done');
-    document.getElementById('wn-'+i).textContent=i;
+  for(var i=1;i<=6;i++){
+    var wv=document.getElementById('wv-'+i);
+    var ws=document.getElementById('ws-'+i);
+    var wn=document.getElementById('wn-'+i);
+    if(wv)wv.textContent=['Select a product','Select a job code','Select a section','Review allergens','Skip or add weight','Confirm and print'][i-1];
+    if(ws)ws.classList.remove('done');
+    if(wn)wn.textContent=i;
   }
+  // Reset weight state
+  W.weightMode='none';W.weightData={};
+  document.querySelectorAll('[data-wm]').forEach(o=>o.classList.toggle('on',o.dataset.wm==='none'));
+  var ww=document.getElementById('wm-weight');if(ww)ww.style.display='none';
+  var wp=document.getElementById('wm-portions');if(wp)wp.style.display='none';
+  var wt=document.getElementById('w-total');if(wt)wt.value='';
+  var wpo=document.getElementById('w-portions');if(wpo)wpo.value='';
+  var wps=document.getElementById('w-portion-size');if(wps)wps.value='';
   clearProductSearch();
   goStep(1);
 }
@@ -1717,7 +1787,7 @@ function buildReview(){
     if(W.al.m.length)t+=(t?'\n':'')+'May contain: '+W.al.m.join(', ');
     txt.textContent=t;txt.style.whiteSpace='pre-line';
   }else{sum.className='al-summary clear';txt.textContent='No allergens declared';}
-  document.getElementById('wv-5').textContent='Ready to print';
+  document.getElementById('wv-6').textContent='Ready to print';
 }
 
 function adjQty(d){var el=document.getElementById('rv-qty');el.value=Math.max(1,Math.min(50,(parseInt(el.value)||1)+d));}
@@ -1763,6 +1833,49 @@ function setLabelStatus(val){
     }
   }
 }
+function setWeightMode(mode,el){
+  W.weightMode=mode;
+  document.querySelectorAll('[data-wm]').forEach(o=>o.classList.toggle('on',o.dataset.wm===mode));
+  document.getElementById('wm-weight').style.display=mode==='weight'?'block':'none';
+  document.getElementById('wm-portions').style.display=mode==='portions'?'block':'none';
+  if(mode==='weight'||mode==='portions'){
+    // Add live update listeners
+    ['w-total','w-unit','w-portions','w-portion-size','w-portion-unit'].forEach(id=>{
+      var el=document.getElementById(id);
+      if(el&&!el._wlistener){el._wlistener=true;el.addEventListener('input',updateWeightPreview);}
+    });
+  }
+  updateWeightPreview();
+  document.getElementById('wv-5').textContent=mode==='none'?'Skipped':buildWeightDisplay()||'Enter details';
+}
+
+function buildWeightDisplay(){
+  var mode=W.weightMode;
+  if(mode==='weight'){
+    var total=document.getElementById('w-total')?.value;
+    var unit=document.getElementById('w-unit')?.value||'kg';
+    if(!total)return null;
+    return total+unit;
+  } else if(mode==='portions'){
+    var portions=document.getElementById('w-portions')?.value;
+    var size=document.getElementById('w-portion-size')?.value;
+    var sunit=document.getElementById('w-portion-unit')?.value||'g';
+    if(!portions)return null;
+    if(size)return '×'+portions+' portions · '+size+sunit+' each';
+    return '×'+portions+' portions';
+  }
+  return null;
+}
+
+function updateWeightPreview(){
+  var prev=document.getElementById('w-preview');if(!prev)return;
+  var d=buildWeightDisplay();
+  prev.textContent=d||'Fill in the details above…';
+  prev.style.color=d?'var(--ink)':'var(--ink-4)';
+  var wv=document.getElementById('wv-5');
+  if(wv)wv.textContent=W.weightMode==='none'?'Skipped':(d||'Enter details');
+}
+
 async function doPrint(){
   var btn=document.getElementById('print-btn');
   btn.disabled=true;
@@ -1783,6 +1896,8 @@ async function doPrint(){
     may_contain:W.al.na?null:(W.al.m.join(', ')||null),
     no_allergens:W.al.na,
     status:W.labelStatus||null,
+    weight_mode:W.weightMode||null,
+    weight_display:buildWeightDisplay()||null,
     status_date:document.getElementById('rv-status-date')?document.getElementById('rv-status-date').value||null:null,
     notes:notes||null,printed_at:now
   };
