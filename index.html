@@ -826,6 +826,83 @@ body{
 .toast.ok{background:var(--green)}
 .toast.err{background:var(--red)}
 
+/* ── PLATE LABELS ──────────────────────────────── */
+.plate-layout{display:grid;grid-template-columns:1fr 1fr;gap:20px;flex:1;overflow:hidden}
+@media(max-width:768px){.plate-layout{grid-template-columns:1fr;overflow-y:auto}}
+.plate-left{overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:16px}
+.plate-right{background:var(--stone-800);padding:24px;overflow-y:auto;display:flex;flex-direction:column;gap:16px}
+.plate-section{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow-sm)}
+.plate-section-title{padding:11px 16px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.plate-field-row{display:flex;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border);gap:10px}
+.plate-field-row:last-child{border-bottom:none}
+.pfl{font-size:14px;font-weight:500;color:var(--ink-3);width:100px;flex-shrink:0}
+.pf-inp{flex:1;border:none;background:none;font-family:var(--ff);font-size:15px;font-weight:500;color:var(--ink);outline:none}
+.pf-inp::placeholder{color:var(--ink-4)}
+.pf-sel{flex:1;border:none;background:none;font-family:var(--ff);font-size:15px;font-weight:500;color:var(--ink);outline:none;-webkit-appearance:none}
+
+/* Urgency toggle */
+.urgency-opts{display:flex;gap:8px;padding:12px 16px;flex-wrap:wrap}
+.urg-opt{
+  padding:8px 16px;border-radius:var(--r-sm);font-size:13px;font-weight:700;
+  cursor:pointer;border:1.5px solid var(--border-2);color:var(--ink-3);
+  background:var(--surface);transition:all .12s;user-select:none;
+}
+.urg-opt.on.allergy{background:var(--red);border-color:var(--red);color:#fff}
+.urg-opt.on.intolerance{background:#d97706;border-color:#d97706;color:#fff}
+.urg-opt.on.dislike{background:var(--stone-500);border-color:var(--stone-500);color:#fff}
+
+/* Dietary quick chips */
+.diet-chips{display:flex;flex-wrap:wrap;gap:7px;padding:12px 16px}
+.diet-chip{
+  padding:8px 14px;border-radius:var(--r-sm);font-size:13px;font-weight:600;
+  border:1.5px solid var(--border-2);color:var(--ink-3);background:var(--surface);
+  cursor:pointer;transition:all .12s;user-select:none;
+}
+.diet-chip.on{background:var(--stone-800);border-color:var(--stone-800);color:#fff}
+.diet-chip.on.al{background:var(--red);border-color:var(--red);color:#fff}
+
+/* Guest queue on right */
+.guest-queue-title{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--stone-400);margin-bottom:12px}
+.guest-card{
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  border-radius:var(--r);padding:14px;margin-bottom:10px;
+}
+.gc-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
+.gc-name{font-size:16px;font-weight:700;color:#fff;flex:1}
+.gc-urgency{
+  font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px;
+  text-transform:uppercase;letter-spacing:.08em;flex-shrink:0;
+}
+.gc-allergy{background:var(--red);color:#fff}
+.gc-intolerance{background:#d97706;color:#fff}
+.gc-dislike{background:var(--stone-500);color:#fff}
+.gc-dietary{font-size:14px;font-weight:700;color:#fff;margin-bottom:4px}
+.gc-table{font-size:13px;color:rgba(255,255,255,.5);font-family:var(--fmono)}
+.gc-dish{font-size:12px;color:rgba(255,255,255,.4);margin-top:4px;font-style:italic}
+.gc-actions{display:flex;gap:6px;margin-top:10px;justify-content:flex-end}
+.queue-empty-plate{
+  text-align:center;padding:40px 20px;color:var(--stone-600);
+}
+.queue-empty-plate svg{width:40px;height:40px;stroke:var(--stone-700);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;margin-bottom:12px}
+.queue-empty-plate p{font-size:14px}
+
+/* Plate label preview mock */
+.plate-preview-mock{
+  background:#fff;border-radius:6px;overflow:hidden;
+  box-shadow:0 2px 12px rgba(0,0,0,.3);
+  margin-bottom:16px;
+}
+.pm-urgency-bar{padding:10px 14px;text-align:center;font-size:14px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.pm-allergy-bar{background:var(--red);color:#fff}
+.pm-intolerance-bar{background:#d97706;color:#fff}
+.pm-dislike-bar{background:var(--stone-500);color:#fff}
+.pm-name{font-size:22px;font-weight:800;color:var(--ink);padding:12px 14px 4px;letter-spacing:-.02em}
+.pm-dietary{font-size:18px;font-weight:700;padding:0 14px 4px;color:var(--ink)}
+.pm-table{font-size:16px;font-weight:700;padding:0 14px 10px;color:var(--ink-2);font-family:var(--fmono)}
+.pm-rule{height:1px;background:var(--rule);margin:0 14px}
+.pm-dish{font-size:12px;color:var(--ink-3);padding:8px 14px;line-height:1.5;font-style:italic}
+.pm-footer{padding:5px 14px;background:var(--bg);font-size:9px;color:var(--ink-4);font-family:var(--fmono)}
+
 @media(max-width:768px){
   .wizard-steps{display:none}
   .review-grid{grid-template-columns:1fr}
@@ -914,6 +991,10 @@ body{
         History
       </div>
       <div class="sn-section">Management</div>
+      <div class="sn-item" id="sn-plate" onclick="switchPanel('plate')">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        Plate Labels
+      </div>
       <div class="sn-item" id="sn-manager" onclick="switchPanel('manager')">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M5.93 4.93a10 10 0 0 0 0 14.14"/></svg>
         Manage
@@ -1426,6 +1507,118 @@ body{
 
     </div>
 
+    <!-- ══ PLATE LABELS PANEL ══ -->
+    <div class="panel" id="panel-plate">
+      <div class="top-bar">
+        <div><div class="top-bar-title">Plate Labels</div><div class="top-bar-sub">Dietary guest labels for service</div></div>
+        <button class="btn btn-outline btn-sm" onclick="clearPlateForm()">Clear</button>
+      </div>
+      <div class="plate-layout">
+
+        <!-- LEFT: Build a guest label -->
+        <div class="plate-left">
+
+          <!-- Guest details -->
+          <div class="plate-section">
+            <div class="plate-section-title">Guest details</div>
+            <div class="plate-field-row"><span class="pfl">Guest name</span><input class="pf-inp" id="pl-name" type="text" placeholder="e.g. John Doe" oninput="updatePlatePreview()"></div>
+            <div class="plate-field-row"><span class="pfl">Table</span><input class="pf-inp" id="pl-table" type="text" placeholder="e.g. 4" style="width:60px" oninput="updatePlatePreview()"></div>
+            <div class="plate-field-row"><span class="pfl">Position</span><input class="pf-inp" id="pl-pos" type="text" placeholder="e.g. 3" style="width:60px" oninput="updatePlatePreview()"></div>
+          </div>
+
+          <!-- Urgency -->
+          <div class="plate-section">
+            <div class="plate-section-title">Type</div>
+            <div class="urgency-opts">
+              <div class="urg-opt on allergy" onclick="setUrgency('allergy',this)">⚠️ Allergy</div>
+              <div class="urg-opt intolerance" onclick="setUrgency('intolerance',this)">Intolerance</div>
+              <div class="urg-opt dislike" onclick="setUrgency('dislike',this)">Dislike</div>
+            </div>
+          </div>
+
+          <!-- Dietary requirements -->
+          <div class="plate-section">
+            <div class="plate-section-title">Dietary requirement — tap to select, tap again to deselect</div>
+            <div class="diet-chips" id="pl-quick-chips">
+              <div class="diet-chip" onclick="toggleDietChip(this)">Vegan</div>
+              <div class="diet-chip" onclick="toggleDietChip(this)">Vegetarian</div>
+              <div class="diet-chip" onclick="toggleDietChip(this)">Gluten Free</div>
+              <div class="diet-chip" onclick="toggleDietChip(this)">Lactose Free</div>
+              <div class="diet-chip" onclick="toggleDietChip(this)">Gluten</div>
+              <div class="diet-chip" onclick="toggleDietChip(this)">Crustaceans</div>
+              <div class="diet-chip" onclick="toggleDietChip(this)">Eggs</div>
+              <div class="diet-chip" onclick="toggleDietChip(this)">Fish</div>
+              <div class="diet-chip" onclick="toggleDietChip(this)">Peanuts</div>
+              <div class="diet-chip" onclick="toggleDietChip(this)">Soya</div>
+              <div class="diet-chip" onclick="toggleDietChip(this)">Milk</div>
+              <div class="diet-chip" onclick="toggleDietChip(this)">Nuts</div>
+              <div class="diet-chip" onclick="toggleDietChip(this)">Celery</div>
+              <div class="diet-chip" onclick="toggleDietChip(this)">Mustard</div>
+              <div class="diet-chip" onclick="toggleDietChip(this)">Sesame</div>
+              <div class="diet-chip" onclick="toggleDietChip(this)">Sulphites</div>
+              <div class="diet-chip" onclick="toggleDietChip(this)">Lupin</div>
+              <div class="diet-chip" onclick="toggleDietChip(this)">Molluscs</div>
+            </div>
+            <div class="plate-field-row" style="border-top:1px solid var(--border)">
+              <span class="pfl">Custom</span>
+              <input class="pf-inp" id="pl-custom-diet" type="text" placeholder="e.g. No alliums, No garlic…" oninput="updatePlatePreview()">
+            </div>
+          </div>
+
+          <!-- Dish description -->
+          <div class="plate-section">
+            <div class="plate-section-title">Dish description</div>
+            <div class="plate-field-row">
+              <textarea class="pf-inp" id="pl-dish" placeholder="e.g. Gluten free bread, chilli honey butter" rows="2" style="resize:none;line-height:1.5;padding:4px 0" oninput="updatePlatePreview()"></textarea>
+            </div>
+          </div>
+
+          <!-- Add to queue button -->
+          <button class="print-btn" onclick="addToPlateQueue()">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add guest to queue
+          </button>
+
+        </div>
+
+        <!-- RIGHT: Queue + preview -->
+        <div class="plate-right">
+
+          <!-- Live preview -->
+          <div>
+            <div class="guest-queue-title">Label preview</div>
+            <div class="plate-preview-mock" id="plate-preview">
+              <div class="pm-urgency-bar pm-allergy-bar" id="pp-urgency">ALLERGY</div>
+              <div class="pm-name" id="pp-name">Guest name</div>
+              <div class="pm-dietary" id="pp-dietary">Dietary requirement</div>
+              <div class="pm-table" id="pp-table">T— · P—</div>
+              <div class="pm-rule"></div>
+              <div class="pm-dish" id="pp-dish">Dish description</div>
+              <div class="pm-footer">Digby's CPS · Plate Label</div>
+            </div>
+          </div>
+
+          <!-- Guest queue -->
+          <div>
+            <div class="guest-queue-title" id="queue-title-plate">Queue — 0 guests</div>
+            <div id="plate-queue-list">
+              <div class="queue-empty-plate">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/></svg>
+                <p>Add guests above then print all at once</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Print all button -->
+          <button class="print-btn" onclick="printAllPlateLabels()" id="plate-print-all-btn" style="opacity:.4;cursor:not-allowed" disabled>
+            <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            Print all labels
+          </button>
+
+        </div>
+      </div>
+    </div>
+
     <!-- MOBILE NAV -->
     <nav class="mobile-nav">
       <div class="mn-tabs">
@@ -1571,7 +1764,7 @@ async function boot(){
 
 /* ═══════════ PANEL NAVIGATION ═══════════ */
 function switchPanel(id){
-  ['wizard','queue','history','manager'].forEach(p=>{
+  ['wizard','queue','history','manager','plate'].forEach(p=>{
     document.getElementById('panel-'+p).classList.toggle('on',p===id);
     var sn=document.getElementById('sn-'+p);if(sn)sn.classList.toggle('on',p===id);
     var mn=document.getElementById('mn-'+p);if(mn)mn.classList.toggle('on',p===id);
@@ -2206,6 +2399,148 @@ function exportAudit(){var l=JSON.parse(localStorage.getItem('_dcps_a')||'[]');i
 async function exportTbl(t){try{var data=await sb('GET',t,'','order=created_at.asc');if(!data.length){toast('No data','err');return;}var keys=Object.keys(data[0]).filter(k=>k!=='pin');dlCSV(keys.join(',')+'\n'+data.map(row=>keys.map(k=>`"${(row[k]??'').toString().replace(/"/g,'""')}"`).join(',')).join('\n'),'digbys-'+t+'.csv');toast('Exported');}catch(e){toast('Export failed','err');}}
 async function exportHistory(){try{var data=await sb('GET','print_jobs','','order=created_at.desc');if(!data.length){toast('No history','err');return;}var keys=['product_name','staff_name','section','job_code','quantity','date_prepped','date_useby','contains','may_contain','notes','printed_at'];dlCSV(keys.join(',')+'\n'+data.map(j=>keys.map(k=>`"${(j[k]??'').toString().replace(/"/g,'""')}"`).join(',')).join('\n'),'digbys-history.csv');toast('Exported');}catch(e){toast('Export failed','err');}}
 function dlCSV(csv,name){var b=new Blob([csv],{type:'text/csv'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download=name;a.click();URL.revokeObjectURL(u);}
+
+/* ═══════════ PLATE LABELS ═══════════ */
+var plateQueue=[];
+var plateUrgency='allergy';
+
+function setUrgency(u,el){
+  plateUrgency=u;
+  document.querySelectorAll('.urg-opt').forEach(o=>o.classList.remove('on'));
+  el.classList.add('on');
+  updatePlatePreview();
+}
+
+function toggleDietChip(el){
+  el.classList.toggle('on');
+  updatePlatePreview();
+}
+
+function getSelectedDiets(){
+  var chips=[];
+  document.querySelectorAll('#pl-quick-chips .diet-chip.on').forEach(c=>chips.push(c.textContent));
+  var custom=document.getElementById('pl-custom-diet').value.trim();
+  if(custom)chips.push(custom);
+  return chips;
+}
+
+function updatePlatePreview(){
+  var name=document.getElementById('pl-name').value||'Guest name';
+  var table=document.getElementById('pl-table').value||'—';
+  var pos=document.getElementById('pl-pos').value||'—';
+  var dish=document.getElementById('pl-dish').value||'Dish description';
+  var diets=getSelectedDiets();
+  var dietary=diets.length?diets.join(' · '):'Dietary requirement';
+
+  document.getElementById('pp-name').textContent=name;
+  document.getElementById('pp-dietary').textContent=dietary;
+  document.getElementById('pp-table').textContent='T'+table+' · P'+pos;
+  document.getElementById('pp-dish').textContent=dish;
+
+  var bar=document.getElementById('pp-urgency');
+  var labels={allergy:'⚠ ALLERGY',intolerance:'INTOLERANCE',dislike:'DISLIKE'};
+  var cols={allergy:'pm-allergy-bar',intolerance:'pm-intolerance-bar',dislike:'pm-dislike-bar'};
+  bar.textContent=labels[plateUrgency];
+  bar.className='pm-urgency-bar '+cols[plateUrgency];
+}
+
+function addToPlateQueue(){
+  var name=document.getElementById('pl-name').value.trim();
+  var table=document.getElementById('pl-table').value.trim();
+  var pos=document.getElementById('pl-pos').value.trim();
+  var dish=document.getElementById('pl-dish').value.trim();
+  var diets=getSelectedDiets();
+  if(!name){toast('Enter a guest name','err');return;}
+  if(!diets.length&&!document.getElementById('pl-custom-diet').value.trim()){toast('Select at least one dietary requirement','err');return;}
+  if(!table||!pos){toast('Enter table and position','err');return;}
+  plateQueue.push({name,table,pos,dish,dietary:diets,urgency:plateUrgency,id:Date.now()});
+  renderPlateQueue();
+  // Clear form for next guest
+  document.getElementById('pl-name').value='';
+  document.getElementById('pl-pos').value='';
+  document.getElementById('pl-dish').value='';
+  document.getElementById('pl-custom-diet').value='';
+  document.querySelectorAll('#pl-quick-chips .diet-chip').forEach(c=>c.classList.remove('on'));
+  updatePlatePreview();
+  toast(name+' added to queue');
+}
+
+function renderPlateQueue(){
+  var el=document.getElementById('plate-queue-list');
+  var title=document.getElementById('queue-title-plate');
+  var btn=document.getElementById('plate-print-all-btn');
+  title.textContent='Queue — '+plateQueue.length+' guest'+(plateQueue.length!==1?'s':'');
+  btn.disabled=!plateQueue.length;
+  btn.style.opacity=plateQueue.length?'1':'.4';
+  btn.style.cursor=plateQueue.length?'pointer':'not-allowed';
+  if(!plateQueue.length){
+    el.innerHTML='<div class="queue-empty-plate"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/></svg><p>Add guests above then print all at once</p></div>';
+    return;
+  }
+  var urgCols={allergy:'gc-allergy',intolerance:'gc-intolerance',dislike:'gc-dislike'};
+  var urgLabels={allergy:'⚠ Allergy',intolerance:'Intolerance',dislike:'Dislike'};
+  el.innerHTML=plateQueue.map(g=>`
+    <div class="guest-card">
+      <div class="gc-top">
+        <span class="gc-name">${g.name}</span>
+        <span class="gc-urgency ${urgCols[g.urgency]}">${urgLabels[g.urgency]}</span>
+      </div>
+      <div class="gc-dietary">${g.dietary.join(' · ')}</div>
+      <div class="gc-table">T${g.table} · P${g.pos}</div>
+      ${g.dish?`<div class="gc-dish">${g.dish}</div>`:''}
+      <div class="gc-actions">
+        <button class="btn btn-red btn-xs" onclick="removePlateGuest(${g.id})">Remove</button>
+      </div>
+    </div>`).join('');
+}
+
+function removePlateGuest(id){
+  plateQueue=plateQueue.filter(g=>g.id!==id);
+  renderPlateQueue();
+}
+
+function clearPlateForm(){
+  document.getElementById('pl-name').value='';
+  document.getElementById('pl-table').value='';
+  document.getElementById('pl-pos').value='';
+  document.getElementById('pl-dish').value='';
+  document.getElementById('pl-custom-diet').value='';
+  document.querySelectorAll('#pl-quick-chips .diet-chip').forEach(c=>c.classList.remove('on'));
+  plateQueue=[];
+  renderPlateQueue();
+  updatePlatePreview();
+}
+
+async function printAllPlateLabels(){
+  if(!plateQueue.length){toast('No guests in queue','err');return;}
+  var btn=document.getElementById('plate-print-all-btn');
+  btn.disabled=true;btn.innerHTML='<div class="spin" style="border-top-color:#fff;width:18px;height:18px;border-width:2px"></div> Printing…';
+  var now=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  var ok=true;
+  for(var g of plateQueue){
+    var job={
+      plate:true,
+      guest_name:g.name,
+      table:g.table,
+      position:g.pos,
+      dietary:g.dietary.join(' · '),
+      dish:g.dish||'',
+      urgency:g.urgency,
+      printed_at:now,
+      quantity:1
+    };
+    var r=await sendToPI(job);
+    if(!r)ok=false;
+  }
+  if(ok){
+    toast(plateQueue.length+' plate label'+(plateQueue.length!==1?'s':'')+' printed ✓','ok');
+    plateQueue=[];renderPlateQueue();
+  }else{
+    toast('Some labels failed — check printer','err');
+  }
+  btn.disabled=false;
+  btn.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Print all labels';
+}
 
 /* ═══════════ TOAST ═══════════ */
 function toast(msg,type=''){var t=document.getElementById('toast');t.textContent=msg;t.className='toast'+(type==='ok'?' ok':type==='err'?' err':'');t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2600);}
