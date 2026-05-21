@@ -1463,6 +1463,17 @@ body{
             <button class="btn btn-dark" onclick="saveSettings()">Save settings</button>
           </div>
           <div class="divider"></div>
+          <span class="sec-label">Safe shutdown</span>
+          <div class="form-section" style="margin:0 12px 12px">
+            <div style="padding:14px 16px">
+              <p style="font-size:13px;color:var(--ink-3);margin-bottom:14px;line-height:1.6">Safely shut down the Raspberry Pi before unplugging it. Wait for the green light to stop flashing before removing power.</p>
+              <button class="btn btn-red" onclick="shutdownPi()">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+                Shut down Pi safely
+              </button>
+            </div>
+          </div>
+          <div class="divider"></div>
           <div class="form-section"><div style="padding:14px 16px;font-family:var(--fmono);font-size:12px;color:var(--ink-3);line-height:2.4"><div>Printer · 192.168.1.127</div><div>Pi &nbsp;&nbsp;&nbsp;&nbsp;· 192.168.1.175:3000</div><div>Tunnel · palatable-shack-scallion.ngrok-free.dev</div><div>Roll &nbsp;&nbsp;· DK-2251 black & red</div></div></div>
         </div>
       </div>
@@ -2361,6 +2372,30 @@ async function checkStatus(){
   catch(e){document.getElementById('pi-dot').className='s-dot off';document.getElementById('pi-msg').textContent='Offline — check Pi is powered on';document.getElementById('pr-dot').className='s-dot off';document.getElementById('pr-msg').textContent='Cannot check — Pi unreachable';}
 }
 async function testPrint(){toast('Sending test…');var ok=await sendToPI({product_name:'TEST',staff_name:U.name,section:'Test',job_code:'TEST',quantity:1,date_prepped:new Date().toISOString().split('T')[0],date_useby:new Date().toISOString().split('T')[0],contains:null,may_contain:null,notes:'Test print from Digbys CPS',printed_at:new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})});if(ok)toast('Test printed ✓','ok');}
+async function shutdownPi(){
+  if(!confirm('This will shut down the Raspberry Pi. You will need to physically unplug and replug it to restart. Continue?'))return;
+  try{
+    var r=await fetch(PRINT_URL.replace('/print','/shutdown'),{
+      method:'POST',
+      headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'true'},
+      signal:AbortSignal.timeout(8000)
+    });
+    toast('Pi is shutting down — wait for green light to stop before unplugging','ok');
+    setTimeout(()=>{
+      document.getElementById('pi-dot').className='s-dot off';
+      document.getElementById('pi-msg').textContent='Shut down — safe to unplug';
+      document.getElementById('pr-dot').className='s-dot off';
+      document.getElementById('pr-msg').textContent='Offline';
+    },5000);
+  }catch(e){
+    // Timeout is expected as Pi shuts down mid-request
+    toast('Pi is shutting down — wait for green light to stop before unplugging','ok');
+    setTimeout(()=>{
+      document.getElementById('pi-dot').className='s-dot off';
+      document.getElementById('pi-msg').textContent='Shut down — safe to unplug';
+    },5000);
+  }
+}
 function saveSettings(){PRINT_URL=document.getElementById('set-url').value;STATUS_URL=PRINT_URL.replace('/print','/status');alog('Updated printer settings','URL: '+PRINT_URL);toast('Saved','ok');}
 
 /* ═══════════ CUSTOM LABELS ═══════════ */
