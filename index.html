@@ -829,14 +829,14 @@ body{
 /* ── PLATE LABELS ──────────────────────────────── */
 .plate-layout{display:grid;grid-template-columns:1fr 1fr;gap:0;flex:1;overflow:hidden;min-height:0}
 @media(max-width:768px){.plate-layout{grid-template-columns:1fr;overflow-y:auto}}
-.plate-left{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:24px;display:flex;flex-direction:column;gap:16px;min-height:0}
+.plate-left{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:20px;display:flex;flex-direction:column;gap:12px;min-height:0;min-width:0;overflow-x:hidden}
 .plate-right{background:var(--stone-800);padding:24px;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:16px;min-height:0;border-left:1px solid var(--stone-700)}
-.plate-section{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow-sm)}
+.plate-section{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow-sm);min-width:0;width:100%}
 .plate-section-title{padding:11px 16px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
-.plate-field-row{display:flex;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border);gap:10px}
+.plate-field-row{display:flex;align-items:center;padding:10px 14px;border-bottom:1px solid var(--border);gap:8px;min-width:0;overflow:hidden}
 .plate-field-row:last-child{border-bottom:none}
-.pfl{font-size:14px;font-weight:500;color:var(--ink-3);width:100px;flex-shrink:0}
-.pf-inp{flex:1;border:none;background:none;font-family:var(--ff);font-size:15px;font-weight:500;color:var(--ink);outline:none}
+.pfl{font-size:13px;font-weight:500;color:var(--ink-3);width:80px;flex-shrink:0}
+.pf-inp{flex:1;min-width:0;border:none;background:none;font-family:var(--ff);font-size:14px;font-weight:500;color:var(--ink);outline:none;width:100%}
 .pf-inp::placeholder{color:var(--ink-4)}
 .pf-sel{flex:1;border:none;background:none;font-family:var(--ff);font-size:15px;font-weight:500;color:var(--ink);outline:none;-webkit-appearance:none}
 
@@ -852,11 +852,11 @@ body{
 .urg-opt.on.dislike{background:var(--stone-500);border-color:var(--stone-500);color:#fff}
 
 /* Dietary quick chips */
-.diet-chips{display:flex;flex-wrap:wrap;gap:7px;padding:12px 16px}
+.diet-chips{display:flex;flex-wrap:wrap;gap:6px;padding:12px 16px}
 .diet-chip{
-  padding:8px 14px;border-radius:var(--r-sm);font-size:13px;font-weight:600;
+  padding:6px 11px;border-radius:var(--r-sm);font-size:12px;font-weight:600;
   border:1.5px solid var(--border-2);color:var(--ink-3);background:var(--surface);
-  cursor:pointer;transition:all .12s;user-select:none;
+  cursor:pointer;transition:all .12s;user-select:none;white-space:nowrap;
 }
 .diet-chip.on{background:var(--stone-800);border-color:var(--stone-800);color:#fff}
 .diet-chip.on.al{background:var(--red);border-color:var(--red);color:#fff}
