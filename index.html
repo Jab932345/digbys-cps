@@ -1588,11 +1588,16 @@ body{
             </div>
           </div>
 
-          <!-- Add to queue button -->
-          <button class="print-btn" onclick="addToPlateQueue()">
-            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Add guest to queue
-          </button>
+          <!-- Action buttons -->
+          <div style="display:flex;gap:10px">
+            <button class="print-btn" onclick="addToPlateQueue()" style="flex:2">
+              <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Save to queue
+            </button>
+            <button class="print-btn" onclick="nextPlateGuest()" style="flex:1;background:var(--stone-600)">
+              Next guest
+            </button>
+          </div>
 
         </div>
 
@@ -2494,14 +2499,27 @@ function addToPlateQueue(){
   if(!table||!pos){toast('Enter table and position','err');return;}
   plateQueue.push({name,table,pos,dish,dietary:diets,urgency:plateUrgency,id:Date.now()});
   renderPlateQueue();
-  // Clear form for next guest
+  // Only clear dish description — keep all guest info for next course
+  document.getElementById('pl-dish').value='';
+  document.getElementById('pl-dish').focus();
+  updatePlatePreview();
+  toast('Label added — change dish for next course');
+}
+
+function nextPlateGuest(){
+  // Clear everything for a new guest
   document.getElementById('pl-name').value='';
+  document.getElementById('pl-table').value='';
   document.getElementById('pl-pos').value='';
   document.getElementById('pl-dish').value='';
   document.getElementById('pl-custom-diet').value='';
   document.querySelectorAll('#pl-quick-chips .diet-chip').forEach(c=>c.classList.remove('on'));
+  plateUrgency='allergy';
+  document.querySelectorAll('.urg-opt').forEach(o=>o.classList.remove('on'));
+  document.querySelector('.urg-opt.allergy').classList.add('on');
   updatePlatePreview();
-  toast(name+' added to queue');
+  document.getElementById('pl-name').focus();
+  toast('Ready for next guest');
 }
 
 function renderPlateQueue(){
@@ -2545,6 +2563,9 @@ function clearPlateForm(){
   document.getElementById('pl-dish').value='';
   document.getElementById('pl-custom-diet').value='';
   document.querySelectorAll('#pl-quick-chips .diet-chip').forEach(c=>c.classList.remove('on'));
+  plateUrgency='allergy';
+  document.querySelectorAll('.urg-opt').forEach(o=>o.classList.remove('on'));
+  document.querySelector('.urg-opt.allergy').classList.add('on');
   plateQueue=[];
   renderPlateQueue();
   updatePlatePreview();
