@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Digby's CPS</title>
+<meta name="description" content="Prep, plate and container labels for Digby's kitchen.">
+<meta name="theme-color" content="#F4F3F1" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F0E0D" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="CPS">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/icons/favicon-64.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@600&display=swap" rel="stylesheet">
+<style>
+/*STYLE*/
+</style>
+</head>
+<body>
+<div class="login" id="login" hidden><div class="login-card" id="login-card"></div></div>
+<div class="app" id="app" hidden>
+  <aside class="sidebar">
+    <div class="wordmark"><span class="wm">DIGBY'S</span><span class="wm-sub">CPS</span></div>
+    <nav class="sb-nav" id="sb-nav" aria-label="Sections"></nav>
+    <div class="sb-foot">
+      <button class="sb-pill" data-act="go" data-to="manage/printer" id="sb-printer" aria-label="Printer status"></button>
+      <button class="sb-pill" data-act="switch-user" id="sb-user"></button>
+    </div>
+  </aside>
+  <main class="main">
+    <section class="view" id="view-print" aria-label="Print"></section>
+    <section class="view" id="view-plates" aria-label="Plates"></section>
+    <section class="view" id="view-containers" aria-label="Containers"></section>
+    <section class="view" id="view-history" aria-label="History"></section>
+    <section class="view" id="view-manage" aria-label="Manage"></section>
+  </main>
+  <nav class="tabbar" id="tabbar" aria-label="Sections"></nav>
+</div>
+<div class="ov" id="ov" role="dialog" aria-modal="true"></div>
+<div class="ov top" id="ovc" role="alertdialog" aria-modal="true"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+/*SCRIPT*/
+</script>
+</body>
+</html>

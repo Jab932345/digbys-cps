@@ -462,9 +462,9 @@ def is_brother(ip):
 
 
 def scan_network():
-    """The Brother on the local network. Other devices listen on 9100 too (the
-    Star receipt printer can), so only a device that is recognisably the Brother
-    is used — never just whatever answers."""
+    """The Brother on the local network. Other devices can listen on 9100 too,
+    so only a device that is recognisably the Brother is used — never just
+    whatever answers."""
     me = pi_ip()
     if not me:
         return None
