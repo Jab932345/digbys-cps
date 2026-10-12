@@ -72,7 +72,8 @@ async function ctPrint(){
   for(const t of [...CT.tray]){
     const n=t.count;if(!(n>0))continue;
     if(!t.jid||t.jidN!==n){t.jid=uid();t.jidN=n;}
-    const res=await sendToPrinter({...ctPayload(t),quantity:n,job_id:'ct-'+t.jid});
+    let res=await sendToPrinter({...ctPayload(t),quantity:n,job_id:'ct-'+t.jid});
+    if(!res.ok&&!res.timeout){await new Promise(r=>setTimeout(r,2500));res=await sendToPrinter({...ctPayload(t),quantity:n,job_id:'ct-'+t.jid});}
     if(res.ok){ok+=n;recordPrint(ctRecord({...t,count:n}));t.count-=n;t.jid=null;if(t.count<=0)CT.tray=CT.tray.filter(x=>x!==t);}
     else{bad++;t.err=res.timeout?'Didn’t answer in time — it may have printed':res.error;err=res.error;break;}
     saveTray();

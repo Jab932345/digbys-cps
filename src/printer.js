@@ -25,7 +25,7 @@ async function piCall(method,path,body,ms){
    "Didn't answer in time" may still have printed — it's never resent by itself. */
 async function sendToPrinter(payload){
   const n=Math.max(1,Math.min(50,parseInt(payload.quantity)||1));
-  try{const d=await piCall('POST','/print',payload,20000+n*1200);if(d.success)return{ok:true,ip:d.printer_ip};return{ok:false,error:d.error||'The printer said no'};}
+  try{const d=await piCall('POST','/print',payload,45000+n*1500);if(d.success)return{ok:true,ip:d.printer_ip};return{ok:false,error:d.error||'The printer said no'};}
   catch(e){return{ok:false,error:e.message,unreachable:!!e.unreachable,timeout:!!e.timeout};}
   finally{setTimeout(checkPrinter,1500);}
 }

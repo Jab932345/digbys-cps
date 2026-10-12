@@ -1632,7 +1632,7 @@ async function piCall(method,path,body,ms){
    "Didn't answer in time" may still have printed — it's never resent by itself. */
 async function sendToPrinter(payload){
   const n=Math.max(1,Math.min(50,parseInt(payload.quantity)||1));
-  try{const d=await piCall('POST','/print',payload,20000+n*1200);if(d.success)return{ok:true,ip:d.printer_ip};return{ok:false,error:d.error||'The printer said no'};}
+  try{const d=await piCall('POST','/print',payload,45000+n*1500);if(d.success)return{ok:true,ip:d.printer_ip};return{ok:false,error:d.error||'The printer said no'};}
   catch(e){return{ok:false,error:e.message,unreachable:!!e.unreachable,timeout:!!e.timeout};}
   finally{setTimeout(checkPrinter,1500);}
 }
@@ -2475,7 +2475,8 @@ async function plPrint(filter){
   const done=LS.get('dcps_plate_done2',{});
   for(const q of todo){
     q.err=null;q.state='printing';const qEl=$('#pl-queue');if(qEl)qEl.innerHTML=plQueueHTML();
-    const res=await sendToPrinter({...plPayload(q),job_id:'pl-'+q.id});
+    let res=await sendToPrinter({...plPayload(q),job_id:'pl-'+q.id});
+    if(!res.ok&&!res.timeout){await new Promise(r=>setTimeout(r,2500));res=await sendToPrinter({...plPayload(q),job_id:'pl-'+q.id});}
     q.state='';
     if(res.ok){ok++;PL.queue=PL.queue.filter(x=>x.id!==q.id);recordPrint(plRecord(q));if(q.eventId){const m=(done[q.eventId]=done[q.eventId]||{});m[norm(q.name)]=(m[norm(q.name)]||0)+1;}}
     else{bad++;q.err=res.timeout?'Didn’t answer in time — it may have printed':res.error;lastErr=res.error;break;}
@@ -2567,7 +2568,8 @@ async function ctPrint(){
   for(const t of [...CT.tray]){
     const n=t.count;if(!(n>0))continue;
     if(!t.jid||t.jidN!==n){t.jid=uid();t.jidN=n;}
-    const res=await sendToPrinter({...ctPayload(t),quantity:n,job_id:'ct-'+t.jid});
+    let res=await sendToPrinter({...ctPayload(t),quantity:n,job_id:'ct-'+t.jid});
+    if(!res.ok&&!res.timeout){await new Promise(r=>setTimeout(r,2500));res=await sendToPrinter({...ctPayload(t),quantity:n,job_id:'ct-'+t.jid});}
     if(res.ok){ok+=n;recordPrint(ctRecord({...t,count:n}));t.count-=n;t.jid=null;if(t.count<=0)CT.tray=CT.tray.filter(x=>x!==t);}
     else{bad++;t.err=res.timeout?'Didn’t answer in time — it may have printed':res.error;err=res.error;break;}
     saveTray();

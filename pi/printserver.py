@@ -49,7 +49,7 @@ from brother_ql.backends.helpers import send
 from brother_ql.conversion import convert
 from brother_ql.raster import BrotherQLRaster
 
-VERSION = '2.0.1'
+VERSION = '2.0.2'
 
 HOME = os.path.expanduser('~')
 STATE_DIR = os.path.join(HOME, '.digbys')
@@ -549,6 +549,18 @@ def find_in_background():
     threading.Thread(target=run, daemon=True).start()
 
 
+def wait_ready(ip, secs):
+    """The Brother stops answering while it prints the previous job, so a busy
+    printer is waited for rather than treated as missing."""
+    end = time.time() + secs
+    while True:
+        if port_open(ip, timeout=1.0):
+            return True
+        if time.time() >= end:
+            return False
+        time.sleep(0.4)
+
+
 def print_images(img, qty):
     qlr = BrotherQLRaster(PRINTER_MODEL)
     qlr.exception_on_warning = True
@@ -556,19 +568,23 @@ def print_images(img, qty):
                            threshold=70.0, dither=False, compress=False, red=True,
                            dpi_600=False, hq=True, cut=True)
     with _send_lock:
-        ip = _printer['ip'] if _printer['ip'] and port_open(_printer['ip']) else find_printer()
-        if not ip:
-            raise RuntimeError("Printer not found on the network — is it on and joined to Digbys-BOH?")
-        try:
-            send(instructions=instructions, printer_identifier='tcp://' + ip,
-                 backend_identifier='network', blocking=True)
-        except Exception:
-            _printer['ip'] = None
-            again = find_printer()
-            if not again:
-                raise
-            send(instructions=instructions, printer_identifier='tcp://' + again,
-                 backend_identifier='network', blocking=True)
+        last = None
+        for attempt in range(3):
+            ip = _printer['ip']
+            if not (ip and wait_ready(ip, 10)):
+                ip = find_printer(scan=attempt > 0)
+            if not ip:
+                last = RuntimeError("Printer not found on the network — is it on and joined to Digbys-BOH?")
+                time.sleep(1.5)
+                continue
+            try:
+                send(instructions=instructions, printer_identifier='tcp://' + ip,
+                     backend_identifier='network', blocking=True)
+                return
+            except Exception as e:
+                last = e
+                time.sleep(1.5)
+        raise last
 
 
 # ═══════════════════════════════════════════════════════════════════════
