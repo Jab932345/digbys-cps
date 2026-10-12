@@ -762,3 +762,6 @@ button.stepper-n:active{background:var(--fill2);}
 .alc.shake{animation:shake .42s var(--spring);}
 .inbox-more{display:block;width:100%;padding:11px 14px;border-top:1px solid var(--sep);text-align:center;font-size:var(--fs-sh);font-weight:600;color:var(--kp);}
 @media (hover:hover){.inbox-more:hover{background:var(--fill4);}}
+.aled.need{animation:pulseRing .5s var(--spring);border-radius:var(--r-md);box-shadow:0 0 0 2px var(--al);}
+.tile.unchecked{box-shadow:var(--ring),0 0 0 1.5px var(--warn);}
+.warn-t{color:var(--warn);font-weight:600;display:inline-flex;align-items:center;gap:4px;}

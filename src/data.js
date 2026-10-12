@@ -191,10 +191,15 @@ function uncheckedProducts(){return S.cps.products.filter(p=>p.category!==CONTAI
 /* A product row, written with its mark — without it if this database has no such column. */
 async function saveProductRow(method,path,body){
   try{return await rest(CPS,method,path,body,{prefer:'return=minimal'});}
-  catch(e){if(!e.offline&&'menu_type'in body&&(isColumnError(e)||/22P02|42804|malformed array/i.test((e.code||'')+' '+e.message))){const{menu_type,...rest2}=body;return await rest(CPS,method,path,rest2,{prefer:'return=minimal'});}throw e;}
+  catch(e){const has=Array.isArray(body)?body.some(b=>'menu_type'in b):'menu_type'in body;if(!e.offline&&has&&(isColumnError(e)||/22P02|42804|malformed array/i.test((e.code||'')+' '+e.message))){const strip=({menu_type,...r})=>r;return await rest(CPS,method,path,Array.isArray(body)?body.map(strip):strip(body),{prefer:'return=minimal'});}throw e;}
 }
 function rowForInsert(r){const{id,created_at,updated_at,...rest}=r;return rest;}
-function containers(){return S.cps.products.filter(p=>p.category===CONTAINER).map(p=>({id:p.id,name:String(p.name||'').trim(),contains:alList(p.contains),may:alList(p.may_contain),row:p})).sort((a,b)=>a.name.localeCompare(b.name));}
+/* checked: its allergens were chosen — some allergens, or No allergens (saved as an empty contains).
+   An older container saved with nothing has to be checked before it prints. */
+function containers(){return S.cps.products.filter(p=>p.category===CONTAINER).map(p=>({id:p.id,name:String(p.name||'').trim(),contains:alList(p.contains),may:alList(p.may_contain),
+  shelf:SHELVES.includes(p.menu_type)?p.menu_type:'',checked:p.contains!=null||p.may_contain!=null,row:p})).sort((a,b)=>a.name.localeCompare(b.name));}
+function shelfOf(c){return c.shelf||guessShelf(c.name);}
+function byShelf(list){return SHELVES.map(s=>[s,list.filter(c=>shelfOf(c)===s)]).filter(([,l])=>l.length);}
 function allProducts(){return[...S.kp.products,...customProducts()];}
 function productByKey(k){return allProducts().find(p=>p.key===k)||null;}
 function productByName(name){const n=norm(name);return S.kp.products.find(p=>norm(p.name)===n)||customProducts().find(p=>norm(p.name)===n)||null;}

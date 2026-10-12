@@ -43,8 +43,12 @@ curl -fsSL "$BASE/printserver.py?v=$TS" -o "$STATE/printserver.new.py" || fail "
 grep -q DIGBYS_PRINTSERVER_V2 "$STATE/printserver.new.py" || fail "the download isn't the print server — nothing changed."
 "$PY" -m py_compile "$STATE/printserver.new.py" || fail "the download is damaged — nothing changed."
 
+"$PY" -m pip install -q pyusb >/dev/null 2>&1 || say "USB printing not installed (no internet?) — Wi-Fi printing still works."
+
 if [ "$FROM_APP" -eq 0 ]; then
   say "Setting up permissions (the Pi's password, if asked)…"
+  echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="04f9", MODE="0666"' | sudo tee /etc/udev/rules.d/99-digbys-brother.rules >/dev/null \
+    && sudo udevadm control --reload-rules && sudo udevadm trigger || say "Couldn't set up USB access — Wi-Fi printing still works."
   RULES="$STATE/sudoers.tmp"
   cat > "$RULES" <<EOF
 $APP_USER ALL=(root) NOPASSWD: /usr/bin/systemctl restart digbys-cps, /bin/systemctl restart digbys-cps, /usr/bin/systemctl start --no-block digbys-cps-update, /bin/systemctl start --no-block digbys-cps-update, /usr/sbin/shutdown -h now, /sbin/shutdown -h now

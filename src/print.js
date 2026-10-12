@@ -519,7 +519,7 @@ async function saveOneOffProduct(p,w){
   const days=daysBetween(w.made,w.useby);const hrs=w.status||days==null?72:days<=0?12:days*24;
   try{
     forgetKpName(p.name);
-    await saveProductRow('POST','products',{name:p.name.replace(/\s—\s/g,' - '),category:cat,menu_type:CUSTOM_MARK,shelf_life_hours:hrs,contains:w.al.none?null:(w.al.c.join(', ')||null),may_contain:w.al.none?null:(w.al.m.join(', ')||null)});
+    await saveProductRow('POST','products',{name:p.name.replace(/\s—\s/g,' - '),category:cat,menu_type:CUSTOM_MARK,shelf_life_hours:hrs,contains:w.al.none?'':(w.al.c.join(', ')||''),may_contain:w.al.none?null:(w.al.m.join(', ')||null)});
     alog('Added product',p.name+' (from a one-off)');await loadCPS();
     const np=customProducts().find(x=>norm(x.name)===norm(p.name));if(np)pushRecent(np.key);
     if(w.section!==undefined&&np)rememberSection(np,w.section||'');

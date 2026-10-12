@@ -45,7 +45,7 @@ async function checkPrinter(){
 function printerText(){
   const p=S.printer;
   switch(p.state){
-    case'ready':return['ok','Printer ready',p.info&&p.info.printer_ip?'Brother QL · '+p.info.printer_ip:'Brother QL-820'];
+    case'ready':return['ok','Printer ready',p.info&&p.info.usb?'Brother QL · USB'+(p.info.wifi?' + Wi-Fi':''):p.info&&p.info.printer_ip?'Brother QL · Wi-Fi '+p.info.printer_ip:'Brother QL-820'];
     case'searching':return['warn pulse','Finding the printer…','The Pi is looking for it'];
     case'noprinter':return['bad','Printer not found','Is it on, with labels in?'];
     case'offline':return['bad','Printer offline',p.error||'Can’t reach the Pi'];

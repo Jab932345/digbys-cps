@@ -22,6 +22,18 @@ const DIETS=['Vegan','Vegetarian','Gluten Free','Lactose Free'];
 const COLS=['#8C2F2F','#2F66A8','#2F8F4E','#7A4E9E','#B86E0A','#23798A','#A8477A','#5F7A2F'];
 const CONTAINER='Container';
 const DRY_STORE=[['Plain Flour','Gluten'],['Self Raising Flour','Gluten'],['Bread Flour','Gluten'],['Granulated Sugar',''],['Caster Sugar','']];
+/* Container shelves, in the order they're shown. A container's shelf lives in products.menu_type. */
+const SHELVES=['Dry Store','Spices & Seasonings','Sauces & Condiments','Oils & Vinegars','Stocks & Bases','Food Additives','Non-food'];
+const SHELF_WORDS=[
+  ['Food Additives',/agar|alginate|carrageenan|gellan|gelan|xanthan|guar|locust|lecithin|maltodextrin|ultra.?tex|meat glue|transglutaminase|calcium (lactate|chloride)|citrate|stabili[sz]er|emulsifier|pectin|gelatin|msg|glutamate|titanium|citric acid|lactic acid|malic|tartaric|ascorbic|isomalt|glucose powder|dextrose|methylcellulose|tapioca maltodextrin|sucro|activa|nitrite|curing salt|pink salt/i],
+  ['Non-food',/clean|tab(s|let)|chemical|detergent|wood ?chip|charcoal|foil|film|bag|glove|paper|sanitiser|soap/i],
+  ['Stocks & Bases',/stock|bouillon|base|demi|jus|consomm/i],
+  ['Oils & Vinegars',/vinegar|oil\b|oils/i],
+  ['Sauces & Condiments',/mustard|sauce|ketchup|mayo|chutney|relish|pickle|honey|jam|syrup|treacle|condiment/i],
+  ['Spices & Seasonings',/spice|pepper|paprika|cumin|chilli|chili|herb|seasoning|curry|cinnamon|nutmeg|clove|cardamom|saffron|vanilla|star anise|fennel|coriander|salt flakes|smoked salt/i],
+  ['Dry Store',/flour|sugar|rice|pasta|oat|bean|lentil|pulse|grain|polenta|semolina|cous|quinoa|salt|glucose|cornflour|corn flour|breadcrumb|panko|cocoa|chocolate|nut|seed|dried|yeast|baking/i]
+];
+function guessShelf(name){const n=String(name||'');const hit=SHELF_WORDS.find(([,re])=>re.test(n));return hit?hit[0]:'Dry Store';}
 const SQL_SETUP=`-- Digby's CPS 3 — run once in the CPS project (SQL editor → New query → Run).
 -- Adds the columns History uses to show where each label came from.
 -- Safe to run more than once; changes nothing that's already there.

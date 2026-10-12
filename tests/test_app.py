@@ -289,7 +289,7 @@ def t_wizard(pw):
     check('one-off payload', pl.get('product_name') == 'Beetroot relish' and pl.get('no_allergens') is True and pl.get('contains') is None and pl.get('job_code') is None and pl.get('source_note') == 'One-off', pl)
     p.wait_for_timeout(800)
     saved = [x for x in e.cps.t['products'] if x['name'] == 'Beetroot relish']
-    check('saved as a custom product', len(saved) == 1 and saved[0]['category'] == 'Mains' and saved[0]['contains'] is None, saved)
+    check('saved as a custom product', len(saved) == 1 and saved[0]['category'] == 'Mains' and saved[0]['contains'] == '', saved)
     check('job stays as stock', 'Stock' in p.locator('.job-pill').inner_text())
     search(p, 'beetroot')
     check('saved product now listed as Custom', 'Custom' in tile(p, 'Beetroot relish').inner_text())
@@ -400,6 +400,23 @@ def t_containers_history_manage(pw):
     pl = e.pi.payloads[-1]
     check('container payload', pl.get('storage') is True and pl.get('product_name') == 'Plain Flour' and pl.get('contains') == 'Gluten' and pl.get('quantity') == 2 and pl.get('date_prepped') == D(-1), pl)
     check('tray empties', ev(p, 'CT.tray.length') == 0)
+    heads = [x.lower() for x in p.locator('#ct-main .group-hd').all_inner_texts()]
+    check('containers grouped by shelf', any('dry store' in x for x in heads), heads)
+    # a new container can't be saved until its allergens are chosen
+    p.click('[data-act=ct-new] >> nth=0'); p.wait_for_selector('#ce-name')
+    p.fill('#ce-name', 'Sodium Citrate'); p.wait_for_timeout(150)
+    check('shelf suggested from the name', 'Food Additives' in p.locator('#ce-shelf .chip.on').inner_text())
+    p.click('[data-act=ce-save]'); p.wait_for_timeout(400)
+    check('won’t save without allergens or No allergens', not any(x['name'] == 'Sodium Citrate' for x in e.cps.t['products']) and 'No allergens' in toast_now(p))
+    p.click('#aled-ce [data-act=al-none]'); p.click('[data-act=ce-save]'); p.wait_for_timeout(700)
+    sc = [x for x in e.cps.t['products'] if x['name'] == 'Sodium Citrate']
+    check('saved with its shelf and No allergens', len(sc) == 1 and sc[0]['menu_type'] == 'Food Additives' and sc[0]['contains'] == '', sc)
+    # an older container with nothing set opens to be checked instead of printing
+    e.cps.t['products'].append({'id': 901, 'name': 'Mystery Powder', 'category': 'Container', 'menu_type': None, 'contains': None, 'may_contain': None, 'shelf_life_hours': 72})
+    ev(p, 'loadCPS()'); p.wait_for_timeout(600)
+    p.click('.ct-tiles .tile:has-text("Mystery Powder")'); p.wait_for_selector('#ce-name')
+    check('unchecked tub opens its allergens first, not the tray', ev(p, 'CT.tray.some(t=>t.name==="Mystery Powder")') is False)
+    p.click('.sheet [data-act=sheet-close]'); p.wait_for_timeout(200)
     p.click('[data-act=ct-edit]'); p.click('.ct-tiles .tile:has-text("Caster Sugar")'); p.wait_for_selector('#ce-name')
     p.click('#aled-ce .alc[data-v=Sulphites]')
     p.click('[data-act=ce-save]'); p.wait_for_timeout(500)

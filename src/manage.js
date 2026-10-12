@@ -94,7 +94,7 @@ function kpViewSheet(p){
 let CP=null;
 AL_ED.cp={get:()=>({c:[...CP.c],m:[...CP.m],none:CP.none,mode:CP.mode}),set:s=>{CP.c=s.c;CP.m=s.m;CP.none=s.none;CP.mode=s.mode;}};
 function cpSheet(p){
-  CP=p?{id:p.id,name:p.name,cat:p.cat,hours:p.shelfHours,c:[...p.contains],m:[...p.may],none:false,mode:'c',row:p.row,p}:{id:null,name:'',cat:'Other',hours:72,c:[],m:[],none:false,mode:'c'};
+  CP=p?{id:p.id,name:p.name,cat:p.cat,hours:p.shelfHours,c:[...p.contains],m:[...p.may],none:!p.contains.length&&!p.may.length&&p.row&&p.row.contains!=null,mode:'c',row:p.row,p}:{id:null,name:'',cat:'Other',hours:72,c:[],m:[],none:false,mode:'c'};
   openSheet({title:p?'Edit product':'New product',sub:'Custom — for things that aren’t in Kitchen Prep',body:`
     <div class="fld"><label class="fld-label" for="cp-name">Name</label><input class="inp inp-lg" id="cp-name" data-in="cp-name" value="${h(CP.name)}" placeholder="e.g. Staff lasagne" autocomplete="off" autofocus></div>
     <div class="fld"><span class="fld-label">Category</span><div class="chips" id="cp-cat">${cpCatHTML()}</div></div>
@@ -110,8 +110,9 @@ async function cpSave(){
   if(!name){toast('Give it a name',{type:'err'});$('#cp-name')?.focus();return;}
   if(kpNameSet().has(norm(name))){toast(`Kitchen Prep already has ${name} — use that one; its allergens stay up to date`,{type:'err'});return;}
   if(customProducts().some(p=>norm(p.name)===norm(name)&&String(p.id)!==String(CP.id))||containers().some(c=>norm(c.name)===norm(name))){toast(`There’s already something called ${name}`,{type:'err'});return;}
+  if(!CP.c.length&&!CP.m.length&&!CP.none){toast('Choose its allergens — or tap No allergens',{type:'err'});const a=$('#aled-cp');if(a){a.classList.remove('need');void a.offsetWidth;a.classList.add('need');a.scrollIntoView({behavior:'smooth',block:'center'});}return;}
   const hours=Math.max(1,Math.min(4000,parseInt(CP.hours)||72));
-  const body={name,category:CP.cat,menu_type:CUSTOM_MARK,shelf_life_hours:hours,contains:CP.none?null:(CP.c.join(', ')||null),may_contain:CP.none?null:(CP.m.join(', ')||null)};
+  const body={name,category:CP.cat,menu_type:CUSTOM_MARK,shelf_life_hours:hours,contains:CP.none?'':(CP.c.join(', ')||''),may_contain:CP.none?null:(CP.m.join(', ')||null)};
   try{
     if(CP.id!=null)await saveProductRow('PATCH','products?id=eq.'+encodeURIComponent(CP.id),body);
     else await saveProductRow('POST','products',body);
@@ -139,7 +140,7 @@ async function cpTidy(){
 function mgContainers(){
   const list=containers();const missing=DRY_STORE.filter(([n])=>!list.some(c=>norm(c.name)===norm(n))).length;
   $('#mg-detail').innerHTML=mgHead('Containers','Dry store and walk-in tubs',`<button class="btn btn-primary btn-sm" data-act="ct-new">${ico('plus')}New container</button>`)+`<div class="body narrow">
-    ${list.length?`<div class="group">${list.map(c=>`<button class="row row-nav" data-act="ct-edit-id" data-id="${h(c.id)}"><span class="row-main"><span class="row-t">${h(c.name)}</span><span class="row-s">${alMetaHTML(c.contains,c.may)}</span></span>${ico('chevron','chev')}</button>`).join('')}</div>`:`<div class="empty">${ico('box')}<div class="empty-t">No containers yet</div></div>`}
+    ${list.length?byShelf(list).map(([s,l])=>`<div class="group-hd"><span>${h(s)}</span><span class="n">${l.length}</span></div><div class="group">${l.map(c=>`<button class="row row-nav" data-act="ct-edit-id" data-id="${h(c.id)}"><span class="row-main"><span class="row-t">${h(c.name)}</span><span class="row-s">${c.checked?alMetaHTML(c.contains,c.may):'Allergens not set'}</span></span>${c.checked?'':'<span class="badge badge-warn">Check</span>'}${ico('chevron','chev')}</button>`).join('')}</div>`).join(''):`<div class="empty">${ico('box')}<div class="empty-t">No containers yet</div></div>`}
     ${missing?`<div style="margin-top:14px"><button class="btn" data-act="ct-seed">Add flour and sugar</button></div>`:''}
     <div class="group-ft" style="margin-top:8px">Print them from Containers — tap a tub, tap it again for another label.</div></div>`;
 }
@@ -235,7 +236,7 @@ function renderMgPrinter(){
   const oldServer=p.state!=='offline'&&p.info&&!ver;
   const help=p.state==='offline'?`<div class="group-ft" style="padding-bottom:4px">Check, in order: the Pi is plugged in (green light) · the Mango router is on · wait a minute after switching on. Then tap Check.</div>`
     :p.state==='noprinter'||p.state==='searching'?`<div class="group-ft" style="padding-bottom:4px">The Pi is fine but can’t see the printer. Check it’s on, has labels, and is on the Digbys-BOH Wi-Fi (Wi-Fi light steady). The Pi keeps looking by itself.</div>`:'';
-  const rows=[['Print server',ver?'Version '+ver:oldServer?'Older version':'—'],['Printer',info.printer_ip||(p.state==='ready'?'Connected':'—')],['Pi',info.pi_ip||'—'],['Receipt printer',info.receipt?'Connected':'—'],['Checked',p.at?ago(p.at):'—']];
+  const rows=[['Print server',ver?'Version '+ver:oldServer?'Older version':'—'],['Printer',info.usb?'USB'+(info.printer_ip?' · Wi-Fi '+info.printer_ip:''):info.printer_ip?'Wi-Fi '+info.printer_ip:(p.state==='ready'?'Connected':'—')],['Pi',info.pi_ip||'—'],['Receipt printer',info.receipt?'Connected':'—'],['Checked',p.at?ago(p.at):'—']];
   d.innerHTML=mgHead('Printer','Brother QL-820 on the Pi')+`<div class="body narrow">
     <div class="group"><div class="stat"><span class="dot ${cls}"></span><div class="grow"><div class="stat-t">${h(t)}</div><div class="stat-s">${h(sub||'')}</div></div><button class="btn btn-sm" data-act="pr-check">${ico('refresh')}Check</button></div></div>${help}
     <div class="group-hd">Details</div><div class="group">${rows.map(([k,v])=>`<div class="row"><span class="row-k">${k}</span><span class="row-v">${h(v)}</span></div>`).join('')}</div>

@@ -13,7 +13,8 @@ and Kitchen Prep.
   POST /shutdown  shuts the Pi down safely
   POST /update    installs the latest server from digbys-cps.vercel.app/pi
 
-The printer is found by itself on whatever network the Mango is on: the last
+Plugged into the Pi by USB, the printer is used that way first — no Wi-Fi
+needed — with Wi-Fi as the second route. Over Wi-Fi the printer is found by itself on whatever network the Mango is on: the last
 address that worked is tried first, then the local network is scanned for the
 printer's port (9100). Only a device that is recognisably the Brother is used
 (set PRINTER_IP in the service to name it by hand).
@@ -49,7 +50,7 @@ from brother_ql.backends.helpers import send
 from brother_ql.conversion import convert
 from brother_ql.raster import BrotherQLRaster
 
-VERSION = '2.0.2'
+VERSION = '2.1.0'
 
 HOME = os.path.expanduser('~')
 STATE_DIR = os.path.join(HOME, '.digbys')
@@ -549,6 +550,16 @@ def find_in_background():
     threading.Thread(target=run, daemon=True).start()
 
 
+def usb_printer():
+    """A Brother plugged into the Pi by USB — the route that doesn't need Wi-Fi."""
+    try:
+        from brother_ql.backends.pyusb import list_available_devices
+        devs = list_available_devices()
+        return devs[0]['identifier'].split('_')[0] if devs else None
+    except Exception:
+        return None
+
+
 def wait_ready(ip, secs):
     """The Brother stops answering while it prints the previous job, so a busy
     printer is waited for rather than treated as missing."""
@@ -569,6 +580,14 @@ def print_images(img, qty):
                            dpi_600=False, hq=True, cut=True)
     with _send_lock:
         last = None
+        usb = usb_printer()
+        if usb:
+            try:
+                send(instructions=instructions, printer_identifier=usb, backend_identifier='pyusb', blocking=True)
+                _printer['route'] = 'usb'
+                return
+            except Exception as e:
+                last = e            # USB failed: carry on over Wi-Fi
         for attempt in range(3):
             ip = _printer['ip']
             if not (ip and wait_ready(ip, 10)):
@@ -580,6 +599,7 @@ def print_images(img, qty):
             try:
                 send(instructions=instructions, printer_identifier='tcp://' + ip,
                      backend_identifier='network', blocking=True)
+                _printer['route'] = 'wifi'
                 return
             except Exception as e:
                 last = e
@@ -596,14 +616,17 @@ LEGACY = {'loaded': False, 'routes': [], 'error': None}
 @app.route('/status', methods=['GET'])
 def status():
     ip = _printer['ip']
+    usb = usb_printer()
     online = bool(ip and port_open(ip))
-    if not online:
+    if not online and not usb:
         find_in_background()
     return jsonify({
         'status': 'ok',
         'server': 'digbys-print',
         'version': VERSION,
-        'printer': online,
+        'printer': online or bool(usb),
+        'usb': bool(usb),
+        'wifi': online,
         'printer_ip': ip if online else None,
         'searching': _printer['searching'],
         'pi_ip': pi_ip(),

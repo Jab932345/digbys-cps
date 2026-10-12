@@ -181,6 +181,7 @@ const ACT={
   'ct-edit-id':el=>{const c=containers().find(x=>String(x.id)===el.dataset.id);if(c)ctEditSheet(c);},
   'ct-seed':()=>once('ct-seed',ctSeed),
   'ce-save':()=>once('ce-save',ceSave),
+  'ce-shelf':el=>{CE.shelf=el.dataset.v;CE.shelfSet=true;$('#ce-shelf').innerHTML=ceShelfHTML();},
   'ce-del':()=>once('ce-del',ceDelete),
   // history
   'hi-filter':el=>{HI.filter=el.dataset.v;$$('[data-act=hi-filter]').forEach(b=>b.classList.toggle('on',b.dataset.v===HI.filter));renderHiList();},
@@ -246,7 +247,7 @@ const IN={
   'wiz-notes':el=>{W.notes=el.value;schedulePreview();},
   'wiz-w':el=>{W[el.dataset.k]=el.value;schedulePreview();},
   'pl-f':el=>{PL[el.dataset.k]=el.value;if(el.dataset.k==='dish'){const b=$('#pl-add span');if(b)b.textContent=plAddText();}if(el.dataset.k==='name')plNameWarn();plPreview();},
-  'ce-name':el=>{CE.name=el.value;cePreview();},
+  'ce-name':el=>{CE.name=el.value;if(!CE.shelfSet&&CE.id==null){const g=guessShelf(CE.name);if(g!==CE.shelf){CE.shelf=g;const s=$('#ce-shelf');if(s)s.innerHTML=ceShelfHTML();}}cePreview();},
   'cp-name':el=>{CP.name=el.value;},
   'cp-hours':el=>{const v=parseInt(el.value);if(v>0){CP.hours=v;$$('#cp-life .chip').forEach(c=>c.classList.toggle('on',+c.dataset.v===v));}},
   'jc':el=>{JC[el.dataset.k]=el.value;$('#jc-out').textContent=jcCode();},

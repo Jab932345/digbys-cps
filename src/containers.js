@@ -17,7 +17,8 @@ function refreshTray(){
   const list=containers();
   CT.tray.forEach(t=>{const c=t.id!=null?list.find(x=>String(x.id)===String(t.id)):null;if(c){t.name=c.name;t.contains=c.contains;t.may=c.may;}});
 }
-AL_ED.ce={get:()=>({c:[...CE.c],m:[...CE.m],none:CE.none,mode:CE.mode}),set:s=>{CE.c=s.c;CE.m=s.m;CE.none=s.none;CE.mode=s.mode;},after:()=>cePreview()};
+AL_ED.ce={get:()=>({c:[...CE.c],m:[...CE.m],none:CE.none,mode:CE.mode}),set:s=>{CE.c=s.c;CE.m=s.m;CE.none=s.none;CE.mode=s.mode;$('#aled-ce')?.classList.remove('need');},after:()=>cePreview()};
+function ceShelfHTML(){return SHELVES.map(s=>`<button class="chip${CE.shelf===s?' on':''}" data-act="ce-shelf" data-v="${h(s)}" aria-pressed="${CE.shelf===s}">${h(s)}</button>`).join('');}
 function ctDateHTML(){const v=ctDate();return`<label class="date-pill" title="The date it went in the tub">${ico('calendar','ico-sm')}<span>Date in</span><b>${h(dayWords(v))}</b><input type="date" data-ch="ct-date" value="${h(v)}" aria-label="Date in"></label>`;}
 function renderContainers(){
   $('#view-containers').innerHTML=`<div class="ph"><div class="ph-title">Containers<div class="ph-sub">Tap a tub to add its label</div></div>
@@ -35,9 +36,10 @@ function renderCtMain(){
         <div class="empty-s faint" style="margin-top:8px">Plain, self raising and bread flour (gluten) · granulated and caster sugar</div></div>`;
     return;
   }
-  el.innerHTML=`<div class="tiles ct-tiles${CT.edit?' edit-on':''}">${list.map(c=>{const t=CT.tray.find(x=>String(x.id)===String(c.id));
-    return`<button class="tile" data-act="ct-tap" data-id="${h(c.id)}" aria-label="${h(c.name)}${t?', '+t.count+' to print':''}"><div class="tile-name">${h(c.name)}</div><div class="tile-meta">${alMetaHTML(c.contains,c.may)}</div>${t&&!CT.edit?`<span class="cnt" id="cnt-${h(c.id)}">${t.count}</span>`:''}<span class="edit-ico">${ico('pencil')}</span></button>`;}).join('')}</div>
-    ${CT.edit?'<div class="group-ft" style="padding-top:12px">Tap a container to rename it or change its allergens.</div>':''}`;
+  const tile=c=>{const t=CT.tray.find(x=>String(x.id)===String(c.id));
+    return`<button class="tile${c.checked?'':' unchecked'}" data-act="ct-tap" data-id="${h(c.id)}" aria-label="${h(c.name)}${t?', '+t.count+' to print':''}"><div class="tile-name">${h(c.name)}</div><div class="tile-meta">${c.checked?alMetaHTML(c.contains,c.may):`<span class="warn-t">${ico('warning','ico-xs')}Set its allergens</span>`}</div>${t&&!CT.edit?`<span class="cnt" id="cnt-${h(c.id)}">${t.count}</span>`:''}<span class="edit-ico">${ico('pencil')}</span></button>`;};
+  el.innerHTML=byShelf(list).map(([s,l])=>`<div class="group-hd"><span>${h(s)}</span><span class="n">${l.length}</span></div><div class="tiles ct-tiles${CT.edit?' edit-on':''}">${l.map(tile).join('')}</div>`).join('')
+    +(CT.edit?'<div class="group-ft" style="padding-top:12px">Tap a container to rename it, move its shelf or change its allergens.</div>':'');
 }
 function renderCtSide(){
   const el=$('#ct-side');if(!el)return;
@@ -53,6 +55,7 @@ function renderCtSide(){
 function ctTap(id){
   const c=containers().find(x=>String(x.id)===String(id));if(!c)return;
   if(CT.edit){ctEditSheet(c);return;}
+  if(!c.checked){ctEditSheet(c,true);return;}
   let t=CT.tray.find(x=>String(x.id)===String(c.id));
   if(t){if(t.count>=50)return;t.count++;t.err=null;CT.tray=CT.tray.filter(x=>x!==t).concat([t]);}
   else{t={key:'id:'+c.id,id:c.id,name:c.name,contains:c.contains,may:c.may,count:1};CT.tray.push(t);}
@@ -71,6 +74,7 @@ async function ctPrint(){
   let ok=0,bad=0,err='';
   for(const t of [...CT.tray]){
     const n=t.count;if(!(n>0))continue;
+    const c=t.id!=null&&containers().find(x=>String(x.id)===String(t.id));if(c&&!c.checked){t.err='Set its allergens first';bad++;err=t.err;break;}
     if(!t.jid||t.jidN!==n){t.jid=uid();t.jidN=n;}
     let res=await sendToPrinter({...ctPayload(t),quantity:n,job_id:'ct-'+t.jid});
     if(!res.ok&&!res.timeout){await new Promise(r=>setTimeout(r,2500));res=await sendToPrinter({...ctPayload(t),quantity:n,job_id:'ct-'+t.jid});}
@@ -83,11 +87,12 @@ async function ctPrint(){
   if(!bad)toast(`Sent ${plural(ok,'container label')} to the printer`);
   else toast(`${ok?ok+' sent. ':''}The rest are still here — ${err}`,{type:'err',ms:6000,action:'Retry',onAction:ctPrint});
 }
-function ctEditSheet(c){
-  CE=c?{id:c.id,name:c.name,c:[...c.contains],m:[...c.may],none:false,mode:'c'}:{id:null,name:'',c:[],m:[],none:false,mode:'c'};
-  openSheet({title:c?'Edit container':'New container',sub:c?'':'For a tub in the dry store or walk-in',body:`
-    <div class="fld"><label class="fld-label" for="ce-name">Name — prints big</label><input class="inp inp-lg" id="ce-name" data-in="ce-name" value="${h(CE.name)}" placeholder="e.g. Plain Flour" autocomplete="off" autofocus></div>
-    <div class="fld"><span class="fld-label">Allergens</span>${alEditorHTML('ce')}</div>
+function ctEditSheet(c,needCheck){
+  CE=c?{id:c.id,name:c.name,c:[...c.contains],m:[...c.may],none:c.checked&&!c.contains.length&&!c.may.length,mode:'c',shelf:shelfOf(c),shelfSet:true}:{id:null,name:'',c:[],m:[],none:false,mode:'c',shelf:'Dry Store',shelfSet:false};
+  openSheet({title:c?'Edit container':'New container',sub:needCheck?'Its allergens were never set — choose them, or No allergens, before it prints':c?'':'For a tub in the dry store or walk-in',body:`
+    <div class="fld"><label class="fld-label" for="ce-name">Name — prints big</label><input class="inp inp-lg" id="ce-name" data-in="ce-name" value="${h(CE.name)}" placeholder="e.g. Plain Flour" autocomplete="off" ${needCheck?'':'autofocus'}></div>
+    <div class="fld"><span class="fld-label">Shelf</span><div class="chips" id="ce-shelf">${ceShelfHTML()}</div></div>
+    <div class="fld"><span class="fld-label">Allergens <span class="hint">· choose them, or No allergens</span></span>${alEditorHTML('ce')}</div>
     <div class="lp"><div class="lp-cap"><b>Label</b><span>as it prints</span></div>${previewHTML('lp-ce',1)}</div>`,
     foot:`${c?`<button class="btn btn-danger" data-act="ce-del">${ico('trash')}Delete</button><span class="spacer"></span>`:''}<button class="btn" data-act="sheet-close">Cancel</button><button class="btn btn-primary" data-act="ce-save">${c?'Save':'Add container'}</button>`});
   cePreview();
@@ -97,10 +102,12 @@ async function ceSave(){
   if(!CE)return;const name=titleCase(CE.name);
   if(!name){toast('Give it a name',{type:'err'});$('#ce-name')?.focus();return;}
   if(containers().some(x=>norm(x.name)===norm(name)&&String(x.id)!==String(CE.id))){toast(`There’s already a container called ${name}`,{type:'err'});return;}
-  const body={name,category:CONTAINER,contains:CE.c.join(', ')||null,may_contain:CE.m.join(', ')||null,shelf_life_hours:72};
+  if(!CE.c.length&&!CE.m.length&&!CE.none){toast('Choose its allergens — or tap No allergens',{type:'err'});const a=$('#aled-ce');if(a){a.classList.remove('need');void a.offsetWidth;a.classList.add('need');a.scrollIntoView({behavior:'smooth',block:'center'});}return;}
+  // No allergens is saved as an empty "contains", so it reads as chosen, not forgotten.
+  const body={name,category:CONTAINER,menu_type:CE.shelf||guessShelf(name),contains:CE.c.join(', ')||'',may_contain:CE.m.join(', ')||null,shelf_life_hours:72};
   try{
-    if(CE.id!=null)await rest(CPS,'PATCH','products?id=eq.'+encodeURIComponent(CE.id),body,{prefer:'return=minimal'});
-    else await rest(CPS,'POST','products',body,{prefer:'return=minimal'});
+    if(CE.id!=null)await saveProductRow('PATCH','products?id=eq.'+encodeURIComponent(CE.id),body);
+    else await saveProductRow('POST','products',body);
     alog(CE.id!=null?'Edited container':'Added container',name);
     const was=CE.id;closeSheet();await loadCPS();refreshTray();saveTray();
     toast(was!=null?`Saved ${name}`:`Added ${name}`);
@@ -113,14 +120,14 @@ async function ceDelete(){
     closeSheet();alog('Deleted container',c.name);
     const tray=CT.tray;CT.tray=CT.tray.filter(t=>String(t.id)!==String(c.id));saveTray();
     await loadCPS();
-    toast(`Deleted ${c.name}`,{action:'Undo',onAction:()=>once('undo-ct-'+c.id,async()=>{try{await rest(CPS,'POST','products',{name:c.name,category:CONTAINER,contains:c.contains.join(', ')||null,may_contain:c.may.join(', ')||null,shelf_life_hours:72},{prefer:'return=minimal'});await loadCPS();toast(`${c.name} is back`);}catch(e){toast('Couldn’t undo — '+e.message,{type:'err'});}})});
+    toast(`Deleted ${c.name}`,{action:'Undo',onAction:()=>once('undo-ct-'+c.id,async()=>{try{await rest(CPS,'POST','products',rowForInsert(c.row),{prefer:'return=minimal'});await loadCPS();toast(`${c.name} is back`);}catch(e){toast('Couldn’t undo — '+e.message,{type:'err'});}})});
   }catch(e){toast('Couldn’t delete — '+e.message,{type:'err'});}
 }
 async function ctSeed(){
   const have=new Set(containers().map(c=>norm(c.name)));
-  const rows=DRY_STORE.filter(([n])=>!have.has(norm(n))).map(([n,a])=>({name:n,category:CONTAINER,contains:a||null,may_contain:null,shelf_life_hours:72}));
+  const rows=DRY_STORE.filter(([n])=>!have.has(norm(n))).map(([n,a])=>({name:n,category:CONTAINER,menu_type:'Dry Store',contains:a||'',may_contain:null,shelf_life_hours:72}));
   if(!rows.length){toast('They’re already there');return;}
-  try{await rest(CPS,'POST','products',rows,{prefer:'return=minimal'});alog('Added containers',rows.map(r=>r.name).join(', '));await loadCPS();toast(`Added ${plural(rows.length,'container')}`);}
+  try{await saveProductRow('POST','products',rows);alog('Added containers',rows.map(r=>r.name).join(', '));await loadCPS();toast(`Added ${plural(rows.length,'container')}`);}
   catch(e){toast('Couldn’t add them — '+e.message,{type:'err'});}
 }
 

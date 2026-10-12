@@ -782,6 +782,9 @@ button.stepper-n:active{background:var(--fill2);}
 .alc.shake{animation:shake .42s var(--spring);}
 .inbox-more{display:block;width:100%;padding:11px 14px;border-top:1px solid var(--sep);text-align:center;font-size:var(--fs-sh);font-weight:600;color:var(--kp);}
 @media (hover:hover){.inbox-more:hover{background:var(--fill4);}}
+.aled.need{animation:pulseRing .5s var(--spring);border-radius:var(--r-md);box-shadow:0 0 0 2px var(--al);}
+.tile.unchecked{box-shadow:var(--ring),0 0 0 1.5px var(--warn);}
+.warn-t{color:var(--warn);font-weight:600;display:inline-flex;align-items:center;gap:4px;}
 
 </style>
 </head>
@@ -833,6 +836,18 @@ const DIETS=['Vegan','Vegetarian','Gluten Free','Lactose Free'];
 const COLS=['#8C2F2F','#2F66A8','#2F8F4E','#7A4E9E','#B86E0A','#23798A','#A8477A','#5F7A2F'];
 const CONTAINER='Container';
 const DRY_STORE=[['Plain Flour','Gluten'],['Self Raising Flour','Gluten'],['Bread Flour','Gluten'],['Granulated Sugar',''],['Caster Sugar','']];
+/* Container shelves, in the order they're shown. A container's shelf lives in products.menu_type. */
+const SHELVES=['Dry Store','Spices & Seasonings','Sauces & Condiments','Oils & Vinegars','Stocks & Bases','Food Additives','Non-food'];
+const SHELF_WORDS=[
+  ['Food Additives',/agar|alginate|carrageenan|gellan|gelan|xanthan|guar|locust|lecithin|maltodextrin|ultra.?tex|meat glue|transglutaminase|calcium (lactate|chloride)|citrate|stabili[sz]er|emulsifier|pectin|gelatin|msg|glutamate|titanium|citric acid|lactic acid|malic|tartaric|ascorbic|isomalt|glucose powder|dextrose|methylcellulose|tapioca maltodextrin|sucro|activa|nitrite|curing salt|pink salt/i],
+  ['Non-food',/clean|tab(s|let)|chemical|detergent|wood ?chip|charcoal|foil|film|bag|glove|paper|sanitiser|soap/i],
+  ['Stocks & Bases',/stock|bouillon|base|demi|jus|consomm/i],
+  ['Oils & Vinegars',/vinegar|oil\b|oils/i],
+  ['Sauces & Condiments',/mustard|sauce|ketchup|mayo|chutney|relish|pickle|honey|jam|syrup|treacle|condiment/i],
+  ['Spices & Seasonings',/spice|pepper|paprika|cumin|chilli|chili|herb|seasoning|curry|cinnamon|nutmeg|clove|cardamom|saffron|vanilla|star anise|fennel|coriander|salt flakes|smoked salt/i],
+  ['Dry Store',/flour|sugar|rice|pasta|oat|bean|lentil|pulse|grain|polenta|semolina|cous|quinoa|salt|glucose|cornflour|corn flour|breadcrumb|panko|cocoa|chocolate|nut|seed|dried|yeast|baking/i]
+];
+function guessShelf(name){const n=String(name||'');const hit=SHELF_WORDS.find(([,re])=>re.test(n));return hit?hit[0]:'Dry Store';}
 const SQL_SETUP=`-- Digby's CPS 3 — run once in the CPS project (SQL editor → New query → Run).
 -- Adds the columns History uses to show where each label came from.
 -- Safe to run more than once; changes nothing that's already there.
@@ -1248,10 +1263,15 @@ function uncheckedProducts(){return S.cps.products.filter(p=>p.category!==CONTAI
 /* A product row, written with its mark — without it if this database has no such column. */
 async function saveProductRow(method,path,body){
   try{return await rest(CPS,method,path,body,{prefer:'return=minimal'});}
-  catch(e){if(!e.offline&&'menu_type'in body&&(isColumnError(e)||/22P02|42804|malformed array/i.test((e.code||'')+' '+e.message))){const{menu_type,...rest2}=body;return await rest(CPS,method,path,rest2,{prefer:'return=minimal'});}throw e;}
+  catch(e){const has=Array.isArray(body)?body.some(b=>'menu_type'in b):'menu_type'in body;if(!e.offline&&has&&(isColumnError(e)||/22P02|42804|malformed array/i.test((e.code||'')+' '+e.message))){const strip=({menu_type,...r})=>r;return await rest(CPS,method,path,Array.isArray(body)?body.map(strip):strip(body),{prefer:'return=minimal'});}throw e;}
 }
 function rowForInsert(r){const{id,created_at,updated_at,...rest}=r;return rest;}
-function containers(){return S.cps.products.filter(p=>p.category===CONTAINER).map(p=>({id:p.id,name:String(p.name||'').trim(),contains:alList(p.contains),may:alList(p.may_contain),row:p})).sort((a,b)=>a.name.localeCompare(b.name));}
+/* checked: its allergens were chosen — some allergens, or No allergens (saved as an empty contains).
+   An older container saved with nothing has to be checked before it prints. */
+function containers(){return S.cps.products.filter(p=>p.category===CONTAINER).map(p=>({id:p.id,name:String(p.name||'').trim(),contains:alList(p.contains),may:alList(p.may_contain),
+  shelf:SHELVES.includes(p.menu_type)?p.menu_type:'',checked:p.contains!=null||p.may_contain!=null,row:p})).sort((a,b)=>a.name.localeCompare(b.name));}
+function shelfOf(c){return c.shelf||guessShelf(c.name);}
+function byShelf(list){return SHELVES.map(s=>[s,list.filter(c=>shelfOf(c)===s)]).filter(([,l])=>l.length);}
 function allProducts(){return[...S.kp.products,...customProducts()];}
 function productByKey(k){return allProducts().find(p=>p.key===k)||null;}
 function productByName(name){const n=norm(name);return S.kp.products.find(p=>norm(p.name)===n)||customProducts().find(p=>norm(p.name)===n)||null;}
@@ -1652,7 +1672,7 @@ async function checkPrinter(){
 function printerText(){
   const p=S.printer;
   switch(p.state){
-    case'ready':return['ok','Printer ready',p.info&&p.info.printer_ip?'Brother QL · '+p.info.printer_ip:'Brother QL-820'];
+    case'ready':return['ok','Printer ready',p.info&&p.info.usb?'Brother QL · USB'+(p.info.wifi?' + Wi-Fi':''):p.info&&p.info.printer_ip?'Brother QL · Wi-Fi '+p.info.printer_ip:'Brother QL-820'];
     case'searching':return['warn pulse','Finding the printer…','The Pi is looking for it'];
     case'noprinter':return['bad','Printer not found','Is it on, with labels in?'];
     case'offline':return['bad','Printer offline',p.error||'Can’t reach the Pi'];
@@ -2284,7 +2304,7 @@ async function saveOneOffProduct(p,w){
   const days=daysBetween(w.made,w.useby);const hrs=w.status||days==null?72:days<=0?12:days*24;
   try{
     forgetKpName(p.name);
-    await saveProductRow('POST','products',{name:p.name.replace(/\s—\s/g,' - '),category:cat,menu_type:CUSTOM_MARK,shelf_life_hours:hrs,contains:w.al.none?null:(w.al.c.join(', ')||null),may_contain:w.al.none?null:(w.al.m.join(', ')||null)});
+    await saveProductRow('POST','products',{name:p.name.replace(/\s—\s/g,' - '),category:cat,menu_type:CUSTOM_MARK,shelf_life_hours:hrs,contains:w.al.none?'':(w.al.c.join(', ')||''),may_contain:w.al.none?null:(w.al.m.join(', ')||null)});
     alog('Added product',p.name+' (from a one-off)');await loadCPS();
     const np=customProducts().find(x=>norm(x.name)===norm(p.name));if(np)pushRecent(np.key);
     if(w.section!==undefined&&np)rememberSection(np,w.section||'');
@@ -2513,7 +2533,8 @@ function refreshTray(){
   const list=containers();
   CT.tray.forEach(t=>{const c=t.id!=null?list.find(x=>String(x.id)===String(t.id)):null;if(c){t.name=c.name;t.contains=c.contains;t.may=c.may;}});
 }
-AL_ED.ce={get:()=>({c:[...CE.c],m:[...CE.m],none:CE.none,mode:CE.mode}),set:s=>{CE.c=s.c;CE.m=s.m;CE.none=s.none;CE.mode=s.mode;},after:()=>cePreview()};
+AL_ED.ce={get:()=>({c:[...CE.c],m:[...CE.m],none:CE.none,mode:CE.mode}),set:s=>{CE.c=s.c;CE.m=s.m;CE.none=s.none;CE.mode=s.mode;$('#aled-ce')?.classList.remove('need');},after:()=>cePreview()};
+function ceShelfHTML(){return SHELVES.map(s=>`<button class="chip${CE.shelf===s?' on':''}" data-act="ce-shelf" data-v="${h(s)}" aria-pressed="${CE.shelf===s}">${h(s)}</button>`).join('');}
 function ctDateHTML(){const v=ctDate();return`<label class="date-pill" title="The date it went in the tub">${ico('calendar','ico-sm')}<span>Date in</span><b>${h(dayWords(v))}</b><input type="date" data-ch="ct-date" value="${h(v)}" aria-label="Date in"></label>`;}
 function renderContainers(){
   $('#view-containers').innerHTML=`<div class="ph"><div class="ph-title">Containers<div class="ph-sub">Tap a tub to add its label</div></div>
@@ -2531,9 +2552,10 @@ function renderCtMain(){
         <div class="empty-s faint" style="margin-top:8px">Plain, self raising and bread flour (gluten) · granulated and caster sugar</div></div>`;
     return;
   }
-  el.innerHTML=`<div class="tiles ct-tiles${CT.edit?' edit-on':''}">${list.map(c=>{const t=CT.tray.find(x=>String(x.id)===String(c.id));
-    return`<button class="tile" data-act="ct-tap" data-id="${h(c.id)}" aria-label="${h(c.name)}${t?', '+t.count+' to print':''}"><div class="tile-name">${h(c.name)}</div><div class="tile-meta">${alMetaHTML(c.contains,c.may)}</div>${t&&!CT.edit?`<span class="cnt" id="cnt-${h(c.id)}">${t.count}</span>`:''}<span class="edit-ico">${ico('pencil')}</span></button>`;}).join('')}</div>
-    ${CT.edit?'<div class="group-ft" style="padding-top:12px">Tap a container to rename it or change its allergens.</div>':''}`;
+  const tile=c=>{const t=CT.tray.find(x=>String(x.id)===String(c.id));
+    return`<button class="tile${c.checked?'':' unchecked'}" data-act="ct-tap" data-id="${h(c.id)}" aria-label="${h(c.name)}${t?', '+t.count+' to print':''}"><div class="tile-name">${h(c.name)}</div><div class="tile-meta">${c.checked?alMetaHTML(c.contains,c.may):`<span class="warn-t">${ico('warning','ico-xs')}Set its allergens</span>`}</div>${t&&!CT.edit?`<span class="cnt" id="cnt-${h(c.id)}">${t.count}</span>`:''}<span class="edit-ico">${ico('pencil')}</span></button>`;};
+  el.innerHTML=byShelf(list).map(([s,l])=>`<div class="group-hd"><span>${h(s)}</span><span class="n">${l.length}</span></div><div class="tiles ct-tiles${CT.edit?' edit-on':''}">${l.map(tile).join('')}</div>`).join('')
+    +(CT.edit?'<div class="group-ft" style="padding-top:12px">Tap a container to rename it, move its shelf or change its allergens.</div>':'');
 }
 function renderCtSide(){
   const el=$('#ct-side');if(!el)return;
@@ -2549,6 +2571,7 @@ function renderCtSide(){
 function ctTap(id){
   const c=containers().find(x=>String(x.id)===String(id));if(!c)return;
   if(CT.edit){ctEditSheet(c);return;}
+  if(!c.checked){ctEditSheet(c,true);return;}
   let t=CT.tray.find(x=>String(x.id)===String(c.id));
   if(t){if(t.count>=50)return;t.count++;t.err=null;CT.tray=CT.tray.filter(x=>x!==t).concat([t]);}
   else{t={key:'id:'+c.id,id:c.id,name:c.name,contains:c.contains,may:c.may,count:1};CT.tray.push(t);}
@@ -2567,6 +2590,7 @@ async function ctPrint(){
   let ok=0,bad=0,err='';
   for(const t of [...CT.tray]){
     const n=t.count;if(!(n>0))continue;
+    const c=t.id!=null&&containers().find(x=>String(x.id)===String(t.id));if(c&&!c.checked){t.err='Set its allergens first';bad++;err=t.err;break;}
     if(!t.jid||t.jidN!==n){t.jid=uid();t.jidN=n;}
     let res=await sendToPrinter({...ctPayload(t),quantity:n,job_id:'ct-'+t.jid});
     if(!res.ok&&!res.timeout){await new Promise(r=>setTimeout(r,2500));res=await sendToPrinter({...ctPayload(t),quantity:n,job_id:'ct-'+t.jid});}
@@ -2579,11 +2603,12 @@ async function ctPrint(){
   if(!bad)toast(`Sent ${plural(ok,'container label')} to the printer`);
   else toast(`${ok?ok+' sent. ':''}The rest are still here — ${err}`,{type:'err',ms:6000,action:'Retry',onAction:ctPrint});
 }
-function ctEditSheet(c){
-  CE=c?{id:c.id,name:c.name,c:[...c.contains],m:[...c.may],none:false,mode:'c'}:{id:null,name:'',c:[],m:[],none:false,mode:'c'};
-  openSheet({title:c?'Edit container':'New container',sub:c?'':'For a tub in the dry store or walk-in',body:`
-    <div class="fld"><label class="fld-label" for="ce-name">Name — prints big</label><input class="inp inp-lg" id="ce-name" data-in="ce-name" value="${h(CE.name)}" placeholder="e.g. Plain Flour" autocomplete="off" autofocus></div>
-    <div class="fld"><span class="fld-label">Allergens</span>${alEditorHTML('ce')}</div>
+function ctEditSheet(c,needCheck){
+  CE=c?{id:c.id,name:c.name,c:[...c.contains],m:[...c.may],none:c.checked&&!c.contains.length&&!c.may.length,mode:'c',shelf:shelfOf(c),shelfSet:true}:{id:null,name:'',c:[],m:[],none:false,mode:'c',shelf:'Dry Store',shelfSet:false};
+  openSheet({title:c?'Edit container':'New container',sub:needCheck?'Its allergens were never set — choose them, or No allergens, before it prints':c?'':'For a tub in the dry store or walk-in',body:`
+    <div class="fld"><label class="fld-label" for="ce-name">Name — prints big</label><input class="inp inp-lg" id="ce-name" data-in="ce-name" value="${h(CE.name)}" placeholder="e.g. Plain Flour" autocomplete="off" ${needCheck?'':'autofocus'}></div>
+    <div class="fld"><span class="fld-label">Shelf</span><div class="chips" id="ce-shelf">${ceShelfHTML()}</div></div>
+    <div class="fld"><span class="fld-label">Allergens <span class="hint">· choose them, or No allergens</span></span>${alEditorHTML('ce')}</div>
     <div class="lp"><div class="lp-cap"><b>Label</b><span>as it prints</span></div>${previewHTML('lp-ce',1)}</div>`,
     foot:`${c?`<button class="btn btn-danger" data-act="ce-del">${ico('trash')}Delete</button><span class="spacer"></span>`:''}<button class="btn" data-act="sheet-close">Cancel</button><button class="btn btn-primary" data-act="ce-save">${c?'Save':'Add container'}</button>`});
   cePreview();
@@ -2593,10 +2618,12 @@ async function ceSave(){
   if(!CE)return;const name=titleCase(CE.name);
   if(!name){toast('Give it a name',{type:'err'});$('#ce-name')?.focus();return;}
   if(containers().some(x=>norm(x.name)===norm(name)&&String(x.id)!==String(CE.id))){toast(`There’s already a container called ${name}`,{type:'err'});return;}
-  const body={name,category:CONTAINER,contains:CE.c.join(', ')||null,may_contain:CE.m.join(', ')||null,shelf_life_hours:72};
+  if(!CE.c.length&&!CE.m.length&&!CE.none){toast('Choose its allergens — or tap No allergens',{type:'err'});const a=$('#aled-ce');if(a){a.classList.remove('need');void a.offsetWidth;a.classList.add('need');a.scrollIntoView({behavior:'smooth',block:'center'});}return;}
+  // No allergens is saved as an empty "contains", so it reads as chosen, not forgotten.
+  const body={name,category:CONTAINER,menu_type:CE.shelf||guessShelf(name),contains:CE.c.join(', ')||'',may_contain:CE.m.join(', ')||null,shelf_life_hours:72};
   try{
-    if(CE.id!=null)await rest(CPS,'PATCH','products?id=eq.'+encodeURIComponent(CE.id),body,{prefer:'return=minimal'});
-    else await rest(CPS,'POST','products',body,{prefer:'return=minimal'});
+    if(CE.id!=null)await saveProductRow('PATCH','products?id=eq.'+encodeURIComponent(CE.id),body);
+    else await saveProductRow('POST','products',body);
     alog(CE.id!=null?'Edited container':'Added container',name);
     const was=CE.id;closeSheet();await loadCPS();refreshTray();saveTray();
     toast(was!=null?`Saved ${name}`:`Added ${name}`);
@@ -2609,14 +2636,14 @@ async function ceDelete(){
     closeSheet();alog('Deleted container',c.name);
     const tray=CT.tray;CT.tray=CT.tray.filter(t=>String(t.id)!==String(c.id));saveTray();
     await loadCPS();
-    toast(`Deleted ${c.name}`,{action:'Undo',onAction:()=>once('undo-ct-'+c.id,async()=>{try{await rest(CPS,'POST','products',{name:c.name,category:CONTAINER,contains:c.contains.join(', ')||null,may_contain:c.may.join(', ')||null,shelf_life_hours:72},{prefer:'return=minimal'});await loadCPS();toast(`${c.name} is back`);}catch(e){toast('Couldn’t undo — '+e.message,{type:'err'});}})});
+    toast(`Deleted ${c.name}`,{action:'Undo',onAction:()=>once('undo-ct-'+c.id,async()=>{try{await rest(CPS,'POST','products',rowForInsert(c.row),{prefer:'return=minimal'});await loadCPS();toast(`${c.name} is back`);}catch(e){toast('Couldn’t undo — '+e.message,{type:'err'});}})});
   }catch(e){toast('Couldn’t delete — '+e.message,{type:'err'});}
 }
 async function ctSeed(){
   const have=new Set(containers().map(c=>norm(c.name)));
-  const rows=DRY_STORE.filter(([n])=>!have.has(norm(n))).map(([n,a])=>({name:n,category:CONTAINER,contains:a||null,may_contain:null,shelf_life_hours:72}));
+  const rows=DRY_STORE.filter(([n])=>!have.has(norm(n))).map(([n,a])=>({name:n,category:CONTAINER,menu_type:'Dry Store',contains:a||'',may_contain:null,shelf_life_hours:72}));
   if(!rows.length){toast('They’re already there');return;}
-  try{await rest(CPS,'POST','products',rows,{prefer:'return=minimal'});alog('Added containers',rows.map(r=>r.name).join(', '));await loadCPS();toast(`Added ${plural(rows.length,'container')}`);}
+  try{await saveProductRow('POST','products',rows);alog('Added containers',rows.map(r=>r.name).join(', '));await loadCPS();toast(`Added ${plural(rows.length,'container')}`);}
   catch(e){toast('Couldn’t add them — '+e.message,{type:'err'});}
 }
 
@@ -2868,7 +2895,7 @@ function kpViewSheet(p){
 let CP=null;
 AL_ED.cp={get:()=>({c:[...CP.c],m:[...CP.m],none:CP.none,mode:CP.mode}),set:s=>{CP.c=s.c;CP.m=s.m;CP.none=s.none;CP.mode=s.mode;}};
 function cpSheet(p){
-  CP=p?{id:p.id,name:p.name,cat:p.cat,hours:p.shelfHours,c:[...p.contains],m:[...p.may],none:false,mode:'c',row:p.row,p}:{id:null,name:'',cat:'Other',hours:72,c:[],m:[],none:false,mode:'c'};
+  CP=p?{id:p.id,name:p.name,cat:p.cat,hours:p.shelfHours,c:[...p.contains],m:[...p.may],none:!p.contains.length&&!p.may.length&&p.row&&p.row.contains!=null,mode:'c',row:p.row,p}:{id:null,name:'',cat:'Other',hours:72,c:[],m:[],none:false,mode:'c'};
   openSheet({title:p?'Edit product':'New product',sub:'Custom — for things that aren’t in Kitchen Prep',body:`
     <div class="fld"><label class="fld-label" for="cp-name">Name</label><input class="inp inp-lg" id="cp-name" data-in="cp-name" value="${h(CP.name)}" placeholder="e.g. Staff lasagne" autocomplete="off" autofocus></div>
     <div class="fld"><span class="fld-label">Category</span><div class="chips" id="cp-cat">${cpCatHTML()}</div></div>
@@ -2884,8 +2911,9 @@ async function cpSave(){
   if(!name){toast('Give it a name',{type:'err'});$('#cp-name')?.focus();return;}
   if(kpNameSet().has(norm(name))){toast(`Kitchen Prep already has ${name} — use that one; its allergens stay up to date`,{type:'err'});return;}
   if(customProducts().some(p=>norm(p.name)===norm(name)&&String(p.id)!==String(CP.id))||containers().some(c=>norm(c.name)===norm(name))){toast(`There’s already something called ${name}`,{type:'err'});return;}
+  if(!CP.c.length&&!CP.m.length&&!CP.none){toast('Choose its allergens — or tap No allergens',{type:'err'});const a=$('#aled-cp');if(a){a.classList.remove('need');void a.offsetWidth;a.classList.add('need');a.scrollIntoView({behavior:'smooth',block:'center'});}return;}
   const hours=Math.max(1,Math.min(4000,parseInt(CP.hours)||72));
-  const body={name,category:CP.cat,menu_type:CUSTOM_MARK,shelf_life_hours:hours,contains:CP.none?null:(CP.c.join(', ')||null),may_contain:CP.none?null:(CP.m.join(', ')||null)};
+  const body={name,category:CP.cat,menu_type:CUSTOM_MARK,shelf_life_hours:hours,contains:CP.none?'':(CP.c.join(', ')||''),may_contain:CP.none?null:(CP.m.join(', ')||null)};
   try{
     if(CP.id!=null)await saveProductRow('PATCH','products?id=eq.'+encodeURIComponent(CP.id),body);
     else await saveProductRow('POST','products',body);
@@ -2913,7 +2941,7 @@ async function cpTidy(){
 function mgContainers(){
   const list=containers();const missing=DRY_STORE.filter(([n])=>!list.some(c=>norm(c.name)===norm(n))).length;
   $('#mg-detail').innerHTML=mgHead('Containers','Dry store and walk-in tubs',`<button class="btn btn-primary btn-sm" data-act="ct-new">${ico('plus')}New container</button>`)+`<div class="body narrow">
-    ${list.length?`<div class="group">${list.map(c=>`<button class="row row-nav" data-act="ct-edit-id" data-id="${h(c.id)}"><span class="row-main"><span class="row-t">${h(c.name)}</span><span class="row-s">${alMetaHTML(c.contains,c.may)}</span></span>${ico('chevron','chev')}</button>`).join('')}</div>`:`<div class="empty">${ico('box')}<div class="empty-t">No containers yet</div></div>`}
+    ${list.length?byShelf(list).map(([s,l])=>`<div class="group-hd"><span>${h(s)}</span><span class="n">${l.length}</span></div><div class="group">${l.map(c=>`<button class="row row-nav" data-act="ct-edit-id" data-id="${h(c.id)}"><span class="row-main"><span class="row-t">${h(c.name)}</span><span class="row-s">${c.checked?alMetaHTML(c.contains,c.may):'Allergens not set'}</span></span>${c.checked?'':'<span class="badge badge-warn">Check</span>'}${ico('chevron','chev')}</button>`).join('')}</div>`).join(''):`<div class="empty">${ico('box')}<div class="empty-t">No containers yet</div></div>`}
     ${missing?`<div style="margin-top:14px"><button class="btn" data-act="ct-seed">Add flour and sugar</button></div>`:''}
     <div class="group-ft" style="margin-top:8px">Print them from Containers — tap a tub, tap it again for another label.</div></div>`;
 }
@@ -3009,7 +3037,7 @@ function renderMgPrinter(){
   const oldServer=p.state!=='offline'&&p.info&&!ver;
   const help=p.state==='offline'?`<div class="group-ft" style="padding-bottom:4px">Check, in order: the Pi is plugged in (green light) · the Mango router is on · wait a minute after switching on. Then tap Check.</div>`
     :p.state==='noprinter'||p.state==='searching'?`<div class="group-ft" style="padding-bottom:4px">The Pi is fine but can’t see the printer. Check it’s on, has labels, and is on the Digbys-BOH Wi-Fi (Wi-Fi light steady). The Pi keeps looking by itself.</div>`:'';
-  const rows=[['Print server',ver?'Version '+ver:oldServer?'Older version':'—'],['Printer',info.printer_ip||(p.state==='ready'?'Connected':'—')],['Pi',info.pi_ip||'—'],['Receipt printer',info.receipt?'Connected':'—'],['Checked',p.at?ago(p.at):'—']];
+  const rows=[['Print server',ver?'Version '+ver:oldServer?'Older version':'—'],['Printer',info.usb?'USB'+(info.printer_ip?' · Wi-Fi '+info.printer_ip:''):info.printer_ip?'Wi-Fi '+info.printer_ip:(p.state==='ready'?'Connected':'—')],['Pi',info.pi_ip||'—'],['Receipt printer',info.receipt?'Connected':'—'],['Checked',p.at?ago(p.at):'—']];
   d.innerHTML=mgHead('Printer','Brother QL-820 on the Pi')+`<div class="body narrow">
     <div class="group"><div class="stat"><span class="dot ${cls}"></span><div class="grow"><div class="stat-t">${h(t)}</div><div class="stat-s">${h(sub||'')}</div></div><button class="btn btn-sm" data-act="pr-check">${ico('refresh')}Check</button></div></div>${help}
     <div class="group-hd">Details</div><div class="group">${rows.map(([k,v])=>`<div class="row"><span class="row-k">${k}</span><span class="row-v">${h(v)}</span></div>`).join('')}</div>
@@ -3304,6 +3332,7 @@ const ACT={
   'ct-edit-id':el=>{const c=containers().find(x=>String(x.id)===el.dataset.id);if(c)ctEditSheet(c);},
   'ct-seed':()=>once('ct-seed',ctSeed),
   'ce-save':()=>once('ce-save',ceSave),
+  'ce-shelf':el=>{CE.shelf=el.dataset.v;CE.shelfSet=true;$('#ce-shelf').innerHTML=ceShelfHTML();},
   'ce-del':()=>once('ce-del',ceDelete),
   // history
   'hi-filter':el=>{HI.filter=el.dataset.v;$$('[data-act=hi-filter]').forEach(b=>b.classList.toggle('on',b.dataset.v===HI.filter));renderHiList();},
@@ -3369,7 +3398,7 @@ const IN={
   'wiz-notes':el=>{W.notes=el.value;schedulePreview();},
   'wiz-w':el=>{W[el.dataset.k]=el.value;schedulePreview();},
   'pl-f':el=>{PL[el.dataset.k]=el.value;if(el.dataset.k==='dish'){const b=$('#pl-add span');if(b)b.textContent=plAddText();}if(el.dataset.k==='name')plNameWarn();plPreview();},
-  'ce-name':el=>{CE.name=el.value;cePreview();},
+  'ce-name':el=>{CE.name=el.value;if(!CE.shelfSet&&CE.id==null){const g=guessShelf(CE.name);if(g!==CE.shelf){CE.shelf=g;const s=$('#ce-shelf');if(s)s.innerHTML=ceShelfHTML();}}cePreview();},
   'cp-name':el=>{CP.name=el.value;},
   'cp-hours':el=>{const v=parseInt(el.value);if(v>0){CP.hours=v;$$('#cp-life .chip').forEach(c=>c.classList.toggle('on',+c.dataset.v===v));}},
   'jc':el=>{JC[el.dataset.k]=el.value;$('#jc-out').textContent=jcCode();},
