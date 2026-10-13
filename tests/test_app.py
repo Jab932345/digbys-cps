@@ -268,6 +268,18 @@ def t_wizard(pw):
     check('sent by itself when the printer is back', ok and e.pi.payloads[-1].get('product_name') == 'Staff Lasagne', e.pi.payloads[-1] if ok else None)
     p.wait_for_timeout(600)
     check('banner gone', ev(p, 'S.outbox.length') == 0 and p.locator('#pv-banner').inner_text().strip() == '')
+    # the Pi answers but can't find the printer: nothing printed, so it's sent by itself once the printer's back
+    p.wait_for_timeout(500)
+    search(p, 'lasagne'); tile(p, 'Staff Lasagne').click(); p.wait_for_selector('.rv')
+    e.pi.mode = 'error'
+    p.click('#print-btn')
+    p.wait_for_function("S.outbox.length===1", timeout=12000)
+    check('printer not found: kept, to be sent when it’s back (not “may have printed”)', ev(p, 'S.outbox[0].noPrinter') is True and ev(p, 'S.outbox[0].maybePrinted') is False, ev(p, 'S.outbox[0]'))
+    n0 = len(e.pi.payloads); e.pi.mode = 'ok'
+    ev(p, 'checkPrinter()')
+    ok = wait_payloads(e, n0 + 1, 8000)
+    check('sent by itself when the printer is found again', ok and e.pi.payloads[-1].get('product_name') == 'Staff Lasagne', e.pi.payloads[-1] if ok else None)
+    p.wait_for_timeout(800)
 
     # Clear the job, then a one-off saved as a product
     p.wait_for_timeout(500)
@@ -369,6 +381,43 @@ def t_plates(pw):
     pl = e.pi.payloads[-1]
     check('plate payload', pl.get('plate') is True and pl.get('dish') == 'Chicken Liver Parfait' and pl.get('dietary') == 'Gluten Free' and pl.get('urgency') == 'intolerance' and pl.get('table') == '3' and pl.get('position') == '2', pl)
     check('only that course printed', len(e.pi.payloads) == n0 + 1 and ev(p, 'PL.queue.length') == 1)
+    # a queue of 13 goes to the Pi in one request and prints in full
+    for i in range(12):
+        ev(p, f"PL.queue.push({{id:uid(),name:'Guest {i}',table:'{i%5+1}',pos:'{i+1}',urgency:'allergy',dietary:'Nuts',dish:'',course:90,job:null,eventId:null}})")
+    ev(p, 'savePlQueue();renderPlSide()')
+    n0, r0 = len(e.pi.payloads), e.pi.print_requests
+    p.click('#pl-side [data-act=pl-print]')
+    p.wait_for_function('PL.queue.length===0 && !PL.busy', timeout=20000)
+    check('13 plate labels: three requests (6 + 6 + 1), all printed', e.pi.print_requests == r0 + 3 and len(e.pi.payloads) == n0 + 13 and e.pi.batches[-3:] == [6, 6, 1], (e.pi.print_requests - r0, len(e.pi.payloads) - n0, e.pi.batches[-3:]))
+    check('every one recorded', len([x for x in e.cps.t['print_jobs'] if x.get('section') == 'Plates']) >= 14)
+    # printer refuses: nothing lost, the queue stays with the reason
+    for i in range(3):
+        ev(p, f"PL.queue.push({{id:uid(),name:'Late {i}',table:'9',pos:'{i+1}',urgency:'allergy',dietary:'Milk',dish:'',course:90,job:null,eventId:null}})")
+    ev(p, 'savePlQueue();renderPlSide()')
+    e.pi.mode = 'error'
+    p.click('#pl-side [data-act=pl-print]'); p.wait_for_function('!PL.busy', timeout=20000)
+    check('printer error: all 3 stay queued with the reason', ev(p, 'PL.queue.length') == 3 and 'not found' in (ev(p, 'PL.queue.find(q=>q.err)?.err') or ''), ev(p, 'PL.queue.map(q=>q.err)'))
+    e.pi.mode = 'ok'
+    p.click('#pl-side [data-act=pl-print]'); p.wait_for_function('PL.queue.length===0 && !PL.busy', timeout=20000)
+    check('retry prints them', ev(p, 'PL.queue.length') == 0)
+    # another run has the printer: "busy" — asked again by itself, prints once free
+    for i in range(3):
+        ev(p, f"PL.queue.push({{id:uid(),name:'Busy {i}',table:'8',pos:'{i+1}',urgency:'allergy',dietary:'Sesame',dish:'',course:90,job:null,eventId:null}})")
+    ev(p, 'savePlQueue();renderPlSide()')
+    n0, r0 = len(e.pi.payloads), e.pi.print_requests
+    e.pi.mode, e.pi.busy_left = 'busy', 1
+    p.click('#pl-side [data-act=pl-print]'); p.wait_for_function('PL.queue.length===0 && !PL.busy', timeout=20000)
+    check('printer busy with another run: asked again, all 3 printed once', e.pi.print_requests == r0 + 2 and len(e.pi.payloads) == n0 + 3, (e.pi.print_requests - r0, len(e.pi.payloads) - n0))
+    # USB stops part-way through a queue: the one that may have printed says so, nothing resent by itself
+    for i in range(3):
+        ev(p, f"PL.queue.push({{id:uid(),name:'Part {i}',table:'7',pos:'{i+1}',urgency:'allergy',dietary:'Fish',dish:'',course:90,job:null,eventId:null}})")
+    ev(p, 'savePlQueue();renderPlSide()')
+    n0 = len(e.pi.payloads); e.pi.mode = 'part'
+    p.click('#pl-side [data-act=pl-print]'); p.wait_for_function('!PL.busy', timeout=20000)
+    errs = ev(p, 'PL.queue.map(q=>q.err||"")')
+    check('part-printed queue: 1 done, the next flagged may have printed, the last waits', ev(p, 'PL.queue.length') == 2 and 'May have printed' in errs[0] and len(e.pi.payloads) == n0 + 3, errs)
+    check('and the toast says to check the printer', 'May have printed' in toast_now(p), toast_now(p))
+    ev(p, 'PL.queue=[];savePlQueue();renderPlSide()')
     p.click('[data-act=pl-event]'); p.wait_for_selector('.sheet')
     p.click('.sheet [data-act=pl-event-pick]:has-text("Carter")'); p.wait_for_timeout(200)
     check('wedding has 4 dietary guests', p.locator('.guest').count() == 4)
@@ -469,6 +518,116 @@ def t_containers_history_manage(pw):
     e.close()
 
 # ─────────────────────────────────────────────────────────────────────────
+def t_polling(pw):
+    e = Env(pw)
+    p = e.open(); e.login(); p.wait_for_timeout(1500)
+    check('through the tunnel, a ready printer is checked every 5 minutes', ev(p, 'nextPollMs()') == 300000)
+    ev(p, "S.printer={...S.printer,state:'offline'};_pollMiss=0")
+    first = ev(p, 'nextPollMs()'); ev(p, '_pollMiss=9'); last = ev(p, 'nextPollMs()')
+    check('when it isn’t: 15 s, backing off to 5 minutes', first == 15000 and last == 300000, (first, last))
+    s0 = e.pi.status_requests
+    p.fill('#q', 'chimi'); p.wait_for_timeout(150); p.click('#prod-results .tile >> nth=0')
+    p.click('#job-results .job-stock'); p.wait_for_selector('.rv'); p.click('#print-btn'); wait_payloads(e, 1); p.wait_for_timeout(2500)
+    check('a print doesn’t trigger an extra status check', e.pi.status_requests == s0, e.pi.status_requests - s0)
+    check('its reply marks the printer ready', ev(p, 'S.printer.state') == 'ready')
+    e.close()
+
+def t_kp_refresh(pw):
+    e = Env(pw)
+    p = e.open(); e.login(); p.wait_for_selector('#prod-results .tile'); p.wait_for_timeout(800)
+    full = lambda: len([x for x in e.kp.log if x[1] == 'dishes' and 'components' in x[2]])
+    f0 = full()
+    ev(p, 'refreshKP()'); p.wait_for_timeout(500); ev(p, 'refreshKP()'); p.wait_for_timeout(500)
+    check('nothing changed in Kitchen Prep: dishes not downloaded again', full() == f0, full() - f0)
+    for d in e.kp.t['dishes']:
+        if d['id'] == 'd-dauph':
+            d['updated_at'] = '2099-01-01T00:00:00Z'
+            d['components'][0]['component_allergens'].append({'allergen': 'Celery', 'status': 'Contains'})
+    ev(p, 'refreshKP()'); p.wait_for_timeout(800)
+    check('a dish saved in Kitchen Prep: reloaded', full() == f0 + 1 and 'Celery' in ev(p, "productByKey('kp:c-dauph').contains.join()"), full() - f0)
+    ev(p, "S.kp.fullAt=Date.now()-16*60e3"); ev(p, 'refreshKP()'); p.wait_for_timeout(800)
+    check('and in full every 15 minutes regardless', full() == f0 + 2)
+    # saved seconds ago: Kitchen Prep may still be writing the dish's parts, so it's loaded again next time
+    import datetime as _dt
+    iso = lambda secs: (_dt.datetime.now(_dt.timezone.utc) - _dt.timedelta(seconds=secs)).isoformat(timespec='milliseconds').replace('+00:00', 'Z')
+    dauph = next(d for d in e.kp.t['dishes'] if d['id'] == 'd-dauph')
+    dauph['updated_at'] = iso(5)
+    f1 = full(); ev(p, 'refreshKP()'); p.wait_for_timeout(800)
+    check('a dish saved seconds ago: loaded, its stamp not kept', full() == f1 + 1 and ev(p, 'S.kp.stamp') is None, (full() - f1, ev(p, 'S.kp.stamp')))
+    dauph['components'][0]['component_allergens'].append({'allergen': 'Sesame', 'status': 'Contains'})
+    ev(p, 'refreshKP()'); p.wait_for_timeout(800)
+    check('the rest of that save is picked up by the next refresh', full() == f1 + 2 and 'Sesame' in ev(p, "productByKey('kp:c-dauph').contains.join()"), full() - f1)
+    dauph['updated_at'] = iso(120)
+    ev(p, 'refreshKP()'); p.wait_for_timeout(800); ev(p, 'refreshKP()'); p.wait_for_timeout(800)
+    check('once settled, not downloaded again', full() == f1 + 3 and ev(p, 'S.kp.stamp') is not None, (full() - f1, ev(p, 'S.kp.stamp')))
+    no_errors(e, 'Kitchen Prep refresh')
+    e.close()
+
+def t_ingredients(pw):
+    e = Env(pw)
+    p = e.open(); e.login(); p.wait_for_selector('#prod-results .tile'); p.wait_for_timeout(600)
+    st = ev(p, "({c:productByKey('kp:c-lamb').contains,m:productByKey('kp:c-lamb').may,mc:productByKey('kp:c-mint').contains})")
+    check('allergens from tagged ingredients (any case, spaces) reach every part of the dish', st == {'c': ['Gluten', 'Milk'], 'm': ['Sesame'], 'mc': ['Gluten', 'Milk']}, st)
+    p.fill('#q', 'spiced lamb'); p.wait_for_timeout(150); p.click('#prod-results .tile >> nth=0')
+    p.click('#job-results .job-stock'); p.wait_for_selector('.rv')
+    p.click('#print-btn'); wait_payloads(e, 1)
+    pl = e.pi.payloads[-1]
+    check('printed with them', pl.get('contains') == 'Gluten, Milk' and pl.get('may_contain') == 'Sesame', pl)
+    p.wait_for_timeout(700)
+    # an ingredient is tagged in Kitchen Prep after this device loaded it: caught at print time
+    for i in e.kp.t['ingredients']:
+        if i['name'] == 'Greek Yoghurt': i['allergens'] = ['Dairy', 'Egg']
+    p.fill('#q', 'mint yoghurt'); p.wait_for_timeout(150); p.click('#prod-results .tile >> nth=0')
+    p.wait_for_selector('.rv'); n0 = len(e.pi.payloads)
+    p.click('#print-btn')
+    p.wait_for_function("document.getElementById('pv-banner').innerText.includes('changed its allergens')", timeout=8000)
+    check('ingredient changed since: not printed, held to check', len(e.pi.payloads) == n0)
+    p.click('#pv-banner [data-act=outbox-retry-all]'); p.wait_for_selector('.rv'); p.wait_for_timeout(300)
+    check('reopened with Eggs added', 'Eggs' in p.locator('#rv-al').inner_text())
+    p.click('#print-btn'); wait_payloads(e, n0 + 1)
+    check('prints with it', e.pi.payloads[-1].get('contains') == 'Gluten, Eggs, Milk', e.pi.payloads[-1])
+    # labels checked together share one fetch of the ingredients
+    ings = lambda: len([x for x in e.kp.log if x[1] == 'ingredients'])
+    i0 = ings()
+    got = ev(p, "(async()=>{const ip=loadKpIngs();const r=await Promise.all(['kp:c-lamb','kp:c-mint','kp:c-lamb'].map(k=>freshKpProduct(productByKey(k),ip)));return r.map(x=>x&&x.contains.join())})()")
+    check('3 labels checked together: ingredients fetched once', ings() == i0 + 1 and got == ['Gluten,Eggs,Milk'] * 3, (ings() - i0, got))
+    i0 = ings()
+    ev(p, "(async()=>{await freshKpProduct(productByKey('kp:c-lamb'));await freshKpProduct(productByKey('kp:c-mint'));return 1})()")
+    check('a label printed on its own always fetches them fresh', ings() == i0 + 2, ings() - i0)
+    # a device whose saved copy predates ingredient allergens, with Kitchen Prep down: won't print a guess
+    p.wait_for_timeout(600)
+    ev(p, "(()=>{const c=LS.get('dcps_kp_cache');delete c.ings;LS.set('dcps_kp_cache',c);})()")
+    e.kp.down = True
+    p.goto(APP); p.wait_for_selector('#prod-results .tile'); p.wait_for_timeout(1200)
+    p.fill('#q', 'spiced lamb'); p.wait_for_timeout(150); p.click('#prod-results .tile >> nth=0')
+    p.wait_for_selector('.rv, #job-results')
+    if p.locator('#job-results').count(): p.click('#job-results .job-stock'); p.wait_for_selector('.rv')
+    n0 = len(e.pi.payloads); p.click('#print-btn')
+    p.wait_for_function("document.getElementById('pv-banner').innerText.includes('can’t be checked')", timeout=8000)
+    check('old copy + Kitchen Prep down: not printed, says why', len(e.pi.payloads) == n0)
+    no_errors(e, 'ingredients')
+    e.close()
+
+def t_kitchen_wifi(pw):
+    # CPS served by the Pi itself (marked data-pi="1") prints to the page's own address
+    html = open(os.path.join(ROOT, 'index.html')).read().replace('<html', '<html data-pi="1"', 1)
+    path = os.path.join(ROOT, 'pi-served.html')
+    open(path, 'w').write(html)
+    try:
+        e = Env(pw)
+        e.page.route('http://127.0.0.1:8765/status', e.pi.handle)
+        e.page.route('http://127.0.0.1:8765/print', e.pi.handle)
+        p = e.page; p.goto(APP.replace('index.html', 'pi-served.html')); p.evaluate('localStorage.clear()'); p.goto(APP.replace('index.html', 'pi-served.html'))
+        e.login(); p.wait_for_timeout(800)
+        check('kitchen Wi-Fi: prints to the Pi it was opened from', ev(p, 'ON_PI') is True and ev(p, 'printerBase()') == 'http://127.0.0.1:8765')
+        p.fill('#q', 'chimi'); p.wait_for_timeout(150); p.click('#prod-results .tile >> nth=0')
+        p.click('#job-results .job-stock'); p.wait_for_selector('.rv'); p.click('#print-btn')
+        check('and the label prints that way', wait_payloads(e, 1))
+        no_errors(e, 'kitchen Wi-Fi')
+        e.close()
+    finally:
+        os.remove(path)
+
 def t_first_run(pw):
     e = Env(pw)
     e.cps.t['staff'].clear()
@@ -513,7 +672,7 @@ def t_phone(pw):
     no_errors(e, 'phone')
     e.close()
 
-TESTS = [t_wizard, t_plates, t_containers_history_manage, t_first_run, t_kp_down, t_phone]
+TESTS = [t_wizard, t_plates, t_containers_history_manage, t_polling, t_kp_refresh, t_ingredients, t_kitchen_wifi, t_first_run, t_kp_down, t_phone]
 with sync_playwright() as pw:
     for t in TESTS:
         if ONLY and t.__name__ not in ONLY: continue

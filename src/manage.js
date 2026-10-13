@@ -236,10 +236,13 @@ function renderMgPrinter(){
   const oldServer=p.state!=='offline'&&p.info&&!ver;
   const help=p.state==='offline'?`<div class="group-ft" style="padding-bottom:4px">Check, in order: the Pi is plugged in (green light) · the Mango router is on · wait a minute after switching on. Then tap Check.</div>`
     :p.state==='noprinter'||p.state==='searching'?`<div class="group-ft" style="padding-bottom:4px">The Pi is fine but can’t see the printer. Check it’s on, has labels, and is on the Digbys-BOH Wi-Fi (Wi-Fi light steady). The Pi keeps looking by itself.</div>`:'';
-  const rows=[['Print server',ver?'Version '+ver:oldServer?'Older version':'—'],['Printer',info.usb?'USB'+(info.printer_ip?' · Wi-Fi '+info.printer_ip:''):info.printer_ip?'Wi-Fi '+info.printer_ip:(p.state==='ready'?'Connected':'—')],['Pi',info.pi_ip||'—'],['Receipt printer',info.receipt?'Connected':'—'],['Checked',p.at?ago(p.at):'—']];
+  const rows=[['Print server',ver?'Version '+ver:oldServer?'Older version':'—'],['Printer',info.usb?'USB'+(info.printer_ip?' · Wi-Fi '+info.printer_ip:''):info.printer_ip?'Wi-Fi '+info.printer_ip:(p.state==='ready'?'Connected':'—')],['This iPad reaches it',ON_PI?'Kitchen Wi-Fi — direct':'Internet (tunnel)'],['USB',info.usb?'Plugged in':info.usb_support?'Ready — plug the printer into the Pi':ver?'Not set up — run the update over SSH once':'—'],['Pi',info.pi_ip||'—'],['Receipt printer',info.receipt?'Connected':'—'],['Checked',p.at?ago(p.at):'—']];
+  const lan=info.pi_ip&&info.lan_app?`http://${info.pi_ip}:3000`:'';
   d.innerHTML=mgHead('Printer','Brother QL-820 on the Pi')+`<div class="body narrow">
     <div class="group"><div class="stat"><span class="dot ${cls}"></span><div class="grow"><div class="stat-t">${h(t)}</div><div class="stat-s">${h(sub||'')}</div></div><button class="btn btn-sm" data-act="pr-check">${ico('refresh')}Check</button></div></div>${help}
     <div class="group-hd">Details</div><div class="group">${rows.map(([k,v])=>`<div class="row"><span class="row-k">${k}</span><span class="row-v">${h(v)}</span></div>`).join('')}</div>
+    ${ON_PI?`<div class="group-hd">Kitchen Wi-Fi</div><div class="group"><div class="row row-stack"><div class="row-t">Printing straight to the Pi</div><div class="row-s">This copy of CPS comes from the Pi, so labels print even when the internet is down. Products, allergens and History still need the internet to update.</div></div></div>`
+      :lan?`<div class="group-hd">Kitchen Wi-Fi</div><div class="group"><div class="row row-stack"><div class="row-t">Faster, and prints without the internet</div><div class="row-s">On the Digbys-BOH Wi-Fi, open CPS from the Pi and add it to the Home Screen. Sign in once while the internet is up.</div><div class="code">${h(lan)}</div><div class="inline"><a class="btn btn-sm btn-primary" href="${h(lan)}" target="_blank" rel="noopener">${ico('external')}Open</a><button class="btn btn-sm" data-act="copy" data-v="${h(lan)}">${ico('copy')}Copy</button></div></div></div>`:''}
     <div class="group-hd">Test</div><div class="group"><button class="row row-nav" data-act="pr-test" ${p.state==='offline'?'disabled':''}>${ico('printer')}<span class="row-main"><span class="row-t">Print a test label</span><span class="row-s">A short label marked TEST</span></span></button></div>
     ${m?`<div class="group-hd">Print server</div><div class="group">
       ${canUpdate?`<div class="row row-stack"><div><div class="row-t">Update ready — version ${h(latest)}</div><div class="row-s">About 20 seconds. Printing pauses while it restarts.</div></div><div><button class="btn btn-primary" data-act="pr-update">Update print server</button></div></div>`:''}
@@ -248,14 +251,14 @@ function renderMgPrinter(){
       ${ver&&info.updatable&&!canUpdate?`<div class="row"><span class="row-main"><span class="row-t">Up to date</span><span class="row-s">Version ${h(ver)}</span></span>${ico('checkCircle')}</div>`:''}
       ${!ver&&!oldServer?`<div class="row muted">Shown when the Pi answers.</div>`:''}
     </div>
-    <div class="group-hd">Address</div><div class="group"><div class="row row-stack"><label class="fld-label" for="pr-url">Where the Pi is reached — Kitchen Prep uses the same one</label>
-      <div class="inline"><input class="inp" id="pr-url" value="${h(keepUrl??printerBase())}" autocomplete="off" spellcheck="false" autocapitalize="off"><button class="btn" data-act="pr-save-url">Save</button></div></div></div>
+    ${ON_PI?'':`<div class="group-hd">Address</div><div class="group"><div class="row row-stack"><label class="fld-label" for="pr-url">Where the Pi is reached over the internet — Kitchen Prep uses the same one</label>
+      <div class="inline"><input class="inp" id="pr-url" value="${h(keepUrl??printerBase())}" autocomplete="off" spellcheck="false" autocapitalize="off"><button class="btn" data-act="pr-save-url">Save</button></div></div></div>`}
     <div class="group-hd">Pi</div><div class="group"><button class="row row-nav" data-act="pr-shutdown">${ico('power')}<span class="row-main"><span class="row-t al-text">Shut down the Pi</span><span class="row-s">Before unplugging it</span></span></button></div>`:''}
   </div>`;
 }
 async function prTest(){
   const today=ymd();
-  const payload={product_name:'TEST',staff_name:S.user.name,section:'Test',job_code:'TEST',quantity:1,date_prepped:today,date_useby:today,contains:null,may_contain:null,notes:'Test print from Digby’s CPS',printed_at:hhmm(),source_note:'Test'};
+  const payload={product_name:'TEST',staff_name:S.user.name,section:'Test',job_code:'TEST',quantity:1,date_prepped:today,date_useby:today,contains:null,may_contain:null,notes:'Test print from Digby’s CPS',printed_at:hhmm(),source_note:'Test',job_id:'test-'+uid()};
   toast('Printing a test label',{type:'busy'});
   const r=await sendToPrinter(payload);
   if(r.ok)toast('Test label sent to the printer');else toast('Test didn’t print — '+r.error,{type:'err'});
@@ -276,7 +279,8 @@ async function prSaveUrl(){
   let u=String($('#pr-url').value||'').trim();
   if(!u){toast('Type the address',{type:'err'});return;}
   if(!/^https?:\/\//i.test(u))u='https://'+u;
-  try{new URL(u);}catch(e){toast('That doesn’t look like an address',{type:'err'});return;}
+  let url;try{url=new URL(u);}catch(e){toast('That doesn’t look like an address',{type:'err'});return;}
+  if(url.protocol!=='https:'||/^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|127\.|localhost$)|\.local$/i.test(url.hostname)){toast('This is the internet address (the ngrok one, https://…). The kitchen Wi-Fi address is only for opening CPS from the Pi.',{type:'err',ms:8000});return;}
   u=u.replace(/\/(print|status|butchery\/label)?\/*$/,'');
   try{
     const rows=await rest(KP,'PATCH','app_settings?key=eq.butchery_printer_url',{value:u},{prefer:'return=representation'});

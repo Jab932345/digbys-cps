@@ -20,7 +20,7 @@ const isManager=()=>!!S.user&&(S.user.name===MANAGER||(S.staffLoaded&&S.staff.le
 
 /* ── Allergen names: Kitchen Prep's FSA names, old names and synonyms all
       land on the 14 CPS names. Anything else is kept as written — never dropped. ── */
-const AL_SYN={'cereals containing gluten':'Gluten','cereals':'Gluten','gluten':'Gluten','wheat':'Gluten','barley':'Gluten','rye':'Gluten','oats':'Gluten','spelt':'Gluten',
+const AL_SYN={'lactose':'Milk','cereals containing gluten':'Gluten','cereals':'Gluten','gluten':'Gluten','wheat':'Gluten','barley':'Gluten','rye':'Gluten','oats':'Gluten','spelt':'Gluten',
   'crustaceans':'Crustaceans','crustacean':'Crustaceans','shellfish':'Crustaceans','eggs':'Eggs','egg':'Eggs','fish':'Fish','peanuts':'Peanuts','peanut':'Peanuts',
   'soya':'Soya','soy':'Soya','soybeans':'Soya','soybean':'Soya','soya beans':'Soya','milk':'Milk','dairy':'Milk','nuts':'Nuts','tree nuts':'Nuts','nut':'Nuts',
   'celery':'Celery','celeriac':'Celery','mustard':'Mustard','sesame':'Sesame','sesame seeds':'Sesame','sulphites':'Sulphites','sulphur dioxide':'Sulphites',
@@ -38,19 +38,29 @@ function rowsToAl(rows){
   (rows||[]).forEach(a=>{const n=mapAl(a.allergen);if(!n)return;if(/may/i.test(a.status||''))may.push(n);else con.push(n);});
   return{contains:sortAl(con),may:sortAl(may.filter(x=>!con.includes(x)))};
 }
-/* Kitchen Prep's dish builder edits allergens for the whole dish and keeps
-   them on the dish's first component. Rows can also be left behind on other
-   components (after they're reordered, or kept for prepped stock). So every
-   component of a dish gets everything on any of its components — Contains
-   wins over May contain. Never fewer allergens than the dish has. */
-function dishAllergens(d){
-  const all=rowsToAl((d.components||[]).flatMap(c=>c.component_allergens||[]));
+/* Where a Kitchen Prep dish's allergens come from — the same as Kitchen Prep:
+   · set on the dish (the builder keeps them on its first component; rows can
+     be left on others after a reorder, or kept for prepped stock);
+   · brought by its ingredients (Kitchen Prep 45+ tags ingredients: "Nuts" for
+     contains, "may:Nuts" for may contain), matched by name as Kitchen Prep
+     matches them — any case.
+   Every component of a dish gets everything from all of its components and
+   their ingredients; Contains wins over May contain. Never fewer than the dish has. */
+let KP_ING=new Map();      // lower-case ingredient name → its allergen rows
+function ingRows(list){
+  return(Array.isArray(list)?list:splitList(list)).map(x=>{const t=String(x||'').trim();const may=/^may:/i.test(t);return{allergen:(may?t.slice(4):t).trim(),status:may?'May Contain':'Contains'};}).filter(r=>r.allergen);
+}
+function ingMap(ings){const m=new Map();(ings||[]).forEach(i=>{const k=String(i&&i.name||'').toLowerCase();if(k&&!m.has(k))m.set(k,ingRows(i.allergens));});return m;}
+function compIngRows(c,map){return(c.recipe_ingredients||[]).flatMap(ri=>map.get(String(ri.ingredient_name||ri.name||'').toLowerCase().trim())||[]);}
+function dishAllergens(d,map){
+  const m=map||KP_ING;
+  const all=rowsToAl((d.components||[]).flatMap(c=>[...(c.component_allergens||[]),...compIngRows(c,m)]));
   return{scope:'dish',of:()=>all};
 }
-function buildKpProducts(dishes){
+function buildKpProducts(dishes,map){
   const out=[],seen=new Set();const chilledH=chilledDays()*24;
   for(const d of dishes||[]){
-    const al=dishAllergens(d);
+    const al=dishAllergens(d,map);
     for(const c of (d.components||[])){
       const name=labelName(c,d);const k=norm(name);if(!k||seen.has(k))continue;seen.add(k);
       const a=al.of(c);const hrs=parseInt(c.use_by_hours)||0;
@@ -62,8 +72,10 @@ function buildKpProducts(dishes){
   return out;
 }
 function kpCache(){return LS.get('dcps_kp_cache',null);}
-function applyKp(dishes,events,settings,at){
+function applyKp(dishes,events,settings,at,ings){
   S.kp.settings=settings||{};
+  if(ings!==undefined){S.kp.ings=ings;S.kp.ingKnown=!!ings;}
+  KP_ING=ingMap(S.kp.ings||[]);
   S.kp.dishes=(dishes||[]).map(d=>({id:d.id,name:d.name,category:d.category||'Other',comps:(d.components||[]).map(c=>c.id)}));
   S.kp.products=buildKpProducts(dishes);
   S.kp.events=(events||[]).map(e=>({id:e.id,job_code:e.job_code?String(e.job_code).toUpperCase().trim():'',client_name:e.client_name||'',event_type:e.event_type||'',
@@ -72,8 +84,16 @@ function applyKp(dishes,events,settings,at){
   S.kp.at=at||Date.now();
   LS.set('dcps_kp_names2',{labels:S.kp.products.map(p=>norm(p.name)),dishes:(dishes||[]).map(d=>norm(d.name)),comps:(dishes||[]).flatMap(d=>(d.components||[]).map(c=>norm(c.name)))});
 }
-function slimDishes(dishes){return(dishes||[]).map(d=>({id:d.id,name:d.name,category:d.category,components:(d.components||[]).map(c=>({id:c.id,name:c.name,use_by_hours:c.use_by_hours,freeze_flag:c.freeze_flag,component_allergens:(c.component_allergens||[]).map(a=>({allergen:a.allergen,status:a.status}))}))}));}
-const DISH_Q=['dishes?select=id,name,category,components(id,name,use_by_hours,freeze_flag,component_allergens(allergen,status))&order=name','dishes?select=*,components(*,component_allergens(*))&order=name'];
+function slimDishes(dishes){return(dishes||[]).map(d=>({id:d.id,name:d.name,category:d.category,components:(d.components||[]).map(c=>({id:c.id,name:c.name,use_by_hours:c.use_by_hours,freeze_flag:c.freeze_flag,
+  component_allergens:(c.component_allergens||[]).map(a=>({allergen:a.allergen,status:a.status})),recipe_ingredients:(c.recipe_ingredients||[]).map(ri=>({ingredient_name:ri.ingredient_name||ri.name||''}))}))}));}
+function slimIngs(ings){return(ings||[]).filter(i=>i&&i.name&&(Array.isArray(i.allergens)?i.allergens.length:i.allergens)).map(i=>({name:i.name,allergens:i.allergens}));}
+const DISH_Q=['dishes?select=id,name,category,components(id,name,use_by_hours,freeze_flag,component_allergens(allergen,status),recipe_ingredients(ingredient_name,name))&order=name','dishes?select=*,components(*,component_allergens(*),recipe_ingredients(*))&order=name'];
+/* Ingredient allergens. A Kitchen Prep without them (no table or column) has none to add;
+   any other failure fails the load — never labels missing what an ingredient brings. */
+async function loadKpIngs(){
+  try{return slimIngs(await rest(KP,'GET','ingredients?select=name,allergens&order=name'));}
+  catch(e){if(!e.offline&&(e.code==='42P01'||e.code==='42703'||e.status===404))return[];throw e;}
+}
 async function tryQueries(db,qs){try{return await rest(db,'GET',qs[0]);}catch(e){if(e.offline)throw e;return await rest(db,'GET',qs[1]);}}
 let _kpLoad=null;
 function loadKP(){
@@ -82,28 +102,66 @@ function loadKP(){
     const from=addDays(ymd(),-10);
     const evQ=[`events?select=id,job_code,client_name,event_type,event_date,start_time,covers,status,venue_name,guest_allergens,event_dishes(dish_id,portions)&event_date=gte.${from}&order=event_date`,`events?select=*,event_dishes(*)&event_date=gte.${from}&order=event_date`];
     try{
-      const [dishes,events,settingsRows]=await Promise.all([tryQueries(KP,DISH_Q),tryQueries(KP,evQ),rest(KP,'GET','app_settings?select=key,value').catch(()=>[])]);
+      const stamp=await kpDishStamp().catch(()=>null);   // before the dishes, so an edit made meanwhile isn't missed
+      const [dishes,events,settingsRows,ings]=await Promise.all([tryQueries(KP,DISH_Q),tryQueries(KP,evQ),rest(KP,'GET','app_settings?select=key,value').catch(()=>[]),loadKpIngs()]);
       const settings={};(settingsRows||[]).forEach(r=>{let v=r.value;if(typeof v==='string'){try{const j=JSON.parse(v);if(typeof j!=='object')v=j;}catch(e){}}settings[r.key]=v;});
-      applyKp(dishes,events,settings,Date.now());
-      S.kp.ok=true;S.kp.error=null;markKpCopies();
-      LS.set('dcps_kp_cache',{at:S.kp.at,dishes:slimDishes(dishes),events:S.kp.events.map(e=>({...e,event_dishes:e.dishes})),settings});
+      applyKp(dishes,events,settings,Date.now(),ings);
+      S.kp.ok=true;S.kp.error=null;S.kp.fullAt=Date.now();S.kp.raw=slimDishes(dishes);S.kp.stamp=settledStamp(stamp);S.kp.ingSig=JSON.stringify(ings);markKpCopies();
+      LS.set('dcps_kp_cache',{at:S.kp.at,dishes:S.kp.raw,events:S.kp.events.map(e=>({...e,event_dishes:e.dishes})),settings,ings});
     }catch(e){
       S.kp.ok=false;S.kp.error=e.message||String(e);
-      if(!S.kp.products.length){const c=kpCache();if(c)try{applyKp(c.dishes,c.events,c.settings,c.at);}catch(_){}}
+      if(!S.kp.products.length){const c=kpCache();if(c)try{applyKp(c.dishes,c.events,c.settings,c.at,c.ings===undefined?null:c.ings);}catch(_){}}
     }
     onDataChanged('kp');
   })().finally(()=>{_kpLoad=null;});
   return _kpLoad;
 }
+/* Kept fresh cheaply: dishes (the big part) are fetched again only when one
+   was saved or deleted in Kitchen Prep — the newest updated_at or the count
+   moves — or every 15 minutes regardless. Events are small and come every time.
+   Labels don't depend on this: each Kitchen Prep label re-checks its dish the
+   moment before it prints. */
+async function kpDishStamp(){
+  const r=await fetch(KP.url+'/rest/v1/dishes?select=updated_at&order=updated_at.desc.nullslast&limit=1',{headers:{apikey:KP.key,Authorization:'Bearer '+KP.key,Prefer:'count=exact'},signal:timeoutSignal(10000),cache:'no-store'});
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  const d=await r.json();return((r.headers.get('content-range')||'').split('/')[1]||'')+'|'+((d&&d[0]&&d[0].updated_at)||'');
+}
+/* Kitchen Prep stamps a dish as it starts saving it, then rewrites its
+   components, recipes and allergens. A load in that minute may have caught it
+   half-saved, so its stamp isn't kept: the next refresh loads the dishes again. */
+function settledStamp(stamp){
+  const t=Date.parse(String(stamp||'').split('|')[1]||'');
+  const age=Date.now()-t;
+  return stamp&&!(t&&age<90e3&&age>-300e3)?stamp:null;
+}
+let _kpRefresh=null;
+function refreshKP(){
+  if(!S.kp.ok||!S.kp.raw||!S.kp.stamp||Date.now()-(S.kp.fullAt||0)>15*60e3)return loadKP();
+  if(_kpRefresh||_kpLoad)return _kpRefresh||_kpLoad;
+  _kpRefresh=(async()=>{
+    try{
+      let stamp;try{stamp=await kpDishStamp();}catch(e){_kpRefresh=null;return await loadKP();}
+      if(stamp!==S.kp.stamp){_kpRefresh=null;return await loadKP();}
+      const from=addDays(ymd(),-10);
+      const [events,ings]=await Promise.all([tryQueries(KP,[`events?select=id,job_code,client_name,event_type,event_date,start_time,covers,status,venue_name,guest_allergens,event_dishes(dish_id,portions)&event_date=gte.${from}&order=event_date`,`events?select=*,event_dishes(*)&event_date=gte.${from}&order=event_date`]),loadKpIngs()]);
+      applyKp(S.kp.raw,events,S.kp.settings,Date.now(),ings);S.kp.ok=true;S.kp.error=null;S.kp.ingSig=JSON.stringify(ings);
+      LS.set('dcps_kp_cache',{at:S.kp.at,dishes:S.kp.raw,events:S.kp.events.map(e=>({...e,event_dishes:e.dishes})),settings:S.kp.settings,ings});
+      onDataChanged('kp');
+    }catch(e){S.kp.ok=false;S.kp.error=e.message||String(e);onDataChanged('kp');}
+  })().finally(()=>{_kpRefresh=null;});
+  return _kpRefresh;
+}
+
 /* Right before a Kitchen Prep product prints: its dish's allergens, straight
-   from Kitchen Prep. Returns null if Kitchen Prep can't be reached. */
-async function freshKpProduct(p){
+   from Kitchen Prep. Returns null if Kitchen Prep can't be reached. Labels
+   checked together share one fetch of the ingredients (ingsP). */
+async function freshKpProduct(p,ingsP){
   if(!p||p.src!=='kp')return null;
   try{
-    const q=[`dishes?id=eq.${encodeURIComponent(p.dishId)}&select=id,name,category,components(id,name,use_by_hours,freeze_flag,component_allergens(allergen,status))`,`dishes?id=eq.${encodeURIComponent(p.dishId)}&select=*,components(*,component_allergens(*))`];
-    const rows=await tryQueries(KP,q);
+    const q=[`dishes?id=eq.${encodeURIComponent(p.dishId)}&select=id,name,category,components(id,name,use_by_hours,freeze_flag,component_allergens(allergen,status),recipe_ingredients(ingredient_name,name))`,`dishes?id=eq.${encodeURIComponent(p.dishId)}&select=*,components(*,component_allergens(*),recipe_ingredients(*))`];
+    const [rows,ings]=await Promise.all([tryQueries(KP,q),ingsP||loadKpIngs()]);
     if(!rows||!rows.length)return{gone:true};
-    return buildKpProducts(rows).find(x=>x.key===p.key)||{gone:true};
+    return buildKpProducts(rows,ingMap(ings)).find(x=>x.key===p.key)||{gone:true};
   }catch(e){return null;}
 }
 function kpKnown(){return S.kp.products.length>0||!!LS.get('dcps_kp_names2',null);}
@@ -306,7 +364,9 @@ async function flushRecords(){
 function saveOutbox(){LS.set('dcps_outbox',S.outbox);updateBadges();}
 function addToOutbox(item,res){
   const ex=S.outbox.find(o=>o.id===item.id);
-  const info={error:res.error,maybePrinted:!!res.timeout,unreachable:!!res.unreachable,stale:!!res.stale,fresh:res.fresh||null};
+  // the Pi answered but couldn't find the printer: nothing printed, so it's resent when the printer's back, like an unreachable Pi
+  const noPrinter=!res.timeout&&!res.unreachable&&!res.stale&&/printer not found/i.test(res.error||'');
+  const info={error:res.error,maybePrinted:!!res.timeout,unreachable:!!res.unreachable,noPrinter,stale:!!res.stale,fresh:res.fresh||null};
   if(ex){Object.assign(ex,info);ex.tries=(ex.tries||1)+1;ex.at=Date.now();}
   else S.outbox.unshift({...item,...info,tries:1,at:Date.now()});
   saveOutbox();

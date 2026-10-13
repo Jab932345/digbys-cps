@@ -10,6 +10,8 @@ const CPS={url:'https://jaajrllkozknilvmdezt.supabase.co',key:'eyJhbGciOiJIUzI1N
 const KP={url:'https://qfnwyooipwtfzikukztz.supabase.co',key:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFmbnd5b29pcHd0Znppa3VrenR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczODY0MTcsImV4cCI6MjA5Mjk2MjQxN30.qzq30fT8L2bhX7kx46HZdco3rt7bN2zRGSKETCNgQqw'};
 const KP_APP='https://digbys-prep.vercel.app';
 const DEFAULT_PRINTER='https://palatable-shack-scallion.ngrok-free.dev';
+/* Opened from the Pi on the kitchen Wi-Fi (it marks the page): print straight to it. */
+const ON_PI=document.documentElement.dataset.pi==='1'&&location.protocol==='http:';
 const MANAGER='James Brierley';
 const AL=['Gluten','Crustaceans','Eggs','Fish','Peanuts','Soya','Milk','Nuts','Celery','Mustard','Sesame','Sulphites','Lupin','Molluscs'];
 const SECTIONS=['Canapés','Starters','Mains','Dessert','Evening Grazing','Tasting Menu'];
@@ -44,6 +46,9 @@ alter table public.print_jobs add column if not exists status_date date;
 alter table public.print_jobs add column if not exists weight_display text;
 alter table public.print_jobs add column if not exists label_status text;
 alter table public.print_jobs add column if not exists notes text;
+-- Keeps History and Kitchen Prep's print requests fast as the table grows.
+create index if not exists print_jobs_created_at_idx on public.print_jobs (created_at desc);
+create index if not exists print_jobs_waiting_idx on public.print_jobs (created_at) where label_status in ('FRIDGE','FREEZER');
 notify pgrst, 'reload schema';`;
 
 /* ── Small helpers ───────────────────────────────────────────────────── */

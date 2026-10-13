@@ -24,7 +24,7 @@ r3 = c.post('/print', json={**d, 'job_id': 'xyz'}).get_json()
 r4 = c.post('/print', json=d).get_json(); r5 = c.post('/print', json=d).get_json()
 import time; time.sleep(0.5)
 print('PASS retry of a printed job not printed twice' if r1['success'] and r2.get('duplicate') and len(jobs) == 4 else f'FAIL {r1} {r2} jobs={len(jobs)}')
-print('PASS version 2.1.0' if v2.VERSION == '2.1.0' else 'FAIL version')
+print('PASS version 2.2.0' if v2.VERSION == '2.2.0' else 'FAIL version')
 # a non-Brother among several 9100 listeners is never chosen
 v2.pi_ip = lambda: '127.0.0.20'
 import ipaddress

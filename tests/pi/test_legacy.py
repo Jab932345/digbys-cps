@@ -64,9 +64,9 @@ v2.pi_ip = lambda: '127.0.0.1'               # scan 127.0.0.0/24 → finds 127.0
 v2.looks_like_brother = lambda ip: ip == '127.0.0.5'   # its web page says Brother
 c = v2.app.test_client()
 ok = True
-def check(label, cond):
+def check(label, cond, detail=''):
     global ok
-    print(('PASS ' if cond else 'FAIL ') + label); ok = ok and bool(cond)
+    print(('PASS ' if cond else 'FAIL ') + label + ('' if cond else '  <-- ' + str(detail))); ok = ok and bool(cond)
 
 check('legacy routes carried over', set(v2.LEGACY['routes']) == {'/receipt', '/butchery/label'} and v2.LEGACY['error'] is None)
 t = time.time(); ip = v2.find_printer(); dt = time.time() - t
@@ -87,6 +87,15 @@ check('CORS allowed on carried-over routes', r.headers.get('Access-Control-Allow
 r = c.post('/print', json={'storage': True, 'product_name': 'Plain Flour', 'date_prepped': '2026-09-28', 'contains': 'Gluten', 'printed_at': 'x', 'quantity': 'lots'})
 time.sleep(0.4)
 check('bad quantity falls back to one label', r.get_json().get('success') and got['jobs'] == 3)
+# a run has the printer: a butchery label (Kitchen Prep waits 8 s) is told "busy", not printed late
+v2._send_lock.acquire()
+threading.Timer(6.0, v2._send_lock.release).start()
+t = time.time(); r = c.post('/butchery/label', json={}); dt = time.time() - t
+time.sleep(0.3)
+check('butchery label while the printer is busy: "busy" in %.1fs, said in words, nothing printed' % dt, r.status_code == 503 and r.data.decode().startswith('The printer is busy') and dt < 6 and got['jobs'] == 3, (r.status_code, r.data[:120]))
+time.sleep(1.0)
+r = c.post('/butchery/label', json={}); time.sleep(0.4)
+check('and prints when asked again', r.get_json().get('success') and got['jobs'] == 4)
 # printer moves: stop answering on the remembered address → print fails cleanly with a plain reason
 srv.shutdown(socket.SHUT_RDWR); srv.close(); time.sleep(0.2)
 v2.pi_ip = lambda: '127.0.0.1'

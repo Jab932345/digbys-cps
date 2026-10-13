@@ -72,19 +72,21 @@ async function ctPrint(){
   if(CT.busy||!CT.tray.length)return;
   CT.busy=true;renderCtSide();renderFloatBar();
   let ok=0,bad=0,err='';
-  for(const t of [...CT.tray]){
-    const n=t.count;if(!(n>0))continue;
-    const c=t.id!=null&&containers().find(x=>String(x.id)===String(t.id));if(c&&!c.checked){t.err='Set its allergens first';bad++;err=t.err;break;}
-    if(!t.jid||t.jidN!==n){t.jid=uid();t.jidN=n;}
-    let res=await sendToPrinter({...ctPayload(t),quantity:n,job_id:'ct-'+t.jid});
-    if(!res.ok&&!res.timeout){await new Promise(r=>setTimeout(r,2500));res=await sendToPrinter({...ctPayload(t),quantity:n,job_id:'ct-'+t.jid});}
-    if(res.ok){ok+=n;recordPrint(ctRecord({...t,count:n}));t.count-=n;t.jid=null;if(t.count<=0)CT.tray=CT.tray.filter(x=>x!==t);}
-    else{bad++;t.err=res.timeout?'Didn’t answer in time — it may have printed':res.error;err=res.error;break;}
-    saveTray();
+  const ready=[];
+  for(const t of CT.tray){
+    if(!(t.count>0))continue;t.err=null;
+    const c=t.id!=null&&containers().find(x=>String(x.id)===String(t.id));
+    if(c&&!c.checked){t.err='Set its allergens first';bad++;err=t.err;continue;}
+    ready.push(t);
   }
+  const r=await printQueue(ready,t=>{const n=t.count;if(!t.jid||t.jidN!==n){t.jid=uid();t.jidN=n;}return{...ctPayload(t),quantity:n,job_id:'ct-'+t.jid};},
+    (t,job)=>{const n=job.quantity;ok+=n;recordPrint(ctRecord({...t,count:n}));t.count-=n;t.jid=null;if(t.count<=0)CT.tray=CT.tray.filter(x=>x!==t);saveTray();},
+    (t,msg)=>{t.err=msg||null;});
+  bad+=r.bad;if(r.err)err=r.err;const unsure=r.unsure;
   CT.busy=false;saveTray();renderCtMain();renderCtSide();renderFloatBar();
   if(ok)alog('Printed container labels',plural(ok,'label'));
   if(!bad)toast(`Sent ${plural(ok,'container label')} to the printer`);
+  else if(unsure)toast(`${ok?ok+' sent. ':''}${err}`,{type:'err',ms:8000});   // check the printer first: no one-tap Retry
   else toast(`${ok?ok+' sent. ':''}The rest are still here — ${err}`,{type:'err',ms:6000,action:'Retry',onAction:ctPrint});
 }
 function ctEditSheet(c,needCheck){

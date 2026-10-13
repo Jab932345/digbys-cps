@@ -31,7 +31,7 @@ class Env:
         self.cps = mock.DB('cps', mock.cps_seed(), ext=ext)
         self.kp = mock.DB('kp', mock.kp_seed())
         self.pi = PI
-        self.pi.mode = 'ok'; self.pi.payloads.clear()
+        self.pi.mode = 'ok'; self.pi.payloads.clear(); self.pi.batches.clear(); self.pi.print_requests = 0; self.pi.status_requests = 0
         self.browser = pw.chromium.launch()
         self.ctx = self.browser.new_context(viewport={'width': width, 'height': height}, color_scheme='dark' if dark else 'light',
                                             device_scale_factor=2 if mobile else 1, is_mobile=mobile, has_touch=mobile)

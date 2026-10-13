@@ -475,7 +475,7 @@ async function wizPrint(){
    the moment before printing, so a change made a minute ago is never missed. */
 const _sending=new Set();   // one send per label run at a time, however it's retried
 async function sendChecked(item,fromWizard){
-  if(_sending.has(item.id))return{ok:false,busy:true};
+  if(_sending.has(item.id))return{ok:false,inFlight:true};
   _sending.add(item.id);
   try{return await sendCheckedNow(item);}finally{_sending.delete(item.id);}
 }
@@ -484,6 +484,11 @@ async function sendCheckedNow(item){
   toast(`Printing ${plural(n,'label')} — ${title}`,{type:'busy'});
   if(item.base&&item.base.src==='kp'){
     const fresh=await freshKpProduct({key:item.base.key,src:'kp',dishId:item.base.dishId});
+    if(fresh===null&&!S.kp.ingKnown){
+      addToOutbox(item,{error:'Kitchen Prep isn’t answering and hasn’t loaded on this device yet, so the allergens its ingredients bring can’t be checked',stale:true});renderPrintBanner();updateBadges();
+      if(S.view==='print')hideToast();else toast(`${title} wasn’t printed — Kitchen Prep isn’t answering, so its allergens can’t be checked`,{type:'err'});
+      return{ok:false,stale:true};
+    }
     const alChanged=fresh&&!fresh.gone&&(!sameSet(fresh.contains,item.base.contains)||!sameSet(fresh.may,item.base.may));
     const lifeChanged=fresh&&!fresh.gone&&!(item.state&&item.state.usebyManual)&&item.base.shelfHours!=null&&fresh.shelfHours!==item.base.shelfHours;
     if(fresh&&(fresh.gone||alChanged||lifeChanged)){
@@ -498,7 +503,7 @@ async function sendCheckedNow(item){
   const res=await sendItem(item);
   if(res.ok)toast(`Sent ${plural(n,'label')} — ${title}`,{action:'Print again',onAction:()=>printAgain(item)});
   else if(S.view==='print'){hideToast();if(navigator.vibrate)try{navigator.vibrate([60,60,60]);}catch(e){}}
-  else if(res.timeout)toast(`${title}: the printer didn’t answer in time. It may have printed — check before retrying.`,{type:'err',ms:8000});
+  else if(res.timeout)toast(res.piSaid?`${title}: ${res.error}`:`${title}: the printer didn’t answer in time. It may have printed — check before retrying.`,{type:'err',ms:8000});
   else toast(`${title} didn’t print — ${res.error}`,{type:'err',ms:6000,action:'Retry',onAction:()=>retryOutbox(item.id)});
   renderPrintBanner();updateBadges();
   return res;

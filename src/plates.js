@@ -141,21 +141,17 @@ async function plPrint(filter){
   if(PL.busy)return;
   const todo=sortedQueue().filter(filter||(()=>true));if(!todo.length)return;
   PL.busy=true;renderPlSide();renderFloatBar();
-  let ok=0,bad=0,lastErr='';
   const done=LS.get('dcps_plate_done2',{});
-  for(const q of todo){
-    q.err=null;q.state='printing';const qEl=$('#pl-queue');if(qEl)qEl.innerHTML=plQueueHTML();
-    let res=await sendToPrinter({...plPayload(q),job_id:'pl-'+q.id});
-    if(!res.ok&&!res.timeout){await new Promise(r=>setTimeout(r,2500));res=await sendToPrinter({...plPayload(q),job_id:'pl-'+q.id});}
-    q.state='';
-    if(res.ok){ok++;PL.queue=PL.queue.filter(x=>x.id!==q.id);recordPrint(plRecord(q));if(q.eventId){const m=(done[q.eventId]=done[q.eventId]||{});m[norm(q.name)]=(m[norm(q.name)]||0)+1;}}
-    else{bad++;q.err=res.timeout?'Didn’t answer in time — it may have printed':res.error;lastErr=res.error;break;}
-    savePlQueue();
-  }
+  todo.forEach(q=>{q.err=null;q.state='printing';});const qEl=$('#pl-queue');if(qEl)qEl.innerHTML=plQueueHTML();
+  const {ok,bad,err:lastErr,unsure}=await printQueue(todo,q=>({...plPayload(q),job_id:'pl-'+q.id}),
+    q=>{PL.queue=PL.queue.filter(x=>x.id!==q.id);recordPrint(plRecord(q));if(q.eventId){const m=(done[q.eventId]=done[q.eventId]||{});m[norm(q.name)]=(m[norm(q.name)]||0)+1;}savePlQueue();},
+    (q,msg)=>{q.err=msg||null;});
+  todo.forEach(q=>q.state='');
   LS.set('dcps_plate_done2',done);savePlQueue();
   PL.busy=false;renderPlSide();renderPlForm();renderFloatBar();
   if(ok)alog('Printed plate labels',plural(ok,'label'));
   if(!bad)toast(`Sent ${plural(ok,'plate label')} to the printer`);
+  else if(unsure)toast(`${ok?ok+' sent. ':''}${lastErr}`,{type:'err',ms:8000});   // check the printer first: no one-tap Retry
   else toast(`${ok?ok+' sent. ':''}${plural(PL.queue.length,'label')} still waiting — ${lastErr}`,{type:'err',ms:6000,action:'Retry',onAction:()=>plPrint(filter)});
 }
 function plEventSheet(){

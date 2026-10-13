@@ -26,7 +26,7 @@ function route(){
   S.view=v;
   $$('.view').forEach(el=>el.classList.toggle('on',el.id==='view-'+v));
   renderNav();VIEWS[v](sub);renderFloatBar();setToastLift();
-  if(v==='print'){loadInbox();if(Date.now()-S.kp.at>60000)loadKP();}
+  if(v==='print'){loadInbox();if(Date.now()-S.kp.at>60000)refreshKP();}
 }
 window.addEventListener('hashchange',route);
 
@@ -71,27 +71,47 @@ function updateTrayRow(key){
   const pb=$('#ct-side [data-act=ct-print]');if(pb&&!CT.busy)pb.innerHTML=ico('printer')+'Print '+plural(trayCount(),'label');
   renderFloatBar();
 }
-async function printInboxRow(r){
-  return once('ib-'+r.id,async()=>{
-    const p=productByName(r.product_name);let fresh=null;
-    if(p&&p.src==='kp'){
-      fresh=await freshKpProduct(p);
-      if(fresh&&fresh.gone){loadKP();toast(`${r.product_name} is no longer in Kitchen Prep — not printed. Dismiss it, or print it as a one-off.`,{type:'err'});return{ok:false};}
-      if(fresh&&(!sameSet(fresh.contains,p.contains)||!sameSet(fresh.may,p.may)))loadKP();
-    }
-    const pl=inboxPayload(r,fresh);
-    if(pl.date_useby&&pl.date_useby<ymd()){toast(`${r.product_name}: its use-by (${dayWords(pl.date_useby)}) has passed — not printed.`,{type:'err'});return{ok:false};}
-    toast(`Printing ${plural(pl.quantity,'label')} — ${r.product_name}`,{type:'busy'});
-    const res=await sendToPrinter({...pl,job_id:'ib-'+r.id});
-    if(res.ok){await markInboxPrinted(r);alog('Printed from Kitchen Prep',`${pl.quantity}× ${r.product_name}`);toast(`Sent ${plural(pl.quantity,'label')} — ${r.product_name}`);}
-    else toast(res.timeout?`${r.product_name}: the printer didn’t answer in time — check it before trying again`:`${r.product_name} didn’t print — ${res.error}`,{type:'err',ms:6000});
-    return res;
+/* Kitchen Prep's print requests: each checked against Kitchen Prep (allergens,
+   still there, use-by not passed), then printed together. */
+async function inboxJob(r,ingsP){
+  const p=productByName(r.product_name);let fresh=null;
+  if(p&&p.src==='kp'){
+    fresh=await freshKpProduct(p,ingsP);
+    if(fresh===null&&!S.kp.ingKnown)return{error:`${r.product_name}: Kitchen Prep isn’t answering, so its allergens can’t be checked — not printed.`};
+    if(fresh&&fresh.gone){loadKP();return{error:`${r.product_name} is no longer in Kitchen Prep — not printed. Dismiss it, or print it as a one-off.`};}
+    if(fresh&&(!sameSet(fresh.contains,p.contains)||!sameSet(fresh.may,p.may)))loadKP();
+  }
+  const pl=inboxPayload(r,fresh);
+  if(pl.date_useby&&pl.date_useby<ymd())return{error:`${r.product_name}: its use-by (${dayWords(pl.date_useby)}) has passed — not printed.`};
+  return{job:{...pl,job_id:'ib-'+r.id}};
+}
+async function printInboxRows(rows){
+  return once('ib-'+rows.map(r=>r.id).join(','),async()=>{
+    rows=rows.filter(r=>!_ibPrinting.has(String(r.id)));if(!rows.length)return{ok:false};
+    rows.forEach(r=>_ibPrinting.add(String(r.id)));
+    try{
+    toast(rows.length===1?`Checking ${rows[0].product_name} with Kitchen Prep…`:`Checking ${rows.length} labels with Kitchen Prep…`,{type:'busy'});
+    const ready=[],problems=[];
+    const ingsP=rows.length>1?loadKpIngs():null;if(ingsP)ingsP.catch(()=>{});   // one fetch of the ingredients for all of them
+    (await Promise.all(rows.map(async r=>({r,x:await inboxJob(r,ingsP)})))).forEach(({r,x})=>{if(x.error)problems.push(x.error);else ready.push({r,job:x.job});});
+    if(!ready.length){if(problems.length)toast(problems[0],{type:'err'});return{ok:false};}
+    const n=ready.reduce((a,x)=>a+x.job.quantity,0);
+    toast(`Printing ${plural(n,'label')}${ready.length===1?' — '+ready[0].r.product_name:''}`,{type:'busy'});
+    let sent=0;
+    const res=await printQueue(ready,x=>x.job,async(x,job)=>{sent+=job.quantity;await markInboxPrinted(x.r);alog('Printed from Kitchen Prep',`${job.quantity}× ${x.r.product_name}`);},()=>{});
+    if(!res.bad&&!problems.length)toast(`Sent ${plural(sent,'label')}${ready.length===1?' — '+ready[0].r.product_name:''}`);
+    else if(res.bad)toast(`${sent?plural(sent,'label')+' sent. ':''}${res.unsure?'Some may have printed — '+(/^\d+ of \d+ printed/.test(res.err||'')?res.err:'check the printer before printing again'):'Not printed — '+res.err}`,{type:'err',ms:6000});
+    else toast(problems[0],{type:'err'});
+    return{ok:!res.bad&&!problems.length};
+    }finally{rows.forEach(r=>_ibPrinting.delete(String(r.id)));}
   });
 }
+const _ibPrinting=new Set();
+function printInboxRow(r){return printInboxRows([r]);}
 async function onPrinterBack(){
-  const due=S.outbox.filter(o=>o.unreachable&&!o.maybePrinted&&!o.stale&&Date.now()-o.at<30*60e3);
+  const due=S.outbox.filter(o=>(o.unreachable||o.noPrinter)&&!o.maybePrinted&&!o.stale&&Date.now()-o.at<30*60e3);
   if(!due.length)return;
-  await once('auto-resend',async()=>{for(const it of [...due].reverse()){const r=await sendChecked({...it,payload:{...it.payload,printed_at:hhmm()}});if(r&&r.busy)continue;if(!r||!r.ok)break;}});
+  await once('auto-resend',async()=>{for(const it of [...due].reverse()){const r=await sendChecked({...it,payload:{...it.payload,printed_at:hhmm()}});if(r&&r.inFlight)continue;if(!r||!r.ok)break;}});
   renderPrintBanner();
 }
 const ACT={
@@ -146,7 +166,7 @@ const ACT={
   // sent from Kitchen Prep
   'ib-more':()=>{_ibOpen=true;renderInbox();},
   'ib-print':el=>{const r=S.inbox.find(x=>String(x.id)===el.dataset.id);if(r)printInboxRow(r);},
-  'ib-all':()=>once('ib-all',async()=>{for(const r of S.inbox.filter(x=>!inboxExpired(x))){const res=await printInboxRow(r);if(!res||!res.ok)break;}}),
+  'ib-all':()=>printInboxRows(S.inbox.filter(x=>!inboxExpired(x))),
   'ib-dismiss':el=>once('ibd-'+el.dataset.id,async()=>{const r=S.inbox.find(x=>String(x.id)===el.dataset.id);if(!r)return;
     try{await rest(CPS,'PATCH','print_jobs?id=eq.'+encodeURIComponent(r.id),{label_status:'DISMISSED'},{prefer:'return=minimal'});}catch(e){toast('Couldn’t dismiss it — '+e.message,{type:'err'});return;}
     S.inbox=S.inbox.filter(x=>x!==r);onDataChanged('inbox');alog('Dismissed from Kitchen Prep',r.product_name);
@@ -314,7 +334,7 @@ async function retryAllOutbox(){
   if(!todo.length){if(S.outbox.length)await checkStale(S.outbox[0]);return;}
   for(const it of [...todo].reverse()){
     const res=await sendChecked({...it,payload:{...it.payload,printed_at:hhmm()}});
-    if(res&&res.busy)continue;
+    if(res&&res.inFlight)continue;
     if(!res||!res.ok)break;
   }
   renderPrintBanner();if(Sheet.open)outboxSheet();
@@ -329,12 +349,12 @@ function enterApp(){
   if(!location.hash||location.hash==='#')history.replaceState(null,'','#print');
   route();
   loadKP();loadCPS();probeExt();startPrinterPolling();flushRecords();loadLabelFonts();loadInbox();
-  clearInterval(_kpTimer);_kpTimer=setInterval(()=>{if(!document.hidden&&S.user){loadKP();loadCPS();flushRecords();}},3*60*1000);
+  clearInterval(_kpTimer);_kpTimer=setInterval(()=>{if(!document.hidden&&S.user){refreshKP();loadCPS();flushRecords();}},3*60*1000);
   clearInterval(_ibTimer);_ibTimer=setInterval(()=>{if(!document.hidden&&S.user)loadInbox();},30000);
 }
 function boot(){
   const c=LS.get('dcps_cps_cache',null);if(c){S.cps.products=c.products||[];S.cps.jobs=c.jobs||[];S.cps.at=c.at||0;}
-  const k=kpCache();if(k)try{applyKp(k.dishes,k.events,k.settings,k.at);}catch(e){}
+  const k=kpCache();if(k)try{applyKp(k.dishes,k.events,k.settings,k.at,k.ings===undefined?null:k.ings);}catch(e){}
   if(restoreSession()){
     enterApp();
     loadStaff().then(()=>{const s=S.staff.find(x=>String(x.id)===String(S.user.id));if(!s){signOut();return;}S.user={id:s.id,name:s.name,color:s.color,initials:s.initials};renderNav();}).catch(()=>{});

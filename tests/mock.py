@@ -35,7 +35,14 @@ def kp_seed():
             comp('c-sroll', 'Sausage Rolls', ['Cereals containing gluten', 'Mustard', 'Eggs', 'Milk'], freeze=True)]},
         {'id': 'd-trout', 'name': 'Cured Sea Trout', 'category': 'Tasting Menu', 'variant_of': None, 'components': [comp('c-trout', 'Cured Sea Trout', ['Fish', 'Mustard '], hours=72)]},
         {'id': 'd-stock', 'name': 'House Stock', 'category': 'Basics', 'variant_of': None, 'components': [comp('c-stock', 'Brown Chicken Stock', ['Celery', 'Kiwi'], freeze=True)]},
+        # nothing set on the dish: every allergen comes from tagged ingredients (Kitchen Prep 45+)
+        {'id': 'd-lamb', 'name': 'Lamb Flatbread', 'category': 'Canapés', 'variant_of': None, 'components': [
+            dict(comp('c-lamb', 'Spiced Lamb'), recipe_ingredients=[{'ingredient_name': 'FLATBREAD ', 'name': 'FLATBREAD '}, {'ingredient_name': 'Shallots', 'name': 'Shallots'}]),
+            dict(comp('c-mint', 'Mint Yoghurt'), recipe_ingredients=[{'ingredient_name': 'Greek Yoghurt', 'name': 'Greek Yoghurt'}])]},
     ]
+    ingredients = [{'id': 'i1', 'name': 'Flatbread', 'allergens': ['Gluten', 'may:Sesame']},
+                   {'id': 'i2', 'name': 'Greek Yoghurt', 'allergens': ['Dairy']},
+                   {'id': 'i3', 'name': 'Shallots', 'allergens': []}]
     events = [
         {'id': 'ev-carter', 'job_code': 'EC171026WED', 'client_name': 'Emily & Josh Carter — Wedding', 'event_type': 'WED', 'event_date': d(19), 'start_time': '12:30', 'covers': 140, 'status': 'Confirmed', 'venue_name': 'Primrose Hill Farm',
          'guest_allergens': [{'name': 'Table 4', 'dietary': 'GF', 'type': 'allergy', 'allergens': ['Cereals containing gluten']},
@@ -53,7 +60,7 @@ def kp_seed():
         {'id': 'ev-old', 'job_code': 'OLD010926PRIV', 'client_name': 'Long ago', 'event_type': 'PRIV', 'event_date': d(-40), 'start_time': '19:00', 'covers': 8, 'status': 'Completed', 'venue_name': '', 'guest_allergens': [], 'event_dishes': []},
     ]
     settings = [{'key': 'useby_chilled_days', 'value': '3'}, {'key': 'useby_frozen_days', 'value': '90'}, {'key': 'butchery_printer_url', 'value': 'https://palatable-shack-scallion.ngrok-free.dev'}]
-    return {'dishes': dishes, 'events': events, 'app_settings': settings}
+    return {'dishes': dishes, 'events': events, 'app_settings': settings, 'ingredients': ingredients}
 
 def cps_seed():
     staff = [{'id': 1, 'name': 'James Brierley', 'pin': '1810', 'initials': 'JB', 'color': '#7c1d0d', 'created_at': '2026-05-01T09:00:00Z'},
@@ -212,8 +219,12 @@ class Pi:
         self.mod = importlib.util.module_from_spec(spec); spec.loader.exec_module(self.mod)
         self.mod.KNOWN_PRINTER_IPS[:] = []
         self.client = self.mod.app.test_client()
-        self.mode = 'ok'          # ok | down | error | slow
+        self.mode = 'ok'          # ok | down | error | slow | busy | part
+        self.busy_left = 0
         self.payloads = []
+        self.batches = []         # number of jobs in each batch request
+        self.print_requests = 0
+        self.status_requests = 0
         self.updatable = True
     def handle(self, route, request):
         if request.method == 'OPTIONS':
@@ -225,9 +236,28 @@ class Pi:
             data = json.loads(request.post_data or '{}')
             if self.mode == 'error':
                 return route.fulfill(status=500, headers={**CORS, 'Content-Type': 'application/json'}, body=json.dumps({'success': False, 'error': 'Printer not found on the network — is it on and joined to Digbys-BOH?'}))
-            self.payloads.append(data)
-            r = self.client.post('/print', json=data)
+            self.print_requests += 1
+            if self.mode == 'busy':           # another run has the printer: nothing printed
+                self.busy_left -= 1
+                if self.busy_left <= 0: self.mode = 'ok'
+                return route.fulfill(status=503, headers={**CORS, 'Content-Type': 'application/json'}, body=json.dumps({'success': False, 'busy': True, 'error': self.mod.BUSY}))
+            if isinstance(data.get('jobs'), list):
+                self.batches.append(len(data['jobs']))
+                self.payloads.extend(data['jobs'])
+            else:
+                self.payloads.append(data)
+            if self.mode == 'part':           # USB stops while the 2nd label goes: 1 printed, the 2nd may have
+                self.mode = 'ok'
+                real = self.mod.print_images
+                def part(images, wait=15):
+                    raise self.mod.PartPrinted('USB stopped while sending label 2 of %d — it may have printed. Check before printing again.' % len(images), printed=1, uncertain=True, doubt=1)
+                self.mod.print_images = part
+                try: r = self.client.post('/print', json=data)
+                finally: self.mod.print_images = real
+            else:
+                r = self.client.post('/print', json=data)
         elif path == '/status':
+            self.status_requests += 1
             r = self.client.get('/status')
             d = r.get_json()
             if self.updatable: d['updatable'] = True

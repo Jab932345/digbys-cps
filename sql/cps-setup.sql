@@ -8,4 +8,7 @@ alter table public.print_jobs add column if not exists status_date date;
 alter table public.print_jobs add column if not exists weight_display text;
 alter table public.print_jobs add column if not exists label_status text;
 alter table public.print_jobs add column if not exists notes text;
+-- Keeps History and Kitchen Prep's print requests fast as the table grows.
+create index if not exists print_jobs_created_at_idx on public.print_jobs (created_at desc);
+create index if not exists print_jobs_waiting_idx on public.print_jobs (created_at) where label_status in ('FRIDGE','FREEZER');
 notify pgrst, 'reload schema';
